@@ -28,4 +28,9 @@ public class PortfolioController {
                                                   @RequestBody PortfolioRequestDto portfolioRequestDto) {
         return portfolioService.updatePortfolio(id, portfolioRequestDto);
     }
+
+    @DeleteMapping("/{portfolio-id}")
+    public ResponseEntity<String> deletePortfolio(@PathVariable(name = "portfolio-id")Long id) {
+        return portfolioService.deletePortfolio(id);
+    }
 }
