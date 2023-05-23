@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.portfolio.entity;
 
+import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.enums.CategoryEnum;
 import com.sparta.ourportfolio.portfolio.enums.FilterEnum;
 import jakarta.persistence.*;
@@ -29,9 +30,38 @@ public class Portfolio {
 
     private String githubId;
 
+    private String experience;
+
     private String blogUrl;
 
-    private FilterEnum filter;
+    private String category;
 
-    private CategoryEnum category;
+    private String filter;
+
+    public Portfolio(PortfolioRequestDto portfolioRequestDto) {
+        this.title = portfolioRequestDto.getTitle();
+        this.techStack = portfolioRequestDto.getTechStack();
+        this.residence = portfolioRequestDto.getResidence();
+        this.location = portfolioRequestDto.getLocation();
+        this.telephone = portfolioRequestDto.getTelephone();
+        this.email = portfolioRequestDto.getEmail();
+        this.githubId = portfolioRequestDto.getGithubId();
+        this.experience = portfolioRequestDto.getExperience();
+        this.blogUrl = portfolioRequestDto.getBlogUrl();
+        this.category = portfolioRequestDto.getCategory();
+        this.filter = portfolioRequestDto.getFilter();
+    }
+    public void update(PortfolioRequestDto portfolioRequestDto) {
+        this.title = portfolioRequestDto.getTitle();
+        this.techStack = portfolioRequestDto.getTechStack();
+        this.residence = portfolioRequestDto.getResidence();
+        this.location = portfolioRequestDto.getLocation();
+        this.telephone = portfolioRequestDto.getTelephone();
+        this.email = portfolioRequestDto.getEmail();
+        this.githubId = portfolioRequestDto.getGithubId();
+        this.experience = portfolioRequestDto.getExperience();
+        this.blogUrl = portfolioRequestDto.getBlogUrl();
+        this.category = portfolioRequestDto.getCategory();
+        this.filter = portfolioRequestDto.getFilter();
+    }
 }
