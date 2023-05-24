@@ -1,13 +1,19 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
+import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +21,7 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
 
     @Transactional
-    public ResponseEntity<String> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+    public ResponseEntity<String> createPortfolio(PortfolioRequestDto portfolioRequestDto, MultipartFile image) {
         //유저 확인
         Portfolio portfolio = new Portfolio(portfolioRequestDto);
         portfolioRepository.saveAndFlush(portfolio);
@@ -24,11 +30,11 @@ public class PortfolioService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<PortfolioResponseDto> getPortfolio(Long id) {
+    public ResponseEntity<PortfolioDetailResponseDto> getPortfolio(Long id) {
         Portfolio portfolio = isExistPortfolio(id);
 
-        PortfolioResponseDto portfolioResponseDto = new PortfolioResponseDto(portfolio);
-        return ResponseEntity.ok().body(portfolioResponseDto);
+        PortfolioDetailResponseDto portfolioDetailResponseDto = new PortfolioDetailResponseDto(portfolio);
+        return ResponseEntity.ok().body(portfolioDetailResponseDto);
     }
 
     @Transactional
@@ -53,5 +59,12 @@ public class PortfolioService {
         return portfolioRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("포트폴리오가 존재하지 않습니다.")
         );
+    }
+
+    public ResponseEntity<Slice<PortfolioResponseDto>> getAllPortfolios(Long id, int size) {
+        PageRequest pageRequest = PageRequest.of(0, size);
+
+        Slice<PortfolioResponseDto> portfolioResponseDtos = portfolioRepository.findByIdLessThanOrderByPostIdDesc(id, pageRequest);
+        return ResponseEntity.ok().body(portfolioResponseDtos);
     }
 }

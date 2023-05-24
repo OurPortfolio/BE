@@ -1,8 +1,6 @@
 package com.sparta.ourportfolio.portfolio.entity;
 
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
-import com.sparta.ourportfolio.portfolio.enums.CategoryEnum;
-import com.sparta.ourportfolio.portfolio.enums.FilterEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +35,10 @@ public class Portfolio {
     private String category;
 
     private String filter;
+
+    @Column(columnDefinition = "LONGTEXT")
+    @Lob
+    private String portfolioImage;
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();

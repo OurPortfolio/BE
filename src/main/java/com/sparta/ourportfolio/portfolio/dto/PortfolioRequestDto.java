@@ -1,7 +1,5 @@
 package com.sparta.ourportfolio.portfolio.dto;
 
-import com.sparta.ourportfolio.portfolio.enums.CategoryEnum;
-import com.sparta.ourportfolio.portfolio.enums.FilterEnum;
 import lombok.Getter;
 
 @Getter

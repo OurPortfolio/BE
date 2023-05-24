@@ -1,36 +1,21 @@
 package com.sparta.ourportfolio.portfolio.dto;
 
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
-import com.sparta.ourportfolio.portfolio.enums.CategoryEnum;
-import com.sparta.ourportfolio.portfolio.enums.FilterEnum;
 import lombok.Getter;
 
 @Getter
 public class PortfolioResponseDto {
-    private Long id;
-    private String portfolioTitle;
-    private String techStack;
-    private String residence;
-    private String location;
-    private String telephone;
-    private String email;
-    private String githubId;
-    private String experience;
-    private String blogUrl;
+    private Long portfolioId;
+    private String portfolioImage;
+    //유저 이미지 추가
+    private String userName;
     private String category;
     private String filter;
 
     public PortfolioResponseDto(Portfolio portfolio) {
-        this.id = portfolio.getId();
-        this.portfolioTitle = portfolio.getPortfolioTitle();
-        this.techStack = portfolio.getTechStack();
-        this.residence = portfolio.getResidence();
-        this.location = portfolio.getLocation();
-        this.telephone = portfolio.getTelephone();
-        this.email = portfolio.getEmail();
-        this.githubId = portfolio.getGithubId();
-        this.experience = portfolio.getExperience();
-        this.blogUrl = portfolio.getBlogUrl();
+        this.portfolioId = portfolio.getId();
+        this.portfolioImage = portfolio.getPortfolioImage();
+        this.userName = "cozyboy";
         this.category = portfolio.getCategory();
         this.filter = portfolio.getFilter();
     }
