@@ -16,7 +16,7 @@ public class Portfolio {
     @Column(name = "PORTFOLIO_ID")
     private Long id;
 
-    private String title;
+    private String portfolioTitle;
 
     private String techStack;
 
@@ -39,7 +39,7 @@ public class Portfolio {
     private String filter;
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto) {
-        this.title = portfolioRequestDto.getTitle();
+        this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();
@@ -52,7 +52,7 @@ public class Portfolio {
         this.filter = portfolioRequestDto.getFilter();
     }
     public void update(PortfolioRequestDto portfolioRequestDto) {
-        this.title = portfolioRequestDto.getTitle();
+        this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();

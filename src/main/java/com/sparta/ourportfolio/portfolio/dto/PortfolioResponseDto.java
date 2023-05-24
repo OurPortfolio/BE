@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class PortfolioResponseDto {
     private Long id;
-    private String title;
+    private String portfolioTitle;
     private String techStack;
     private String residence;
     private String location;
@@ -22,7 +22,7 @@ public class PortfolioResponseDto {
 
     public PortfolioResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();
-        this.title = portfolio.getTitle();
+        this.portfolioTitle = portfolio.getPortfolioTitle();
         this.techStack = portfolio.getTechStack();
         this.residence = portfolio.getResidence();
         this.location = portfolio.getLocation();

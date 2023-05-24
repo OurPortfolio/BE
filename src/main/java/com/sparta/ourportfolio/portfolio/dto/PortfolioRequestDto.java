@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class PortfolioRequestDto {
-    private String title;
+    private String portfolioTitle;
     private String techStack;
     private String residence;
     private String location;
