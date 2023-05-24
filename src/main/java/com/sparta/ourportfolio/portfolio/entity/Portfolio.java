@@ -40,7 +40,7 @@ public class Portfolio {
     @Lob
     private String portfolioImage;
 
-    public Portfolio(PortfolioRequestDto portfolioRequestDto) {
+    public Portfolio(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
@@ -52,6 +52,7 @@ public class Portfolio {
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
+        this.portfolioImage = imageUrl;
     }
     public void update(PortfolioRequestDto portfolioRequestDto) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();

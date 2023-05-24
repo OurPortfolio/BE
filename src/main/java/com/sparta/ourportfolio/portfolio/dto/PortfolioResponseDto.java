@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class PortfolioResponseDto {
-    private Long portfolioId;
+    private Long id;
+    private String portfolioTitle;
     private String portfolioImage;
     //유저 이미지 추가
     private String userName;
@@ -13,7 +14,8 @@ public class PortfolioResponseDto {
     private String filter;
 
     public PortfolioResponseDto(Portfolio portfolio) {
-        this.portfolioId = portfolio.getId();
+        this.id = portfolio.getId();
+        this.portfolioTitle = portfolio.getPortfolioTitle();
         this.portfolioImage = portfolio.getPortfolioImage();
         this.userName = "cozyboy";
         this.category = portfolio.getCategory();
