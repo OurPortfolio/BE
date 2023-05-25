@@ -1,7 +1,11 @@
 package com.sparta.ourportfolio.portfolio.dto;
 
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
+import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class PortfolioDetailResponseDto {
@@ -17,6 +21,7 @@ public class PortfolioDetailResponseDto {
     private String blogUrl;
     private String category;
     private String filter;
+    private List<ProjectResponseDto> projectList;
 
     public PortfolioDetailResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();
@@ -25,11 +30,12 @@ public class PortfolioDetailResponseDto {
         this.residence = portfolio.getResidence();
         this.location = portfolio.getLocation();
         this.telephone = portfolio.getTelephone();
-        this.email = portfolio.getEmail();
+        this.email = portfolio.getUser().getEmail();
         this.githubId = portfolio.getGithubId();
         this.experience = portfolio.getExperience();
         this.blogUrl = portfolio.getBlogUrl();
         this.category = portfolio.getCategory();
         this.filter = portfolio.getFilter();
+        this.projectList = portfolio.getProjectList().stream().map(ProjectResponseDto::new).collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
+import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
@@ -37,14 +38,14 @@ public class PortfolioInquiryService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(String keyword,
+    public ResponseDto<Slice<SearchResponseDto>> searchPortfolios(String keyword,
                                                                      Long id,
                                                                      int size) {
         PageRequest pageRequest = PageRequest.of(0, size);
 
-        Slice<PortfolioResponseDto> portfolioResponseDtoSlice =
+        Slice<SearchResponseDto> searchResponseDtoSlice =
                 portfolioRepository.searchPortfolios(id, pageRequest, keyword);
-        return ResponseDto.setSuccess("검색 완료", portfolioResponseDtoSlice);
+        return ResponseDto.setSuccess("검색 완료", searchResponseDtoSlice);
     }
 
     public Portfolio isExistPortfolio(Long id) {

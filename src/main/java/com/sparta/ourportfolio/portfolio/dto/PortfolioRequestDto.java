@@ -2,6 +2,8 @@ package com.sparta.ourportfolio.portfolio.dto;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class PortfolioRequestDto {
     private String portfolioTitle;
@@ -15,4 +17,5 @@ public class PortfolioRequestDto {
     private String blogUrl;
     private String category;
     private String filter;
+    private List<Long> projectIdList;
 }

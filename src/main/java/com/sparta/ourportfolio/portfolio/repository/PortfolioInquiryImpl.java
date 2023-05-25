@@ -1,12 +1,11 @@
 package com.sparta.ourportfolio.portfolio.repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
+import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
 import jakarta.annotation.Nullable;
@@ -16,10 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sparta.ourportfolio.portfolio.entity.QPortfolio.portfolio;
 
@@ -78,9 +75,9 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     }
 
     @Override
-    public Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId,
-                                                        PageRequest pageRequest,
-                                                        String keyword) {
+    public Slice<SearchResponseDto> searchPortfolios(Long lastPortfolioId,
+                                                     PageRequest pageRequest,
+                                                     String keyword) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -99,8 +96,8 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .limit(pageRequest.getPageSize() + 1)
                 .fetch();
 
-        List<PortfolioResponseDto> content = resultSlice.stream()
-                .map(PortfolioResponseDto::new)
+        List<SearchResponseDto> content = resultSlice.stream()
+                .map(SearchResponseDto::new)
                 .toList();
 
         boolean hasNext = false;

@@ -1,9 +1,15 @@
 package com.sparta.ourportfolio.portfolio.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
+import com.sparta.ourportfolio.project.entity.Project;
+import com.sparta.ourportfolio.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +30,6 @@ public class Portfolio {
 
     private String telephone;
 
-    private String email;
-
     private String githubId;
 
     private String experience;
@@ -40,13 +44,20 @@ public class Portfolio {
     @Lob
     private String portfolioImage;
 
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE)
+    private List<Project> projectList = new ArrayList<>();
+
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private User user;
+
     public Portfolio(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();
         this.telephone = portfolioRequestDto.getTelephone();
-        this.email = portfolioRequestDto.getEmail();
         this.githubId = portfolioRequestDto.getGithubId();
         this.experience = portfolioRequestDto.getExperience();
         this.blogUrl = portfolioRequestDto.getBlogUrl();
@@ -54,17 +65,25 @@ public class Portfolio {
         this.filter = portfolioRequestDto.getFilter();
         this.portfolioImage = imageUrl;
     }
+
     public void update(PortfolioRequestDto portfolioRequestDto) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();
         this.telephone = portfolioRequestDto.getTelephone();
-        this.email = portfolioRequestDto.getEmail();
         this.githubId = portfolioRequestDto.getGithubId();
         this.experience = portfolioRequestDto.getExperience();
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
+    }
+
+    public void addProject(Project project) {
+        this.projectList.add(project);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
