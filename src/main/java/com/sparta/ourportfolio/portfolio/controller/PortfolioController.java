@@ -5,7 +5,7 @@ import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
 import com.sparta.ourportfolio.portfolio.service.PortfolioService;
-import com.sparta.ourportfolio.util.ResponseDto;
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;

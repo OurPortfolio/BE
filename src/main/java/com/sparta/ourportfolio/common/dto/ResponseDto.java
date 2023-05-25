@@ -1,4 +1,4 @@
-package com.sparta.ourportfolio.util;
+package com.sparta.ourportfolio.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -16,10 +16,6 @@ public class ResponseDto<T> {
     }
 
     public static <T> ResponseDto<T> setSuccess(String message) {
-        return ResponseDto.set(message, null);
-    }
-
-    public static <T> ResponseDto<T> sendMessage(String message) {
         return ResponseDto.set(message, null);
     }
 }
