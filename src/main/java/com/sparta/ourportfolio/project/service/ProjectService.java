@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.project.service;
 
 import com.sparta.ourportfolio.common.utils.S3Service;
+import com.sparta.ourportfolio.portfolio.entity.Portfolio;
+import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
 import com.sparta.ourportfolio.project.dto.ResponseDto;
@@ -27,11 +29,14 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final FileRepository fileRepository;
+    private final PortfolioRepository portfolioRepository;
     private final S3Service s3Service;
 
     // 프로젝트 작성
     public ResponseDto<?> creatProject(ProjectRequestDto projectRequestDto,
                                        List<MultipartFile> images, User user) throws IOException {
+
+
         Project project = new Project(projectRequestDto, user);
         project.setImageFile(s3Service.fileFactory(images, project));
         project = projectRepository.save(project);

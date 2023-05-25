@@ -1,10 +1,15 @@
 package com.sparta.ourportfolio.user.entity;
 
 import com.sparta.ourportfolio.common.utils.TimeStamped;
+import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.sound.sampled.Port;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -26,10 +31,17 @@ public class User extends TimeStamped {
     @Column(nullable = true)
     private String profileImage;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Portfolio> portfolioList = new ArrayList<>();
+
     public User(String password, SignupRequestDto signupRequestDto) {
         this.email = signupRequestDto.getEmail();
         this.password = password;
         this.nickname = signupRequestDto.getNickname();
         this.profileImage = signupRequestDto.getProfileImage();
+    }
+
+    public void addPortfolio(Portfolio portfolio) {
+        this.portfolioList.add(portfolio);
     }
 }
