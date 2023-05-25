@@ -6,5 +6,6 @@ import org.springframework.data.domain.Slice;
 
 public interface PortfolioInquiry {
     Slice<PortfolioResponseDto> getPortfolios(Long lastPortfolioId, PageRequest pageRequest, String category,
-                                              String filter, String search);
+                                              String filter);
+    Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId, PageRequest pageRequest, String keyword);
 }

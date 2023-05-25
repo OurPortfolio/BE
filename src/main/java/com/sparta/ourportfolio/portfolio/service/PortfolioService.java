@@ -32,24 +32,6 @@ public class PortfolioService {
         return ResponseDto.setSuccess("포트폴리오 생성 완료");
     }
 
-    @Transactional(readOnly = true)
-    public ResponseDto<PortfolioDetailResponseDto> getPortfolio(Long id) {
-        Portfolio portfolio = isExistPortfolio(id);
-
-        PortfolioDetailResponseDto portfolioDetailResponseDto = new PortfolioDetailResponseDto(portfolio);
-        return ResponseDto.setSuccess("조회 완료", portfolioDetailResponseDto);
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseDto<Slice<PortfolioResponseDto>> getAllPortfolios(Long id, int size, String category, String filter,
-                                                                     String search) {
-        PageRequest pageRequest = PageRequest.of(0, size);
-
-        Slice<PortfolioResponseDto> portfolioResponseDtos =
-                portfolioRepository.getPortfolios(id, pageRequest, category, filter, search);
-        return ResponseDto.setSuccess("조회 완료", portfolioResponseDtos);
-    }
-
     @Transactional
     public ResponseDto<String> updatePortfolio(Long id, PortfolioRequestDto portfolioRequestDto) {
         Portfolio portfolio = isExistPortfolio(id);
@@ -74,4 +56,6 @@ public class PortfolioService {
                 () -> new IllegalArgumentException("포트폴리오가 존재하지 않습니다.")
         );
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.portfolio.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
@@ -34,16 +35,13 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     public Slice<PortfolioResponseDto> getPortfolios(@Nullable Long lastPortfolioId,
                                                      PageRequest pageRequest,
                                                      @Nullable String category,
-                                                     @Nullable String filter,
-                                                     @Nullable String search) {
+                                                     @Nullable String filter) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
         BooleanBuilder whereBuilder = new BooleanBuilder();
         whereBuilder.and(ltPortfolioId(lastPortfolioId));
-        if (search != null && !search.isEmpty()) {
-            whereBuilder.and(findBySearch(search));
-        }
+
         if (category != null && !category.isEmpty()) {
             whereBuilder.and(findByCategory(category));
         }
@@ -79,8 +77,38 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return filter == null || filter.isEmpty() ? null : portfolio.filter.eq(filter);
     }
 
-    private BooleanExpression findBySearch(String search) {
-        return search == null || search.isEmpty() ? null : portfolio.portfolioTitle.containsIgnoreCase(search);
+    @Override
+    public Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId,
+                                                        PageRequest pageRequest,
+                                                        String keyword) {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        JPQLQuery<Portfolio> query = from(portfolio);
+        if (keyword != null) {
+            BooleanBuilder booleanBuilder = new BooleanBuilder();
+            booleanBuilder.or(portfolio.techStack.contains(keyword));
+            booleanBuilder.or(portfolio.portfolioTitle.contains(keyword));
+            query.where(booleanBuilder, ltPortfolioId(lastPortfolioId));
+        } else {
+            query.where(ltPortfolioId(lastPortfolioId));
+        }
+
+        List<Portfolio> resultSlice = query
+                .orderBy(portfolio.id.desc())
+                .limit(pageRequest.getPageSize() + 1)
+                .fetch();
+
+        List<PortfolioResponseDto> content = resultSlice.stream()
+                .map(PortfolioResponseDto::new)
+                .toList();
+
+        boolean hasNext = false;
+        if (content.size() > pageRequest.getPageSize()) {
+            resultSlice.remove(pageRequest.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageRequest, hasNext);
     }
 
     private BooleanExpression ltPortfolioId(Long id) {

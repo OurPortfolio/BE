@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.portfolio.controller;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
+import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
 import com.sparta.ourportfolio.portfolio.service.PortfolioService;
 import com.sparta.ourportfolio.util.ResponseDto;
 import jakarta.annotation.Nullable;
@@ -19,6 +20,7 @@ import java.io.IOException;
 @RequestMapping("/api/portfolios")
 public class PortfolioController {
     private final PortfolioService portfolioService;
+    private final PortfolioInquiryService portfolioInquiryService;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> createPortfolio(@RequestPart(name = "portfolioRequestDto")
@@ -29,16 +31,22 @@ public class PortfolioController {
 
     @GetMapping("/{portfolio-id}")
     public ResponseDto<PortfolioDetailResponseDto> getPortfolio(@PathVariable(name = "portfolio-id") Long id) {
-        return portfolioService.getPortfolio(id);
+        return portfolioInquiryService.getPortfolio(id);
     }
 
     @GetMapping
     public ResponseDto<Slice<PortfolioResponseDto>> getAllPortfolios(@RequestParam(name = "last-portfolio-id") Long id,
                                                                      @RequestParam(name = "size") int size,
                                                                      @Nullable @RequestParam(name = "category") String category,
-                                                                     @Nullable @RequestParam(name = "filter") String filter,
-                                                                     @Nullable @RequestParam(name = "keyword") String search) {
-        return portfolioService.getAllPortfolios(id, size, category, filter, search);
+                                                                     @Nullable @RequestParam(name = "filter") String filter) {
+        return portfolioInquiryService.getAllPortfolios(id, size, category, filter);
+    }
+
+    @GetMapping("/search")
+    public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
+                                                                     @RequestParam(name = "last-portfolio-id") Long id,
+                                                                     @RequestParam(name = "size") int size) {
+        return portfolioInquiryService.searchPortfolios(keyword, id, size);
     }
 
     @PatchMapping("/{portfolio-id}")
