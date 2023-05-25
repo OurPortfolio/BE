@@ -2,10 +2,13 @@ package com.sparta.ourportfolio.user.entity;
 
 import com.sparta.ourportfolio.common.enums.UserRoleEnum;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
+import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 
 @Getter
 @NoArgsConstructor
@@ -29,6 +32,9 @@ public class User extends TimeStamped {
 
     private Long kakaoId;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Portfolio> portfolioList = new ArrayList<>();
+
     public User(String password, SignupRequestDto signupRequestDto) {
         this.email = signupRequestDto.getEmail();
         this.password = password;
@@ -48,5 +54,9 @@ public class User extends TimeStamped {
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
+    }
+
+    public void addPortfolio(Portfolio portfolio) {
+        this.portfolioList.add(portfolio);
     }
 }
