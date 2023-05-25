@@ -1,7 +1,9 @@
 package com.sparta.ourportfolio.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
+import com.sparta.ourportfolio.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,21 +42,23 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     private List<ProjectImage> projectImageList;
 
-//    @JsonIgnore
-//    @ManyToOne
-//    private User user;
-//
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private User user;
+
 //    @JsonIgnore
 //    @ManyToOne
 //    private Portfolio portfolio;
 
     @Builder
-    public Project(ProjectRequestDto projectRequestDto) {
+    public Project(ProjectRequestDto projectRequestDto, User user) {
         this.title = projectRequestDto.getTitle();
         this.term = projectRequestDto.getTerm();
         this.people = projectRequestDto.getPeople();
         this.position = projectRequestDto.getPosition();
         this.description = projectRequestDto.getDescription();
+        this.user = user;
     }
 
     public void updateProject(ProjectRequestDto projectRequestDto) {

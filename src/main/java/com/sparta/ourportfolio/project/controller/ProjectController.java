@@ -1,11 +1,13 @@
 package com.sparta.ourportfolio.project.controller;
 
+import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ResponseDto;
 import com.sparta.ourportfolio.project.service.ProjectService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +26,9 @@ public class ProjectController {
     // 프로젝트 작성 및 파일 업로드
     @PostMapping("/api/projects")
     public ResponseDto creatProject(ProjectRequestDto projectRequestDto,
-                                    @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
-        return projectService.creatProject(projectRequestDto, images);
+                                    @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return projectService.creatProject(projectRequestDto, images, userDetails.getUser());
     }
 
     // 프로젝트 전체 조회
@@ -44,14 +47,16 @@ public class ProjectController {
     @PatchMapping("/api/projects/{project-id}")
     public ResponseDto updateProject(@PathVariable(name = "project-id") Long id,
                                      ProjectRequestDto projectRequestDto,
-                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
-        return projectService.updateProject(id, projectRequestDto, images);
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return projectService.updateProject(id, projectRequestDto, images, userDetails.getUser());
     }
 
     // 프로젝트 삭제
     @DeleteMapping("/api/projects/{project-id}")
-    public ResponseDto deleteProject(@PathVariable(name = "project-id") Long id) {
-        return projectService.deleteProject(id);
+    public ResponseDto deleteProject(@PathVariable(name = "project-id") Long id,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return projectService.deleteProject(id, userDetails.getUser());
     }
 }
 
