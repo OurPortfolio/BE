@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.user.entity;
 
+import com.sparta.ourportfolio.common.enums.UserRoleEnum;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
@@ -26,10 +27,26 @@ public class User extends TimeStamped {
     @Column(nullable = true)
     private String profileImage;
 
+    private Long kakaoId;
+
     public User(String password, SignupRequestDto signupRequestDto) {
         this.email = signupRequestDto.getEmail();
         this.password = password;
         this.nickname = signupRequestDto.getNickname();
         this.profileImage = signupRequestDto.getProfileImage();
+    }
+
+    //카카오 회원가입
+    public User(Long kakaoId, String email, String nickname, String password, String profileImage) {
+        this.kakaoId = kakaoId;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.profileImage = profileImage;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }
