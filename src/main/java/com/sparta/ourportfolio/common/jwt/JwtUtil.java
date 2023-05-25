@@ -31,6 +31,7 @@ public class JwtUtil {
     private static final String BEARER_PREFIX = "Bearer ";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();
     private static final long REFRESH_TIME = Duration.ofDays(14).toMillis();
 
@@ -49,8 +50,8 @@ public class JwtUtil {
 
     // header 토큰을 가져오기
     public String resolveToken(HttpServletRequest request, String token) {
-        String tokenName = token.equals("ACCESS_TOKEN") ? ACCESS_TOKEN : REFRESH_TOKEN;
-        String bearerToken = request.getHeader(tokenName);
+//        String tokenName = token.equals("ACCESS_TOKEN") ? ACCESS_TOKEN : REFRESH_TOKEN;
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
