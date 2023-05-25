@@ -18,7 +18,6 @@ public class ProjectResponseDto {
     private String description;
     private List<ProjectImage> projectImageList;
 
-    @Builder
     public ProjectResponseDto(Project project) {
         this.title = project.getTitle();
         this.term = project.getTerm();

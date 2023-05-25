@@ -1,7 +1,6 @@
 package com.sparta.ourportfolio.project.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class ProjectRequestDto {

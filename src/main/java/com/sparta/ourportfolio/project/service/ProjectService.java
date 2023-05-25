@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.project.service;
 
 import com.sparta.ourportfolio.common.utils.S3Service;
+import com.sparta.ourportfolio.portfolio.entity.Portfolio;
+import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
 import com.sparta.ourportfolio.project.dto.ResponseDto;
@@ -27,11 +29,14 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final FileRepository fileRepository;
+    private final PortfolioRepository portfolioRepository;
     private final S3Service s3Service;
 
     // 프로젝트 작성
-    public ResponseDto<?> creatProject(ProjectRequestDto projectRequestDto,
+    public ResponseDto<String> creatProject(ProjectRequestDto projectRequestDto,
                                        List<MultipartFile> images, User user) throws IOException {
+
+
         Project project = new Project(projectRequestDto, user);
         project.setImageFile(s3Service.fileFactory(images, project));
         project = projectRepository.save(project);
@@ -54,7 +59,7 @@ public class ProjectService {
     }
 
     // 프로젝트 수정
-    public ResponseDto<?> updateProject(Long id,
+    public ResponseDto<String> updateProject(Long id,
                                         ProjectRequestDto projectRequestDto,
                                         List<MultipartFile> images, User user) throws IOException {
         Project project = projectRepository.findById(id).orElseThrow(
@@ -69,12 +74,12 @@ public class ProjectService {
         fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
         project.setImageFile(s3Service.fileFactory(images, project));
         project.updateProject(projectRequestDto);
-        return ResponseDto.setSuccess("프로젝트 수정 완료.", project);
+        return ResponseDto.setSuccess("프로젝트 수정 완료.", null);
 
     }
 
     // 프로젝트 삭제
-    public ResponseDto<?> deleteProject(Long id, User user) {
+    public ResponseDto<String> deleteProject(Long id, User user) {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
         );

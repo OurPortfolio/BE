@@ -2,6 +2,7 @@ package com.sparta.ourportfolio.project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.user.entity.User;
 import jakarta.persistence.*;
@@ -46,9 +47,10 @@ public class Project {
     @ManyToOne
     private User user;
 
-//    @JsonIgnore
-//    @ManyToOne
-//    private Portfolio portfolio;
+    @JsonIgnore
+    @JoinColumn(name = "portfolio_id")
+    @ManyToOne
+    private Portfolio portfolio;
 
     @Builder
     public Project(ProjectRequestDto projectRequestDto, User user) {
@@ -72,11 +74,7 @@ public class Project {
         this.projectImageList = projectImageList;
     }
 
-//    private void update(ProjectRequestDto projectRequestDto) {
-//        this.title = projectRequestDto.getTitle();
-//        this.term = projectRequestDto.getTerm();
-//        this.people = projectRequestDto.getPeople();
-//        this.position = projectRequestDto.getPosition();
-//        this.description = projectRequestDto.getDescription();
-//    }
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
+    }
 }
