@@ -1,4 +1,4 @@
-package com.sparta.ourportfolio.util;
+package com.sparta.ourportfolio.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
