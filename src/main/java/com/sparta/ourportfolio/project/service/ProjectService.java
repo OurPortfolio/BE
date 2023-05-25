@@ -11,12 +11,14 @@ import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.entity.ProjectImage;
 import com.sparta.ourportfolio.project.repository.FileRepository;
 import com.sparta.ourportfolio.project.repository.ProjectRepository;
+import com.sparta.ourportfolio.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,8 +43,9 @@ public class ProjectService {
     private final AmazonS3 amazonS3;
 
     // 프로젝트 작성
-    public ResponseDto<?> creatProject(ProjectRequestDto projectRequestDto, List<MultipartFile> images) throws IOException {
-        Project project = new Project(projectRequestDto);
+    public ResponseDto<?> creatProject(ProjectRequestDto projectRequestDto,
+                                       List<MultipartFile> images, User user) throws IOException {
+        Project project = new Project(projectRequestDto, user);
         project.setImageFile(fileFactory(images, project));
         project = projectRepository.save(project);
 
@@ -67,26 +70,35 @@ public class ProjectService {
     // 프로젝트 수정
     public ResponseDto<?> updateProject(Long id,
                                         ProjectRequestDto projectRequestDto,
-                                        List<MultipartFile> images) throws IOException {
+                                        List<MultipartFile> images, User user) throws IOException {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
         );
+
+        //USER 확인
+        if (!StringUtils.equals(project.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
         fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
         project.setImageFile(fileFactory(images, project));
         project.updateProject(projectRequestDto);
         return ResponseDto.setSuccess("프로젝트 수정 완료.", project);
 
-        //USER 확인부분 추가해야함
+
 
     }
 
     // 프로젝트 삭제
-    public ResponseDto<?> deleteProject(Long id) {
+    public ResponseDto<?> deleteProject(Long id, User user) {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
         );
 
-        //USER 확인부분 추가해야함
+        //USER 확인
+        if (!StringUtils.equals(project.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
 
         projectRepository.deleteById(id);
         return ResponseDto.setSuccess("프로젝트 삭제를 완료했습니다.", null);
