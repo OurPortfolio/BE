@@ -3,8 +3,8 @@ package com.sparta.ourportfolio.user.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
-import com.sparta.ourportfolio.common.utils.Message;
 import com.sparta.ourportfolio.user.dto.KakaoUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
@@ -18,7 +18,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.UUID;
 
 @Slf4j
@@ -29,7 +28,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public Message kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -40,11 +39,11 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken =  jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
+        String createToken = jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
-        return new Message("로그인 성공!", HttpStatus.OK);
+        return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -58,7 +57,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", "acf4c39ccdb7be5096df83b38e86fe27");
         body.add("client_secret", "YOxz7CyQ980OeysVQw5jLQ6RaWQRfoSA");
-        body.add("redirect_uri", "http://localhost:8080/api/users/kakao/callback");
+        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -107,7 +106,7 @@ public class KakaoService {
         String profileImage = jsonNode.get("properties")
                 .get("profile_image").asText();
 
-        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email+ ", " +profileImage);
+        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email + ", " + profileImage);
         return new KakaoUserInfoDto(id, nickname, email, profileImage);
     }
 

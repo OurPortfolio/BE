@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,28 +30,17 @@ public class S3Service {
         List<ProjectImage> projectImageList = new ArrayList<>();
 
         for (MultipartFile image : images) {
-            // 파일명 새로 부여를 위한 현재 시간 알아내기
-            LocalDateTime now = LocalDateTime.now();
-            int hour = now.getHour();
-            int minute = now.getMinute();
-            int second = now.getSecond();
-            int millis = now.get(ChronoField.MILLI_OF_SECOND);
-
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             String imageUrl = null;
-            String newFileName = "image" + hour + minute + second + millis;
-            String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
-            String imageName = S3_BUCKET_PREFIX + newFileName + fileExtension;
 
             // 메타데이터 설정
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(image.getContentType());
             objectMetadata.setContentLength(image.getSize());
 
-            InputStream inputStream = image.getInputStream();
-
-            amazonS3.putObject(new PutObjectRequest(bucketName, imageName, inputStream, objectMetadata)
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, image.getInputStream(), objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-            imageUrl = amazonS3.getUrl(bucketName, imageName).toString();
+            imageUrl = amazonS3.getUrl(bucketName, fileName).toString();
 
             projectImageList.add(new ProjectImage(imageUrl, project));
         }
@@ -70,7 +56,8 @@ public class S3Service {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
 
-        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, multipartFile.getInputStream(), objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, multipartFile.getInputStream(), objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
 
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
@@ -84,7 +71,6 @@ public class S3Service {
 }
 
 
-//
 //    public boolean delete(String fileUrl) {
 //        try {
 //            String[] temp = fileUrl.split("/");
@@ -95,4 +81,3 @@ public class S3Service {
 //            return false;
 //        }
 //    }
-//

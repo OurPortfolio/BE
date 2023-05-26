@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 @RequestMapping("/api/portfolios")
 public class PortfolioController {

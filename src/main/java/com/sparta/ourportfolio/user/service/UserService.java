@@ -1,10 +1,10 @@
 package com.sparta.ourportfolio.user.service;
 
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.jwt.JwtTokenDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
-import com.sparta.ourportfolio.common.utils.Message;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.entity.User;
@@ -31,7 +31,7 @@ public class UserService {
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     //회원가입
-    public Message signup(SignupRequestDto signupRequestDto) {
+    public ResponseDto<HttpStatus> signup(SignupRequestDto signupRequestDto) {
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         Optional<User> findUserByEmail = userRepository.findByEmail(signupRequestDto.getEmail());
@@ -46,11 +46,11 @@ public class UserService {
 
         User user = new User(password, signupRequestDto);
         userRepository.save(user);
-        return new Message("회원가입 성공!", HttpStatus.OK);
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원가입 성공!");
     }
 
     //로그인
-    public Message login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
@@ -69,7 +69,7 @@ public class UserService {
             refreshTokenRepository.save(newToken);
         }
         setHeader(response, tokenDto);
-        return new Message("로그인 성공!", HttpStatus.OK);
+        return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
     }
 
 
