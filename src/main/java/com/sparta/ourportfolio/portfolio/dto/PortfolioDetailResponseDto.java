@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @Getter
 public class PortfolioDetailResponseDto {
     private Long id;
+    private Long userId;
     private String portfolioTitle;
     private String techStack;
     private String residence;
@@ -25,6 +26,7 @@ public class PortfolioDetailResponseDto {
 
     public PortfolioDetailResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();
+        this.userId = portfolio.getUser().getId();
         this.portfolioTitle = portfolio.getPortfolioTitle();
         this.techStack = portfolio.getTechStack();
         this.residence = portfolio.getResidence();
