@@ -2,9 +2,9 @@ package com.sparta.ourportfolio.project.controller;
 
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
+import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
 import com.sparta.ourportfolio.project.dto.ResponseDto;
 import com.sparta.ourportfolio.project.service.ProjectService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,24 +24,24 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-
+  
     // 프로젝트 작성 및 파일 업로드
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseDto creatProject(@RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
-                                    @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<String> creatProject(@RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
+                                            @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return projectService.creatProject(projectRequestDto, images, userDetails.getUser());
     }
 
     // 프로젝트 전체 조회
     @GetMapping
-    public ResponseDto getProjects() {
+    public ResponseDto<List<ProjectResponseDto>> getProjects() {
         return projectService.getProjects();
     }
 
     // 프로젝트 상세 조회
     @GetMapping("/{project-id}")
-    public ResponseDto getProject(@PathVariable(name = "project-id") Long id) {
+    public ResponseDto<ProjectResponseDto> getProject(@PathVariable(name = "project-id") Long id) {
         return projectService.getProject(id);
     }
 
@@ -56,10 +56,8 @@ public class ProjectController {
 
     // 프로젝트 삭제
     @DeleteMapping("/{project-id}")
-    public ResponseDto deleteProject(@PathVariable(name = "project-id") Long id,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<String> deleteProject(@PathVariable(name = "project-id") Long id,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return projectService.deleteProject(id, userDetails.getUser());
     }
 }
-
-//    @RequestPart("imgUrl") List<MultipartFile> images

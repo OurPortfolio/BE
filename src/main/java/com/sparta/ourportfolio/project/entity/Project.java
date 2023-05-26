@@ -77,12 +77,4 @@ public class Project {
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
     }
-
-//    private void update(ProjectRequestDto projectRequestDto) {
-//        this.title = projectRequestDto.getTitle();
-//        this.term = projectRequestDto.getTerm();
-//        this.people = projectRequestDto.getPeople();
-//        this.position = projectRequestDto.getPosition();
-//        this.description = projectRequestDto.getDescription();
-//    }
 }

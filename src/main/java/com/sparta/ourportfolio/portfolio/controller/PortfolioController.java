@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +52,11 @@ public class PortfolioController {
                                                                   @RequestParam(name = "last-portfolio-id") Long id,
                                                                   @RequestParam(name = "size") int size) {
         return portfolioInquiryService.searchPortfolios(keyword, id, size);
+    }
+
+    @GetMapping("/myportfolios")
+    public ResponseDto<List<PortfolioResponseDto>> getMyPortfolios(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return portfolioInquiryService.getMyPortfolios(userDetails.getUser());
     }
 
     @PatchMapping("/{portfolio-id}")

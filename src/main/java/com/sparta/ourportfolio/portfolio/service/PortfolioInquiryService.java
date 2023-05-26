@@ -6,11 +6,15 @@ import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +52,17 @@ public class PortfolioInquiryService {
         return ResponseDto.setSuccess("검색 완료", searchResponseDtoSlice);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseDto<List<PortfolioResponseDto>> getMyPortfolios(User user) {
+        List<PortfolioResponseDto> myPortfolioList = portfolioRepository.findAllByUser_IdOrderByIdDesc(user.getId())
+                .stream().map(PortfolioResponseDto::new).toList();
+        return ResponseDto.set("MY PORTFOLIO 조회 완료", myPortfolioList);
+    }
     public Portfolio isExistPortfolio(Long id) {
         return portfolioRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("포트폴리오가 존재하지 않습니다.")
         );
     }
+
+
 }
