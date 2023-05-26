@@ -37,7 +37,7 @@ public class Project {
     private String description;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE ,fetch = FetchType.LAZY)
     private List<ProjectImage> projectImageList;
 
     @JsonIgnore

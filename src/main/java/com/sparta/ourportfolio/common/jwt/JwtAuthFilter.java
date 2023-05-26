@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.SecurityExceptionDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;

@@ -1,7 +1,7 @@
 package com.sparta.ourportfolio.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.ourportfolio.common.utils.Message;
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.service.KakaoService;
@@ -9,10 +9,12 @@ import com.sparta.ourportfolio.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "*", exposedHeaders = "Authorization")
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -21,17 +23,17 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public Message signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
+    public ResponseDto<HttpStatus> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 
     @PostMapping("/login")
-    public Message login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
+    public ResponseDto<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         return userService.login(loginRequestDto, response);
     }
 
-    @GetMapping("/kakao/callback")
-    public Message kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    @GetMapping("/kakao")
+    public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
     }
 }
