@@ -1,9 +1,9 @@
 package com.sparta.ourportfolio.project.controller;
 
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
-import com.sparta.ourportfolio.project.dto.ResponseDto;
 import com.sparta.ourportfolio.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-  
+
     // 프로젝트 작성 및 파일 업로드
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> creatProject(@RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,

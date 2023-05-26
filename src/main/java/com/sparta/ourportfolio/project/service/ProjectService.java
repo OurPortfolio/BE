@@ -1,11 +1,10 @@
 package com.sparta.ourportfolio.project.service;
 
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.utils.S3Service;
-import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
-import com.sparta.ourportfolio.project.dto.ResponseDto;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.repository.FileRepository;
 import com.sparta.ourportfolio.project.repository.ProjectRepository;
@@ -34,7 +33,7 @@ public class ProjectService {
 
     // 프로젝트 작성
     public ResponseDto<String> creatProject(ProjectRequestDto projectRequestDto,
-                                       List<MultipartFile> images, User user) throws IOException {
+                                            List<MultipartFile> images, User user) throws IOException {
 
 
         Project project = new Project(projectRequestDto, user);
@@ -60,8 +59,8 @@ public class ProjectService {
 
     // 프로젝트 수정
     public ResponseDto<String> updateProject(Long id,
-                                        ProjectRequestDto projectRequestDto,
-                                        List<MultipartFile> images, User user) throws IOException {
+                                             ProjectRequestDto projectRequestDto,
+                                             List<MultipartFile> images, User user) throws IOException {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
         );

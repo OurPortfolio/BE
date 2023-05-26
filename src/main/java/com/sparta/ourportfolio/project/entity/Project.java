@@ -9,9 +9,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,7 +37,7 @@ public class Project {
     private String description;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProjectImage> projectImageList;
 
     @JsonIgnore
@@ -70,7 +68,7 @@ public class Project {
         this.description = projectRequestDto.getDescription();
     }
 
-    public void setImageFile(List<ProjectImage> projectImageList){
+    public void setImageFile(List<ProjectImage> projectImageList) {
         this.projectImageList = projectImageList;
     }
 
