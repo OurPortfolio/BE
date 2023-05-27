@@ -6,7 +6,6 @@ import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
 import com.sparta.ourportfolio.user.dto.UserDto;
-import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.service.KakaoService;
 import com.sparta.ourportfolio.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,11 +43,6 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PatchMapping ("/{id}")
-    public ResponseDto<String> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto) {
-        return userService.updateUser(id, updateUserRequestDto);
-    }
-
 
     // 카카오 로그인
     @GetMapping("/kakao")

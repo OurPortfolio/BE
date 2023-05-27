@@ -82,7 +82,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
         UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(), user.getKakaoId());
-        return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!", userDto);
     }
 
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
