@@ -5,12 +5,17 @@ import com.sparta.ourportfolio.common.jwt.JwtTokenDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
+import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
+import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
+import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
+import com.sparta.ourportfolio.user.dto.UserDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,7 +77,13 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
     }
 
-
+    //회원 조회
+    public ResponseDto<UserDto> getUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(), user.getKakaoId());
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!");
+    }
 
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
