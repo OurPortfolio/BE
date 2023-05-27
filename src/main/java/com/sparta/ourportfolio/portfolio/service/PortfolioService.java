@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.ExceptionEnum;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
@@ -18,6 +20,8 @@ import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
 
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
+
 @Service
 @RequiredArgsConstructor
 public class PortfolioService {
@@ -31,7 +35,7 @@ public class PortfolioService {
                                                MultipartFile image,
                                                User user) throws IOException {
         User userNow = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new GlobalException(NOT_FOUND_USER)
         );
 
         String imageUrl = s3Service.uploadFile(image);
@@ -42,7 +46,7 @@ public class PortfolioService {
 
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = projectRepository.findById(projectId).orElseThrow(
-                    () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다.")
+                    () -> new GlobalException(NOT_FOUND_PROJECT)
             );
             portfolio.addProject(project);
             project.setPortfolio(portfolio);
@@ -60,15 +64,15 @@ public class PortfolioService {
         Portfolio portfolio = isExistPortfolio(id);
 
         User userNow = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new GlobalException(NOT_FOUND_USER)
         );
         if (!StringUtils.equals(portfolio.getUser().getId(), userNow.getId())) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
+            throw new GlobalException(UNAUTHORIZED);
         }
 
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = projectRepository.findById(projectId).orElseThrow(
-                    () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다.")
+                    () -> new GlobalException(NOT_FOUND_PROJECT)
             );
             if (!portfolio.getProjectList().contains(project)) {
                 portfolio.addProject(project);
@@ -88,10 +92,10 @@ public class PortfolioService {
         Portfolio portfolio = isExistPortfolio(id);
 
         User userNow = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new GlobalException(NOT_FOUND_USER)
         );
         if (!StringUtils.equals(portfolio.getUser().getId(), userNow.getId())) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
+            throw new GlobalException(UNAUTHORIZED);
         }
 
         portfolioRepository.delete(portfolio);
@@ -101,7 +105,7 @@ public class PortfolioService {
     //포트폴리오 존재 확인
     public Portfolio isExistPortfolio(Long id) {
         return portfolioRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("포트폴리오가 존재하지 않습니다.")
+                () -> new GlobalException(NOT_FOUND_PORTFOLIO)
         );
     }
 

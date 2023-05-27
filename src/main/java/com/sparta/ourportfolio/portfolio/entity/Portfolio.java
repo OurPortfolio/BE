@@ -20,8 +20,10 @@ public class Portfolio {
     @Column(name = "PORTFOLIO_ID")
     private Long id;
 
+    @Column(nullable = false)
     private String portfolioTitle;
 
+    @Column(nullable = false)
     private String techStack;
 
     private String residence;
