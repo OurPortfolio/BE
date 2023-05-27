@@ -3,7 +3,6 @@ package com.sparta.ourportfolio.portfolio.service;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
-import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.user.entity.User;
@@ -42,12 +41,12 @@ public class PortfolioInquiryService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Slice<SearchResponseDto>> searchPortfolios(String keyword,
-                                                                  Long id,
-                                                                  int size) {
+    public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(String keyword,
+                                                                     Long id,
+                                                                     int size) {
         PageRequest pageRequest = PageRequest.of(0, size);
 
-        Slice<SearchResponseDto> searchResponseDtoSlice =
+        Slice<PortfolioResponseDto> searchResponseDtoSlice =
                 portfolioRepository.searchPortfolios(id, pageRequest, keyword);
         return ResponseDto.setSuccess(HttpStatus.OK, "검색 완료", searchResponseDtoSlice);
     }
@@ -55,7 +54,9 @@ public class PortfolioInquiryService {
     @Transactional(readOnly = true)
     public ResponseDto<List<PortfolioResponseDto>> getMyPortfolios(User user) {
         List<PortfolioResponseDto> myPortfolioList = portfolioRepository.findAllByUser_IdOrderByIdDesc(user.getId())
-                .stream().map(PortfolioResponseDto::new).toList();
+                .stream()
+                .map(portfolio -> new PortfolioResponseDto(portfolio, user))
+                .toList();
         return ResponseDto.set(HttpStatus.OK, "MY PORTFOLIO 조회 완료", myPortfolioList);
     }
 
