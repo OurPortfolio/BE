@@ -11,6 +11,8 @@ public class PortfolioResponseDto {
     private String portfolioImage;
     private String userProfileImage;
     private String userName;
+    private String category;
+    private String filter;
 
     public PortfolioResponseDto(Portfolio portfolio, User user) {
         this.id = portfolio.getId();
@@ -18,5 +20,7 @@ public class PortfolioResponseDto {
         this.portfolioImage = portfolio.getPortfolioImage();
         this.userProfileImage = user.getProfileImage();
         this.userName = user.getNickname();
+        this.category = portfolio.getCategory();
+        this.filter = portfolio.getFilter();
     }
 }
