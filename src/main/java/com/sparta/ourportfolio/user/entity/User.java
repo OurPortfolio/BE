@@ -59,4 +59,13 @@ public class User extends TimeStamped {
     public void addPortfolio(Portfolio portfolio) {
         this.portfolioList.add(portfolio);
     }
+
+    public void setPassword(String encodedPassword) {
+    }
+
+    public void setNickname(String nickname) {
+    }
+
+    public void setProfileImage(String profileImage) {
+    }
 }
