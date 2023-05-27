@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,8 @@ public class PortfolioService {
     private final S3Service s3Service;
 
     @Transactional
-    public ResponseDto<String> createPortfolio(PortfolioRequestDto portfolioRequestDto, MultipartFile image,
+    public ResponseDto<String> createPortfolio(PortfolioRequestDto portfolioRequestDto,
+                                               MultipartFile image,
                                                User user) throws IOException {
         User userNow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
@@ -40,22 +40,23 @@ public class PortfolioService {
         portfolio.setUser(userNow);
         userNow.addPortfolio(portfolio);
 
-        if (!portfolioRequestDto.getProjectIdList().isEmpty()) {
-            for (Long projectId : portfolioRequestDto.getProjectIdList()) {
-                Project project = projectRepository.findById(projectId).orElseThrow(
-                        () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다.")
-                );
-                portfolio.addProject(project);
-                project.setPortfolio(portfolio);
-            }
+        for (Long projectId : portfolioRequestDto.getProjectIdList()) {
+            Project project = projectRepository.findById(projectId).orElseThrow(
+                    () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다.")
+            );
+            portfolio.addProject(project);
+            project.setPortfolio(portfolio);
         }
+
         portfolioRepository.saveAndFlush(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "포트폴리오 생성 완료");
     }
 
     @Transactional
-    public ResponseDto<String> updatePortfolio(Long id, PortfolioRequestDto portfolioRequestDto,
-                                               User user) {
+    public ResponseDto<String> updatePortfolio(Long id,
+                                               PortfolioRequestDto portfolioRequestDto,
+                                               MultipartFile image,
+                                               User user) throws IOException {
         Portfolio portfolio = isExistPortfolio(id);
 
         User userNow = userRepository.findById(user.getId()).orElseThrow(
@@ -65,7 +66,18 @@ public class PortfolioService {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
         }
 
-        portfolio.update(portfolioRequestDto);
+        for (Long projectId : portfolioRequestDto.getProjectIdList()) {
+            Project project = projectRepository.findById(projectId).orElseThrow(
+                    () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다.")
+            );
+            if (!portfolio.getProjectList().contains(project)) {
+                portfolio.addProject(project);
+                project.setPortfolio(portfolio);
+            }
+        }
+        String imageUrl = s3Service.uploadFile(image);
+
+        portfolio.update(portfolioRequestDto, imageUrl);
         portfolioRepository.save(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "수정 완료");
     }

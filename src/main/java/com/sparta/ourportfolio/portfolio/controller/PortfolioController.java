@@ -60,11 +60,14 @@ public class PortfolioController {
         return portfolioInquiryService.getMyPortfolios(userDetails.getUser());
     }
 
-    @PatchMapping("/{portfolio-id}")
+    @PatchMapping(value = "/{portfolio-id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
+                                                            MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> updatePortfolio(@PathVariable(name = "portfolio-id") Long id,
-                                               @RequestBody PortfolioRequestDto portfolioRequestDto,
-                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return portfolioService.updatePortfolio(id, portfolioRequestDto, userDetails.getUser());
+                                               @RequestPart(name = "portfolioRequestDto")
+                                               PortfolioRequestDto portfolioRequestDto,
+                                               @RequestPart(name = "portfolioImage") MultipartFile image,
+                                               @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return portfolioService.updatePortfolio(id, portfolioRequestDto, image, userDetails.getUser());
     }
 
     @DeleteMapping("/{portfolio-id}")

@@ -66,7 +66,7 @@ public class Portfolio {
         this.portfolioImage = imageUrl;
     }
 
-    public void update(PortfolioRequestDto portfolioRequestDto) {
+    public void update(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
@@ -77,6 +77,7 @@ public class Portfolio {
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
+        this.portfolioImage = imageUrl;
     }
 
     public void addProject(Project project) {
