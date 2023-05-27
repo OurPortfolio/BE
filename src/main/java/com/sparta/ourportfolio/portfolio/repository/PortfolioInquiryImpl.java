@@ -5,7 +5,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
-import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
 import jakarta.annotation.Nullable;
@@ -55,7 +54,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .fetch();
 
         List<PortfolioResponseDto> content = resultSlice.stream()
-                .map(PortfolioResponseDto::new)
+                .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
         boolean hasNext = false;
@@ -75,9 +74,9 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     }
 
     @Override
-    public Slice<SearchResponseDto> searchPortfolios(Long lastPortfolioId,
-                                                     PageRequest pageRequest,
-                                                     String keyword) {
+    public Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId,
+                                                        PageRequest pageRequest,
+                                                        String keyword) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -96,8 +95,8 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .limit(pageRequest.getPageSize() + 1)
                 .fetch();
 
-        List<SearchResponseDto> content = resultSlice.stream()
-                .map(SearchResponseDto::new)
+        List<PortfolioResponseDto> content = resultSlice.stream()
+                .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
         boolean hasNext = false;

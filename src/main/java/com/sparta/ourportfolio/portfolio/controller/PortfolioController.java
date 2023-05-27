@@ -1,13 +1,12 @@
 package com.sparta.ourportfolio.portfolio.controller;
 
+import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
-import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
+import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
-import com.sparta.ourportfolio.portfolio.dto.SearchResponseDto;
 import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
 import com.sparta.ourportfolio.portfolio.service.PortfolioService;
-import com.sparta.ourportfolio.common.dto.ResponseDto;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -29,7 +28,7 @@ public class PortfolioController {
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> createPortfolio(@RequestPart(name = "portfolioRequestDto")
-                                                  PortfolioRequestDto portfolioRequestDto,
+                                               PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
@@ -49,9 +48,9 @@ public class PortfolioController {
     }
 
     @GetMapping("/search")
-    public ResponseDto<Slice<SearchResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
-                                                                  @RequestParam(name = "last-portfolio-id") Long id,
-                                                                  @RequestParam(name = "size") int size) {
+    public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
+                                                                     @RequestParam(name = "last-portfolio-id") Long id,
+                                                                     @RequestParam(name = "size") int size) {
         return portfolioInquiryService.searchPortfolios(keyword, id, size);
     }
 
@@ -61,7 +60,7 @@ public class PortfolioController {
     }
 
     @PatchMapping(value = "/{portfolio-id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
-                                                            MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+            MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> updatePortfolio(@PathVariable(name = "portfolio-id") Long id,
                                                @RequestPart(name = "portfolioRequestDto")
                                                PortfolioRequestDto portfolioRequestDto,
