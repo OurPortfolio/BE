@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_PORTFOLIO;
+
 @Service
 @RequiredArgsConstructor
 public class PortfolioInquiryService {
@@ -22,8 +25,9 @@ public class PortfolioInquiryService {
 
     @Transactional(readOnly = true)
     public ResponseDto<PortfolioDetailResponseDto> getPortfolio(Long id) {
-        Portfolio portfolio = isExistPortfolio(id);
-
+        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(
+                () -> new GlobalException(NOT_FOUND_PORTFOLIO)
+        );
         PortfolioDetailResponseDto portfolioDetailResponseDto = new PortfolioDetailResponseDto(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "조회 완료", portfolioDetailResponseDto);
     }
@@ -58,12 +62,6 @@ public class PortfolioInquiryService {
                 .map(portfolio -> new PortfolioResponseDto(portfolio, user))
                 .toList();
         return ResponseDto.set(HttpStatus.OK, "MY PORTFOLIO 조회 완료", myPortfolioList);
-    }
-
-    public Portfolio isExistPortfolio(Long id) {
-        return portfolioRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("포트폴리오가 존재하지 않습니다.")
-        );
     }
 
 }
