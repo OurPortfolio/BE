@@ -18,7 +18,6 @@ import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,12 +39,6 @@ public class ProjectService {
         project = projectRepository.save(project);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", null);
-    }
-
-    // 프로젝트 전체조회
-    public ResponseDto<List<ProjectResponseDto>> getProjects() {
-        List<ProjectResponseDto> projectList = projectRepository.findAll().stream().map(ProjectResponseDto::new).collect(Collectors.toList());
-        return ResponseDto.setSuccess(HttpStatus.OK, "전체 조회 성공", projectList);
     }
 
     // 프로젝트 상세조회
