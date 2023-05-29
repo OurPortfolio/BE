@@ -108,7 +108,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     }
 
     private BooleanExpression ltPortfolioId(Long id) {
-        return id == null ? null : portfolio.id.lt(id);
+        return id == null ? null : portfolio.id.between(id - 10, id);
     }
 
     public Long getLastPortfolioIdByCategoryAndFilter(String category, String filter) {
