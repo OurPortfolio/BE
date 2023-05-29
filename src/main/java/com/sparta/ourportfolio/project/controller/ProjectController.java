@@ -30,12 +30,6 @@ public class ProjectController {
         return projectService.creatProject(projectRequestDto, images, userDetails.getUser());
     }
 
-    // 프로젝트 전체 조회
-    @GetMapping
-    public ResponseDto<List<ProjectResponseDto>> getProjects() {
-        return projectService.getProjects();
-    }
-
     // 프로젝트 상세 조회
     @GetMapping("/{project-id}")
     public ResponseDto<ProjectResponseDto> getProject(@PathVariable(name = "project-id") Long id) {
@@ -45,9 +39,9 @@ public class ProjectController {
     // 프로젝트 수정
     @PatchMapping("/{project-id}")
     public ResponseDto<String> updateProject(@PathVariable(name = "project-id") Long id,
-                                     @RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
-                                     @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                             @RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
+                                             @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return projectService.updateProject(id, projectRequestDto, images, userDetails.getUser());
     }
 
