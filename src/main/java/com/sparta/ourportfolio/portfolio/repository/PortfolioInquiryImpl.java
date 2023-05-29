@@ -110,6 +110,25 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     private BooleanExpression ltPortfolioId(Long id) {
         return id == null ? null : portfolio.id.lt(id);
     }
+
+    public Long getLastPortfolioIdByCategoryAndFilter(String category, String filter) {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        if (category != null && !category.isEmpty()) {
+            whereBuilder.and(findByCategory(category));
+        }
+        if (filter != null && !filter.isEmpty()) {
+            whereBuilder.and(findByFilter(filter));
+        }
+
+        return queryFactory.select(portfolio.id)
+                .from(portfolio)
+                .where(whereBuilder)
+                .orderBy(portfolio.id.desc())
+                .fetchFirst();
+    }
 }
 
 
