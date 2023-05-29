@@ -2,6 +2,7 @@ package com.sparta.ourportfolio.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -43,6 +45,12 @@ public class UserController {
     }
 
     // 회원 정보 수정
+    @PatchMapping ("/{id}")
+    public ResponseDto<String> updateUser(@PathVariable Long id,
+                                          @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.updateUser(id, updateUserRequestDto, userDetails.getUser());
+    }
 
     // 카카오 로그인
     @GetMapping("/kakao")
