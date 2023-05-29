@@ -60,12 +60,11 @@ public class User extends TimeStamped {
         this.portfolioList.add(portfolio);
     }
 
-    public void setPassword(String encodedPassword) {
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
     }
 
-    public void setNickname(String nickname) {
-    }
-
-    public void setProfileImage(String profileImage) {
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }
