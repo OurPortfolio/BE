@@ -47,6 +47,11 @@ public class PortfolioController {
         return portfolioInquiryService.getAllPortfolios(id, size, category, filter);
     }
 
+    @GetMapping("/id")
+    public ResponseDto<Long> getLastPortfolioId(@Nullable @RequestParam(name = "category") String category,
+                                                @Nullable @RequestParam(name = "filter") String filter) {
+        return portfolioInquiryService.getLastPortfolioId(category, filter);
+    }
     @GetMapping("/search")
     public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
                                                                      @RequestParam(name = "last-portfolio-id") Long id,

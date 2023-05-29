@@ -9,4 +9,6 @@ public interface PortfolioInquiry {
                                               String filter);
 
     Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId, PageRequest pageRequest, String keyword);
+
+    Long getLastPortfolioIdByCategoryAndFilter(String category, String filter);
 }
