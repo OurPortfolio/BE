@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,12 +45,19 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    // 회원 정보 수정
-    @PatchMapping ("/{id}")
-    public ResponseDto<String> updateUser(@PathVariable Long id,
-                                          @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updateUser(id, updateUserRequestDto, userDetails.getUser());
+//    // 회원 정보 수정
+//    @PatchMapping ("/{id}")
+//    public ResponseDto<String> updateUser(@PathVariable Long id,
+//                                          @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
+//                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return userService.updateUser(id, updateUserRequestDto, userDetails.getUser());
+//    }
+
+    // 회원 탈퇴(soft)
+    @DeleteMapping("/{id}")
+    public ResponseDto<HttpStatus> deleteUser(@PathVariable Long id,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.deleteUser(id, userDetails.getUser());
     }
 
     // 카카오 로그인

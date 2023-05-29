@@ -30,6 +30,10 @@ public class User extends TimeStamped {
     @Column(nullable = true)
     private String profileImage;
 
+    // soft delete
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     private Long kakaoId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -66,5 +70,9 @@ public class User extends TimeStamped {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void deleteUser() {
+        this.isDeleted = true;
     }
 }
