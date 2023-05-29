@@ -5,8 +5,6 @@ import com.sparta.ourportfolio.common.jwt.JwtTokenDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
-import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
-import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
@@ -19,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +60,7 @@ public class UserService {
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 틀립니다.");
         }
 
@@ -94,7 +89,7 @@ public class UserService {
         // 유저 엔티티 가져오기
         Optional<User> getUser = userRepository.findById(id);
         // 유저 엔티티가 없으면 에러
-        if(getUser.isEmpty()){
+        if (getUser.isEmpty()) {
             throw new IllegalArgumentException("유저가 존재하지 않습니다.");
         }
 
@@ -110,19 +105,20 @@ public class UserService {
         String newNickname = updateUserRequestDto.getNickname();
         if (newNickname != null && !newNickname.isEmpty()) {
             // 닉네임이 현재와 같은지 체크
-            if(newNickname.equals((userUpdate.getNickname()))){
+            if (newNickname.equals((userUpdate.getNickname()))) {
                 throw new IllegalArgumentException("닉네임이 동일합니다.");
             }
             // 중복된 닉네임이 있는지 체크
-            if(userRepository.existsByNickname(newNickname)) {
+            if (userRepository.existsByNickname(newNickname)) {
                 throw new IllegalArgumentException("해당 닉네임이 존재합니다.");
             }
             // 닉네임 형식이 일치하는지 체크
             Pattern passPattern1 = Pattern.compile("^[a-zA-Z가-힣0-9]{1,10}$");
             Matcher matcher1 = passPattern1.matcher(newNickname);
-            if(!matcher1.find()) {
+            if (!matcher1.find()) {
                 throw new IllegalArgumentException("닉네임을 형식에 맞춰 올바르게 입력바랍니다.");
-            };
+            }
+            ;
             nicknameUpdated = true;
         }
 
@@ -130,7 +126,7 @@ public class UserService {
         if (newPassword != null && !newPassword.isEmpty()) {
             // 패스워드가 현재와 같은지 체크
             String encodePassword = userUpdate.getPassword();
-            if(passwordEncoder.matches(newPassword, encodePassword)) {
+            if (passwordEncoder.matches(newPassword, encodePassword)) {
                 throw new IllegalArgumentException("패스워드가 동일합니다.");
             }
             // 비밀번호 형식이 일치하는지 체크
@@ -138,7 +134,8 @@ public class UserService {
             Matcher matcher2 = passPattern2.matcher(newPassword);
             if (!matcher2.find()) {
                 throw new IllegalArgumentException("패스워드를 형식에 맞춰 올바르게 입력바랍니다.");
-            };
+            }
+            ;
             newPassword = passwordEncoder.encode(newPassword); // 패스워드 암호화
             passwordUpdated = true;
         }
