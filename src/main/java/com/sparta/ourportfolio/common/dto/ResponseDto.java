@@ -20,4 +20,8 @@ public class ResponseDto<T> {
     public static <T> ResponseDto<T> setSuccess(HttpStatus statusCode, String message) {
         return ResponseDto.set(statusCode, message, null);
     }
+
+    public static <T> ResponseDto<T> setFailure(HttpStatus statusCode, String message) {
+        return ResponseDto.set(statusCode, message, null);
+    }
 }
