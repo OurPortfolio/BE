@@ -10,8 +10,6 @@ env:
   S3_BUCKET_NAME: firstcicd
   CODE_DEPLOY_APPLICATION_NAME: firstcicd
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: firstcicd
-  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
-  MYSQL_PASSWORD: ${{secrets.MYSQL_PW}}
 
 permissions:
   contents: read
@@ -33,10 +31,17 @@ jobs:
       with:
         distribution: 'corretto'
         java-version: '17'
-
-    # (3) Gradle build (Test 제외)
+        
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
+      
+    - name: Set YML
+      run: |
+        echo "${{secrets.APPLICATION_SECRET_KEY}}" | base64 --decode > src/main/resources/application-aws.yml
+        find src
+
+    # (3) Gradle build (Test 제외)
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
