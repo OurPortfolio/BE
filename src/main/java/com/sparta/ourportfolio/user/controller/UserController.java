@@ -47,6 +47,16 @@ public class UserController {
         return userService.getUser(id);
     }
 
+    // 회원 정보 수정
+    @PatchMapping (value = "/{id}",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public ResponseDto<String> updateUser(@PathVariable Long id,
+                                          @RequestPart(name = "nickname", required = false) UpdateUserRequestDto updateUserRequestDto,
+                                          @RequestPart(name = "profileImage", required = false) Optional<MultipartFile> image,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return userService.updateUser(id, updateUserRequestDto, image, userDetails.getUser());
+    }
+
     // 비밀번호 변경
     @PutMapping("/{id}/password")
     public ResponseDto<String> updatePassword(@PathVariable Long id,
