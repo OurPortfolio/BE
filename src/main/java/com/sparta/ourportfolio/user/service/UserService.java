@@ -87,6 +87,54 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!", userDto);
     }
 
+    // 회원 정보 수정
+    public ResponseDto<String> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
+                                          Optional<MultipartFile> image, User user) throws IOException {
+        User userinfo = userRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 사용자가 없습니다."));
+
+        if (!StringUtils.equals(user.getId(), userinfo.getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        boolean isUpdated = false;
+
+        // 닉네임 수정
+        if (updateUserRequestDto != null && updateUserRequestDto.getNickname() != null && !updateUserRequestDto.getNickname().isEmpty()) {
+            String newNickname = updateUserRequestDto.getNickname().orElse("");
+            // 닉네임이 현재와 같은지 체크
+            if(newNickname.equals((userinfo.getNickname()))){
+                throw new IllegalArgumentException("닉네임이 동일합니다.");
+            }
+            // 중복된 닉네임이 있는지 체크
+            if(userRepository.existsByNickname(newNickname)) {
+                throw new IllegalArgumentException("해당 닉네임이 존재합니다.");
+            }
+            // 닉네임 형식이 일치하는지 체크
+            Pattern passPattern1 = Pattern.compile("^[a-zA-Z가-힣0-9]{1,10}$");
+            Matcher matcher1 = passPattern1.matcher(newNickname);
+            if(!matcher1.find()) {
+                throw new IllegalArgumentException("닉네임을 형식에 맞춰 올바르게 입력바랍니다.");
+            };
+            userinfo.updateNickname(newNickname);
+            isUpdated = true;
+        }
+
+        // 클라이언트가 제공한 이미지로 업데이트
+        if (image.isPresent() && !image.get().isEmpty()) {
+            String imageUrl = s3Service.uploadFile(image.get());
+            userinfo.updateProfileImage(imageUrl);
+            isUpdated = true;
+        }
+
+        if (!isUpdated) {
+            return ResponseDto.setFailure(HttpStatus.BAD_REQUEST, "변경할 회원 정보가 제공되지 않았습니다.");
+        }
+
+        userRepository.save(userinfo);
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원 정보 수정 성공!");
+    }
+
     // 비밀번호 변경
     public ResponseDto<String> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
         userRepository.findById(id).orElseThrow(
