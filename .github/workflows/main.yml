@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [ main ]
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
@@ -25,7 +27,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # (2) JDK 11 세팅
+    # (2) JDK 17 세팅
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
