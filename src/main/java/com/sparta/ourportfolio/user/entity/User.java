@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.user.entity;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
+import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class User extends TimeStamped {
     private String nickname;
 
     @Column(nullable = true)
+    @Lob
     private String profileImage;
 
     // soft delete
@@ -62,6 +64,10 @@ public class User extends TimeStamped {
 
     public void addPortfolio(Portfolio portfolio) {
         this.portfolioList.add(portfolio);
+    }
+
+    public void updateProfileImage(String imageUrl) {
+        this.profileImage = imageUrl;
     }
 
     public void updateNickname(String newNickname) {
