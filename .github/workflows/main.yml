@@ -10,8 +10,8 @@ env:
   S3_BUCKET_NAME: firstcicd
   CODE_DEPLOY_APPLICATION_NAME: firstcicd
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: firstcicd
-  MYSQL_USERNAME: username
-  MYSQL_PASSWORD: password
+  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
+  MYSQL_PASSWORD: ${{secrets.MYSQL_PW}}
 
 permissions:
   contents: read
