@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ProjectResponseDto {
+    private Long id;
     private String title;
     private String term;
     private String people;
@@ -18,6 +19,7 @@ public class ProjectResponseDto {
     private List<ProjectImage> projectImageList;
 
     public ProjectResponseDto(Project project) {
+        this.id = project.getId();
         this.title = project.getTitle();
         this.term = project.getTerm();
         this.people = project.getPeople();
