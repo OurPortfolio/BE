@@ -52,6 +52,10 @@ dependencies {
     //Elastic Search
     implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'
 }
+//-plain.jar 가 만들어 지지 않도록 하는 설정 (ci/cd)
+jar {
+    enabled = false
+}
 
 tasks.named('test') {
     useJUnitPlatform()
