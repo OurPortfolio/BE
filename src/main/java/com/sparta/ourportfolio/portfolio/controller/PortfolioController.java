@@ -11,11 +11,14 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -31,6 +34,9 @@ public class PortfolioController {
                                                PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        String techStackData = portfolioRequestDto.getTechStack();
+        List<String> techStackList = Arrays.asList(techStackData.split(",\\s*"));
+        portfolioService.addAutocompleteKeyword(techStackList);
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
 
@@ -78,5 +84,10 @@ public class PortfolioController {
     public ResponseDto<String> deletePortfolio(@PathVariable(name = "portfolio-id") Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return portfolioService.deletePortfolio(id, userDetails.getUser());
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseDto<List<String>> autocomplete(@RequestParam String keyword) {
+        return portfolioService.autoComplete(keyword);
     }
 }
