@@ -48,8 +48,8 @@ public class PortfolioController {
     }
 
     @GetMapping("/id")
-    public ResponseDto<Long> getLastPortfolioId(@Nullable @RequestParam(name = "category") String category,
-                                                @Nullable @RequestParam(name = "filter") String filter) {
+    public ResponseDto<Long> getLastPortfolioId(@RequestParam(name = "category") String category,
+                                                @RequestParam(name = "filter") String filter) {
         return portfolioInquiryService.getLastPortfolioId(category, filter);
     }
     @GetMapping("/search")

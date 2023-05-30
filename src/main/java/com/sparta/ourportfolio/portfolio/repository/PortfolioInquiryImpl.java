@@ -123,11 +123,12 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
             whereBuilder.and(findByFilter(filter));
         }
 
-        return queryFactory.select(portfolio.id)
+        Long lastPortfolioId = queryFactory.select(portfolio.id)
                 .from(portfolio)
                 .where(whereBuilder)
                 .orderBy(portfolio.id.desc())
                 .fetchFirst();
+        return lastPortfolioId != null ? lastPortfolioId : -1L;
     }
 }
 

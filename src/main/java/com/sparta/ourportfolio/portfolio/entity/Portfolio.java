@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.user.entity.User;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,7 +55,7 @@ public class Portfolio {
     @ManyToOne
     private User user;
 
-    public Portfolio(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
+    public Portfolio(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();

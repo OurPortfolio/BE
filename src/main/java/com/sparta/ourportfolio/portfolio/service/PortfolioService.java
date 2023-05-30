@@ -1,7 +1,6 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
-import com.sparta.ourportfolio.common.exception.ExceptionEnum;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
@@ -38,7 +37,10 @@ public class PortfolioService {
                 () -> new GlobalException(NOT_FOUND_USER)
         );
 
-        String imageUrl = s3Service.uploadFile(image);
+        String imageUrl = null;
+        if (!image.isEmpty()) {
+            imageUrl = s3Service.uploadFile(image);
+        }
         Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
 
         portfolio.setUser(userNow);
@@ -79,7 +81,10 @@ public class PortfolioService {
                 project.setPortfolio(portfolio);
             }
         }
-        String imageUrl = s3Service.uploadFile(image);
+        String imageUrl = null;
+        if (!image.isEmpty()) {
+            imageUrl = s3Service.uploadFile(image);
+        }
 
         portfolio.update(portfolioRequestDto, imageUrl);
         portfolioRepository.save(portfolio);
