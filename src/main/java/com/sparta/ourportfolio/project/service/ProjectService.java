@@ -30,7 +30,7 @@ public class ProjectService {
     private final S3Service s3Service;
 
     // 프로젝트 작성
-    public ResponseDto<String> creatProject(ProjectRequestDto projectRequestDto,
+    public ResponseDto<ProjectResponseDto> creatProject(ProjectRequestDto projectRequestDto,
                                             List<MultipartFile> images, User user) throws IOException {
 
 
@@ -38,7 +38,7 @@ public class ProjectService {
         project.setImageFile(s3Service.fileFactory(images, project));
         project = projectRepository.save(project);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", null);
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(project));
     }
 
     // 프로젝트 상세조회
