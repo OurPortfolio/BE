@@ -11,6 +11,7 @@ import com.sparta.ourportfolio.project.repository.ProjectRepository;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Trie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
@@ -28,6 +32,27 @@ public class PortfolioService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final S3Service s3Service;
+    private final Trie trie;
+
+    @Transactional(readOnly = true)
+    public ResponseDto<List<String>> autoComplete(String keyword) {
+        List<String> result = (List<String>) this.trie.prefixMap(keyword).keySet()
+                .stream()
+                .collect(Collectors.toList());
+        return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
+    }
+
+    public void addAutocompleteKeyword(List<String> techStackList) {
+        for (String techStack : techStackList){
+            this.trie.put(techStack, null);
+        }
+    }
+
+    public void deleteAutocompleteKeyword(List<String> techStackList) {
+        for (String techStack : techStackList) {
+            this.trie.remove(techStack);
+        }
+    }
 
     @Transactional
     public ResponseDto<String> createPortfolio(PortfolioRequestDto portfolioRequestDto,
@@ -103,6 +128,10 @@ public class PortfolioService {
             throw new GlobalException(UNAUTHORIZED);
         }
 
+        String techStackData = portfolio.getTechStack();
+        List<String> techStackList = Arrays.asList(techStackData.split(",\\s*"));
+        deleteAutocompleteKeyword(techStackList);
+
         portfolioRepository.delete(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "삭제 완료");
     }
@@ -113,5 +142,6 @@ public class PortfolioService {
                 () -> new GlobalException(NOT_FOUND_PORTFOLIO)
         );
     }
+
 
 }
