@@ -63,9 +63,9 @@ public class PortfolioController {
 
     @GetMapping("/search")
     public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
-                                                                    @PageableDefault(size = 12, sort = "portfolio_id",
-                                                                            direction = Sort.Direction.DESC) Pageable pageable) {
-        return portfolioInquiryService.searchPortfolios(keyword, pageable);
+                                                                    @RequestParam(name = "page") int page,
+                                                                    @RequestParam(name = "size") int size) {
+        return portfolioInquiryService.searchPortfolios(keyword, page - 1, size);
     }
 
     @GetMapping("/myportfolios")
