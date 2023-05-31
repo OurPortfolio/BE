@@ -164,7 +164,7 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK, "비밀번호 변경 성공!");
     }
 
-    // 회원 탈퇴
+    // 회원 탈퇴(soft, default)
     public ResponseDto<HttpStatus> deleteUser(Long id, User user) {
         userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
@@ -173,6 +173,12 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 탈퇴 성공!");
+    }
+
+    // 회원 탈퇴(hard delete)
+    public ResponseDto<HttpStatus> deleteUserHard(Long id) {
+        userRepository.deleteById(id);
+        return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제");
     }
 
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
