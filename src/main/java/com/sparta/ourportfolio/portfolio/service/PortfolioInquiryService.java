@@ -9,10 +9,7 @@ import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +47,10 @@ public class PortfolioInquiryService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(String keyword, Pageable pageable) {
+    public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(String keyword, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "portfolio_id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<PortfolioResponseDto> searchResponseDtoPage =
                 portfolioRepository.searchPortfolios(pageable, keyword);
         return ResponseDto.setSuccess(HttpStatus.OK, "검색 완료", searchResponseDtoPage);

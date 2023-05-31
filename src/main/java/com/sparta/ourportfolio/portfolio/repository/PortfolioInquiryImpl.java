@@ -101,12 +101,6 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
         long totalElements = queryFactory
                 .selectFrom(portfolio)
                 .where(whereBuilder)
