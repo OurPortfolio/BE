@@ -2,7 +2,6 @@ package com.sparta.ourportfolio.portfolio.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;

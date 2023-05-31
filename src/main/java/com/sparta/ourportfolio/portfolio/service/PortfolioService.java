@@ -43,7 +43,7 @@ public class PortfolioService {
     }
 
     public void addAutocompleteKeyword(List<String> techStackList) {
-        for (String techStack : techStackList){
+        for (String techStack : techStackList) {
             this.trie.put(techStack, null);
         }
     }
@@ -71,15 +71,23 @@ public class PortfolioService {
         portfolio.setUser(userNow);
         userNow.addPortfolio(portfolio);
 
+        if (portfolioRequestDto.getProjectIdList() == null) {
+            throw new GlobalException(PORTFOLIO_ID_LIST_IS_NULL);
+        }
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = projectRepository.findById(projectId).orElseThrow(
                     () -> new GlobalException(NOT_FOUND_PROJECT)
             );
-            portfolio.addProject(project);
-            project.setPortfolio(portfolio);
+            if (StringUtils.equals(project.getUser().getId(), userNow.getId())) {
+                portfolio.addProject(project);
+                project.setPortfolio(portfolio);
+            } else {
+                throw new GlobalException(PROJECT_FORBIDDEN);
+            }
         }
 
         portfolioRepository.saveAndFlush(portfolio);
+
         return ResponseDto.setSuccess(HttpStatus.OK, "포트폴리오 생성 완료");
     }
 
@@ -97,15 +105,22 @@ public class PortfolioService {
             throw new GlobalException(UNAUTHORIZED);
         }
 
+        if (portfolioRequestDto.getProjectIdList() == null) {
+            throw new GlobalException(PORTFOLIO_ID_LIST_IS_NULL);
+        }
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = projectRepository.findById(projectId).orElseThrow(
                     () -> new GlobalException(NOT_FOUND_PROJECT)
             );
-            if (!portfolio.getProjectList().contains(project)) {
+            if (!portfolio.getProjectList().contains(project) &&
+                    StringUtils.equals(project.getUser().getId(), userNow.getId())) {
                 portfolio.addProject(project);
                 project.setPortfolio(portfolio);
+            } else {
+                throw new GlobalException(PROJECT_FORBIDDEN);
             }
         }
+
         String imageUrl = null;
         if (!image.isEmpty()) {
             imageUrl = s3Service.uploadFile(image);
@@ -129,7 +144,7 @@ public class PortfolioService {
         }
 
         String techStackData = portfolio.getTechStack();
-        List<String> techStackList = Arrays.asList(techStackData.split(",\\s*"));
+        List<String> techStackList = Arrays.asList(techStackData.split(","));
         deleteAutocompleteKeyword(techStackList);
 
         portfolioRepository.delete(portfolio);
