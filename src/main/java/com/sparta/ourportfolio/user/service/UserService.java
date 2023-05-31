@@ -1,7 +1,6 @@
 package com.sparta.ourportfolio.user.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
-import com.sparta.ourportfolio.common.exception.ExceptionEnum;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.JwtTokenDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
@@ -62,9 +61,12 @@ public class UserService {
     public ResponseDto<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
-
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
+
+        if (user.isDeleted()) {
+            throw new GlobalException(USER_IS_DELETED);
+        }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new GlobalException(BAD_REQUEST);
         }
