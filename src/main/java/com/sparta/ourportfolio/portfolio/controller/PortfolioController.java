@@ -10,10 +10,7 @@ import com.sparta.ourportfolio.portfolio.service.PortfolioService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +36,7 @@ public class PortfolioController {
         String techStackData = portfolioRequestDto.getTechStack();
         List<String> techStackList = Arrays.asList(techStackData.split(","));
         portfolioService.addAutocompleteKeyword(techStackList);
+
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
 

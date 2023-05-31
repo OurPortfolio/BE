@@ -17,5 +17,6 @@ public class PortfolioRequestDto {
     private String blogUrl;
     private String category;
     private String filter;
+    private String youtubeUrl;
     private List<Long> projectIdList;
 }
