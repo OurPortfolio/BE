@@ -25,7 +25,8 @@ public enum ExceptionEnum {
     // 409 Conflict
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "409", "중복된 아이디가 이미 존재합니다."),
     DUPLICATED_NICK_NAME(HttpStatus.CONFLICT, "409", "중복된 닉네임이 이미 존재합니다."),
-    EXISTED_NICK_NAME(HttpStatus.CONFLICT, "409", "기존 닉네임과 동일합니다.");
+    EXISTED_NICK_NAME(HttpStatus.CONFLICT, "409", "기존 닉네임과 동일합니다."),
+    USER_IS_DELETED(HttpStatus.CONFLICT, "409", "회원 탈퇴가 된 상태입니다.");
 
     private final HttpStatus status;
     private final String code;
