@@ -10,9 +10,7 @@ import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
@@ -73,42 +71,50 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return filter == null || filter.isEmpty() ? null : portfolio.filter.eq(filter);
     }
 
+    private BooleanExpression ltPortfolioId(Long id) {
+        return id == null ? null : portfolio.id.between(id - 9, id);
+    }
+
     @Override
-    public Slice<PortfolioResponseDto> searchPortfolios(Long lastPortfolioId,
-                                                        PageRequest pageRequest,
-                                                        String keyword) {
+    public Page<PortfolioResponseDto> searchPortfolios(Pageable pageable,
+                                                       String keyword) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        JPQLQuery<Portfolio> query = from(portfolio);
-        if (keyword != null) {
-            BooleanBuilder booleanBuilder = new BooleanBuilder();
-            booleanBuilder.or(portfolio.techStack.contains(keyword));
-            booleanBuilder.or(portfolio.portfolioTitle.contains(keyword));
-            query.where(booleanBuilder, ltPortfolioId(lastPortfolioId));
-        } else {
-            query.where(ltPortfolioId(lastPortfolioId));
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            whereBuilder.or(findByKeywordInTechStack(keyword));
+            whereBuilder.or(findByKeywordInPortfolioTitle(keyword));
         }
 
-        List<Portfolio> resultSlice = query
+        List<Portfolio> result = queryFactory
+                .select(portfolio)
+                .from(portfolio)
+                .where(whereBuilder)
                 .orderBy(portfolio.id.desc())
-                .limit(pageRequest.getPageSize() + 1)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<PortfolioResponseDto> content = resultSlice.stream()
+        List<PortfolioResponseDto> content = result.stream()
                 .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
         boolean hasNext = false;
-        if (content.size() > pageRequest.getPageSize()) {
-            resultSlice.remove(pageRequest.getPageSize());
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
             hasNext = true;
         }
-        return new SliceImpl<>(content, pageRequest, hasNext);
+        return new PageImpl<>(content, pageable, hasNext ? pageable.getOffset() + content.size() : pageable.getOffset());
     }
 
-    private BooleanExpression ltPortfolioId(Long id) {
-        return id == null ? null : portfolio.id.between(id - 9, id);
+    private BooleanExpression findByKeywordInTechStack(String keyword) {
+        return keyword == null || keyword.isEmpty() ? null : portfolio.techStack.contains(keyword);
+    }
+
+    private BooleanExpression findByKeywordInPortfolioTitle(String keyword) {
+        return keyword == null || keyword.isEmpty() ? null : portfolio.portfolioTitle.contains(keyword);
     }
 
     public Long getLastPortfolioIdByCategoryAndFilter(String category, String filter) {
