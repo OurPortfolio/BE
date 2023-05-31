@@ -72,6 +72,12 @@ public class UserController {
         return userService.deleteUser(id, userDetails.getUser());
     }
 
+    // 회원 탈퇴(hard)
+    @DeleteMapping("/hard/{id}")
+    public ResponseDto<HttpStatus> deleteUserHard(@PathVariable Long id) {
+        return userService.deleteUserHard(id);
+    }
+
     // 카카오 로그인
     @GetMapping("/kakao")
     public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
