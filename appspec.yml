@@ -2,13 +2,13 @@ version: 0.0
 os: linux
 files:
 
-- source: /
-  destination: /home/ubuntu/firstcicd
+  - source: /
+    destination: /home/ubuntu/firstcicd
 permissions:
 
-- object: /home/ubuntu/firstcicd/
-  owner: ubuntu
-  group: ubuntu
+  - object: /home/ubuntu/firstcicd/
+    owner: ubuntu
+    group: ubuntu
 hooks:
   AfterInstall:
-  - location: scripts/deploy.sh
+    - location: scripts/deploy.sh
