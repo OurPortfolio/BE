@@ -9,13 +9,18 @@ import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
 import com.sparta.ourportfolio.portfolio.service.PortfolioService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -31,6 +36,9 @@ public class PortfolioController {
                                                PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        String techStackData = portfolioRequestDto.getTechStack();
+        List<String> techStackList = Arrays.asList(techStackData.split(","));
+        portfolioService.addAutocompleteKeyword(techStackList);
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
 
@@ -52,11 +60,12 @@ public class PortfolioController {
                                                 @RequestParam(name = "filter") String filter) {
         return portfolioInquiryService.getLastPortfolioId(category, filter);
     }
+
     @GetMapping("/search")
-    public ResponseDto<Slice<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
-                                                                     @RequestParam(name = "last-portfolio-id") Long id,
-                                                                     @RequestParam(name = "size") int size) {
-        return portfolioInquiryService.searchPortfolios(keyword, id, size);
+    public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
+                                                                    @RequestParam(name = "page") int page,
+                                                                    @RequestParam(name = "size") int size) {
+        return portfolioInquiryService.searchPortfolios(keyword, page - 1, size);
     }
 
     @GetMapping("/myportfolios")
@@ -78,5 +87,10 @@ public class PortfolioController {
     public ResponseDto<String> deletePortfolio(@PathVariable(name = "portfolio-id") Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return portfolioService.deletePortfolio(id, userDetails.getUser());
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseDto<List<String>> autocomplete(@RequestParam String keyword) {
+        return portfolioService.autoComplete(keyword);
     }
 }

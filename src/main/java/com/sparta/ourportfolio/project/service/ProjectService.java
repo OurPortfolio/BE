@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.project.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
@@ -19,6 +20,8 @@ import org.thymeleaf.util.StringUtils;
 import java.io.IOException;
 import java.util.List;
 
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +33,7 @@ public class ProjectService {
     private final S3Service s3Service;
 
     // 프로젝트 작성
-    public ResponseDto<String> creatProject(ProjectRequestDto projectRequestDto,
+    public ResponseDto<ProjectResponseDto> creatProject(ProjectRequestDto projectRequestDto,
                                             List<MultipartFile> images, User user) throws IOException {
 
 
@@ -38,13 +41,13 @@ public class ProjectService {
         project.setImageFile(s3Service.fileFactory(images, project));
         project = projectRepository.save(project);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", null);
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(project));
     }
 
     // 프로젝트 상세조회
     public ResponseDto<ProjectResponseDto> getProject(Long id) {
         Project project = projectRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
+                () -> new GlobalException(NOT_FOUND_PROJECT)
         );
         return ResponseDto.setSuccess(HttpStatus.OK, "상세 조회 성공", new ProjectResponseDto(project));
     }
@@ -54,12 +57,12 @@ public class ProjectService {
                                              ProjectRequestDto projectRequestDto,
                                              List<MultipartFile> images, User user) throws IOException {
         Project project = projectRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
+                () -> new GlobalException(NOT_FOUND_PROJECT)
         );
 
         //USER 확인
         if (!StringUtils.equals(project.getUser().getId(), user.getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new GlobalException(UNAUTHORIZED);
         }
 
         fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
@@ -72,12 +75,12 @@ public class ProjectService {
     // 프로젝트 삭제
     public ResponseDto<String> deleteProject(Long id, User user) {
         Project project = projectRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("프로젝트가 존재하지 않습니다")
+                () -> new GlobalException(NOT_FOUND_PROJECT)
         );
 
         //USER 확인
         if (!StringUtils.equals(project.getUser().getId(), user.getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new GlobalException(UNAUTHORIZED);
         }
 
         projectRepository.deleteById(id);

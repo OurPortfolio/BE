@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -43,12 +44,12 @@ public class UserService {
 
         Optional<User> findUserByEmail = userRepository.findByEmail(signupRequestDto.getEmail());
         if (findUserByEmail.isPresent()) {
-            throw new IllegalArgumentException("이미 해당 이메일이 존재합니다.");
+            throw new GlobalException(DUPLICATED_USER_NAME);
         }
 
         Optional<User> findNicknameByEmail = userRepository.findByNickname(signupRequestDto.getNickname());
         if (findNicknameByEmail.isPresent()) {
-            throw new IllegalArgumentException("이미 해당 닉네임이 존재합니다.");
+            throw new GlobalException(DUPLICATED_NICK_NAME);
         }
 
         User user = new User(password, signupRequestDto);
@@ -60,11 +61,14 @@ public class UserService {
     public ResponseDto<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
-
         User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+                () -> new GlobalException(NOT_FOUND_USER));
+
+        if (user.isDeleted()) {
+            throw new GlobalException(USER_IS_DELETED);
+        }
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+            throw new GlobalException(BAD_REQUEST);
         }
 
         JwtTokenDto tokenDto = jwtUtil.createAllToken(email, user.getId());
@@ -81,8 +85,8 @@ public class UserService {
 
     // 회원 조회
     public ResponseDto<UserDto> getUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new GlobalException(NOT_FOUND_USER));
         UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(), user.getKakaoId());
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!", userDto);
     }
@@ -91,10 +95,10 @@ public class UserService {
     public ResponseDto<String> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
                                           Optional<MultipartFile> image, User user) throws IOException {
         User userinfo = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 없습니다."));
+                () -> new GlobalException(NOT_FOUND_USER));
 
         if (!StringUtils.equals(user.getId(), userinfo.getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new GlobalException(UNAUTHORIZED);
         }
 
         boolean isUpdated = false;
@@ -104,17 +108,17 @@ public class UserService {
             String newNickname = updateUserRequestDto.getNickname().orElse("");
             // 닉네임이 현재와 같은지 체크
             if(newNickname.equals((userinfo.getNickname()))){
-                throw new IllegalArgumentException("닉네임이 동일합니다.");
+                throw new GlobalException(EXISTED_NICK_NAME);
             }
             // 중복된 닉네임이 있는지 체크
             if(userRepository.existsByNickname(newNickname)) {
-                throw new IllegalArgumentException("해당 닉네임이 존재합니다.");
+                throw new GlobalException(DUPLICATED_NICK_NAME);
             }
             // 닉네임 형식이 일치하는지 체크
             Pattern passPattern1 = Pattern.compile("^[a-zA-Z가-힣0-9]{1,10}$");
             Matcher matcher1 = passPattern1.matcher(newNickname);
             if(!matcher1.find()) {
-                throw new IllegalArgumentException("닉네임을 형식에 맞춰 올바르게 입력바랍니다.");
+                throw new GlobalException(NICKNAME_REGEX);
             };
             userinfo.updateNickname(newNickname);
             isUpdated = true;
@@ -128,7 +132,7 @@ public class UserService {
         }
 
         if (!isUpdated) {
-            return ResponseDto.setFailure(HttpStatus.BAD_REQUEST, "변경할 회원 정보가 제공되지 않았습니다.");
+            throw new GlobalException(USER_INFORMATION);
         }
 
         userRepository.save(userinfo);
@@ -138,21 +142,21 @@ public class UserService {
     // 비밀번호 변경
     public ResponseDto<String> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
         userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 없습니다."));
+                () -> new GlobalException(NOT_FOUND_USER));
 
         if(!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new GlobalException(BAD_REQUEST);
         }
 
         if(!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
-            throw new IllegalArgumentException("새로운 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            throw new GlobalException(COINCIDE_PASSWORD);
         }
 
         // 비밀번호 형식이 일치하는지 체크
         Pattern passPattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,}$");
         Matcher matcher = passPattern.matcher(updatePasswordRequestDto.getNewPassword());
         if (!matcher.find()) {
-            throw new IllegalArgumentException("비밀번호를 형식에 맞춰 올바르게 입력바랍니다.");
+            throw new GlobalException(PASSWORD_REGEX);
         };
 
         user.updatePassword(passwordEncoder.encode(updatePasswordRequestDto.getNewPassword()));
@@ -160,15 +164,21 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK, "비밀번호 변경 성공!");
     }
 
-    // 회원 탈퇴
+    // 회원 탈퇴(soft, default)
     public ResponseDto<HttpStatus> deleteUser(Long id, User user) {
         userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 없습니다."));
+                () -> new GlobalException(NOT_FOUND_USER));
 
         user.deleteUser(); // Soft delete 수행
         userRepository.save(user);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 탈퇴 성공!");
+    }
+
+    // 회원 탈퇴(hard delete)
+    public ResponseDto<HttpStatus> deleteUserHard(Long id) {
+        userRepository.deleteById(id);
+        return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제");
     }
 
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
