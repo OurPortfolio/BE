@@ -106,7 +106,13 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
             content.remove(pageable.getPageSize());
             hasNext = true;
         }
-        return new PageImpl<>(content, pageable, hasNext ? pageable.getOffset() + content.size() : pageable.getOffset());
+
+        long totalElements = queryFactory
+                .selectFrom(portfolio)
+                .where(whereBuilder)
+                .fetchCount();
+
+        return new PageImpl<>(content, pageable, totalElements);
     }
 
     private BooleanExpression findByKeywordInTechStack(String keyword) {
