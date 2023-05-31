@@ -1,34 +1,15 @@
-cloud:
-  aws:
-    s3:
-      bucket: springboot-img
-    credentials:
-      accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    stack:
-      auto-: 'false'
-    region:
-      static: ap-northeast-2
 spring:
   thymeleaf:
     cache: 'false'
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-  jpa:
-    properties:
-      hibernate:
-        use_sql_comments: 'true'
-        format_sql: 'true'
+    max-request-size: 10MB
+    max-file-size: 10MB
+jpa:
+  properties:
     hibernate:
-      ddl-auto: update
-    show-sql: 'true'
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${{ secrets.MYSQL_USERNAME }}
-    password: ${{ secrets.MYSQL_PW }}
-    url: jdbc:mysql://springboot-db.c9l2rqqpo7fr.ap-northeast-2.rds.amazonaws.com:3306/pol
-jwt:
-  secret:
-    key: ${{ secrets.JWT_SECRET_KEY }}
+    format_sql: 'true'
+    use_sql_comments: 'true'
+  hibernate:
+    ddl-auto: update
+  show-sql: 'true'
