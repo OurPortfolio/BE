@@ -14,10 +14,10 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_NAME: firstcicd
-  BUCKET_NAME: firstcicd
-  CODE_DEPLOY_APP_NAME: firstcicd
-  DEPLOYMENT_GROUP_NAME: firstcicd
+  PROJECT_NAME: pol
+  BUCKET_NAME: firstcicd-s3
+  CODE_DEPLOY_APP_NAME: firstcicd-deploy
+  DEPLOYMENT_GROUP_NAME: firstcicd-deploy-group
 
 jobs:
   build:
