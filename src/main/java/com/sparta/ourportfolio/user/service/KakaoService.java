@@ -40,7 +40,6 @@ public class KakaoService {
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
-
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
@@ -114,6 +113,7 @@ public class KakaoService {
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
+        String profileImage = kakaoUserInfo.getProfileImage();
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
         if (kakaoUser == null) {
@@ -122,8 +122,8 @@ public class KakaoService {
             User sameEmailUser = userRepository.findByEmail(kakaoEmail).orElse(null);
             if (sameEmailUser != null) {
                 kakaoUser = sameEmailUser;
-                // 기존 회원정보에 카카오 Id 추가
-                kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
+                // 기존 회원정보에 카카오 Id, 프로필 이미지 추가
+                kakaoUser = kakaoUser.kakaoUpdate(kakaoId, profileImage);
             } else {
                 // 신규 회원가입
                 // password: random UUID
@@ -133,7 +133,7 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = new User(kakaoId, email, kakaoUserInfo.getNickname(), encodedPassword, kakaoUserInfo.getProfileImage());
+                kakaoUser = new User(kakaoId, email, kakaoUserInfo.getNickname(), encodedPassword, profileImage);
             }
             userRepository.save(kakaoUser);
         }
