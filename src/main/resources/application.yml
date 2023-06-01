@@ -16,3 +16,7 @@ spring:
       enabled: true
       max-file-size: 10MB  # 원하는 파일 크기로 설정
       max-request-size: 10MB  # 원하는 요청 크기로 설정
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
