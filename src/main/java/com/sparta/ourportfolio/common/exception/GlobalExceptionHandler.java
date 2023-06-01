@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.REQUEST_DATA_BAD_REQUEST;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(GlobalException.class)
@@ -23,11 +21,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingServletRequestPartException.class)
     public ResponseEntity<GlobalExceptionEntity> MissingServletRequestPartExceptionHandler(MissingServletRequestPartException e) {
-        return GlobalExceptionEntity.toResponseEntity(REQUEST_DATA_BAD_REQUEST);
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(GlobalExceptionEntity.builder()
+                        .errorCode(e.getStatusCode().toString())
+                        .errorMessage(e.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<GlobalExceptionEntity> MissingServletRequestParameterExceptionHandler() {
-        return GlobalExceptionEntity.toResponseEntity(REQUEST_DATA_BAD_REQUEST);
+    public ResponseEntity<GlobalExceptionEntity> MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(GlobalExceptionEntity.builder()
+                        .errorCode(e.getStatusCode().toString())
+                        .errorMessage(e.getMessage())
+                        .build());
     }
 }

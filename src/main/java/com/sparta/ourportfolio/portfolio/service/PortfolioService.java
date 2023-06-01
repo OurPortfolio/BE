@@ -126,7 +126,7 @@ public class PortfolioService {
             Project project = projectRepository.findById(projectId).orElseThrow(
                     () -> new GlobalException(NOT_FOUND_PROJECT)
             );
-            if (!portfolio.getProjectList().contains(project) &&
+            if (!portfolio.getProjectList().contains(projectId) &&
                     StringUtils.equals(project.getUser().getId(), userNow.getId())) {
                 portfolio.addProject(project);
                 project.setPortfolio(portfolio);
