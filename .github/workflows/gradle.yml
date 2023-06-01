@@ -43,7 +43,9 @@ jobs:
           
       # Build
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          ./gradlew build
+          ./gradlew bootJar
         shell: bash
 
       - name: Make Zip File
