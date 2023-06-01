@@ -40,10 +40,6 @@ jobs:
         run: |
           echo "${{secrets.APPLICATION_SECRET_KEY}}" | base64 --decode > src/main/resources/application-aws.yml
           find src
-      - name : Set YML
-        run : |
-          echo "${{secrets.APPLICATION_SECRET_KEY}}" | base64 --decode > src/main/resources/application-secret.yml
-          find src
           
       # Build
       - name: Build with Gradle
