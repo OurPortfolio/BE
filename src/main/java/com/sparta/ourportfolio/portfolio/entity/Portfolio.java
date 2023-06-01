@@ -49,7 +49,7 @@ public class Portfolio {
     @Lob
     private String portfolioImage;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Project> projectList = new ArrayList<>();
 
     @JsonIgnore

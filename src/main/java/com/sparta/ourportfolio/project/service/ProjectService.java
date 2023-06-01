@@ -45,6 +45,7 @@ public class ProjectService {
     }
 
     // 프로젝트 상세조회
+    @Transactional(readOnly = true)
     public ResponseDto<ProjectResponseDto> getProject(Long id) {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_PROJECT)
