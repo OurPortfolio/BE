@@ -10,14 +10,12 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
-  PROJECT_NAME: firstcicd
-  BUCKET_NAME: firstcicd
-  CODE_DEPLOY_APP_NAME: firstcicd
-  DEPLOYMENT_GROUP_NAME: firstcicd
+  PROJECT_NAME: pol
+  BUCKET_NAME: firstcicd-s3
+  CODE_DEPLOY_APP_NAME: firstcicd-deploy
+  DEPLOYMENT_GROUP_NAME: firstcicd-deploy-group
 
 jobs:
   build:
@@ -40,14 +38,12 @@ jobs:
         run: |
           echo "${{secrets.APPLICATION_SECRET_KEY}}" | base64 --decode > src/main/resources/application-aws.yml
           find src
-      - name : Set YML
-        run : |
-          echo "${{secrets.APPLICATION_SECRET_KEY}}" | base64 --decode > src/main/resources/application-secret.yml
-          find src
-          
+
       # Build
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          ./gradlew build
+          ./gradlew bootJar
         shell: bash
 
       - name: Make Zip File
