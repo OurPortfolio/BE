@@ -57,8 +57,9 @@ public class User extends TimeStamped {
         this.profileImage = profileImage;
     }
 
-    public User kakaoIdUpdate(Long kakaoId) {
+    public User kakaoUpdate(Long kakaoId, String profileImage) {
         this.kakaoId = kakaoId;
+        this.profileImage = profileImage;
         return this;
     }
 
