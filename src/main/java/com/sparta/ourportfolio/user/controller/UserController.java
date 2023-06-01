@@ -79,7 +79,7 @@ public class UserController {
     }
 
     // 카카오 로그인
-    @GetMapping("/kakao")
+    @GetMapping ("/kakao")
     public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
     }

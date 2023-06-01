@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    include: aws
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl:
+          auto: update
+    open-in-view: false
+  thymeleaf:
+    cache: 'false'
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB  # 원하는 파일 크기로 설정
+      max-request-size: 10MB  # 원하는 요청 크기로 설정

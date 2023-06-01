@@ -43,6 +43,8 @@ public class Portfolio {
 
     private String filter;
 
+    private String youtubeUrl;
+
     @Column(columnDefinition = "LONGTEXT")
     @Lob
     private String portfolioImage;
@@ -66,6 +68,7 @@ public class Portfolio {
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
+        this.youtubeUrl = portfolioRequestDto.getYoutubeUrl();
         this.portfolioImage = imageUrl;
     }
 
@@ -80,6 +83,7 @@ public class Portfolio {
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
+        this.youtubeUrl = portfolioRequestDto.getYoutubeUrl();
         this.portfolioImage = imageUrl;
     }
 

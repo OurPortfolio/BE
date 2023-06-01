@@ -22,6 +22,8 @@ public class PortfolioDetailResponseDto {
     private String blogUrl;
     private String category;
     private String filter;
+    private String portfolioImage;
+    private String youtubeUrl;
     private List<ProjectResponseDto> projectList;
 
     public PortfolioDetailResponseDto(Portfolio portfolio) {
@@ -38,6 +40,8 @@ public class PortfolioDetailResponseDto {
         this.blogUrl = portfolio.getBlogUrl();
         this.category = portfolio.getCategory();
         this.filter = portfolio.getFilter();
+        this.portfolioImage = portfolio.getPortfolioImage();
+        this.youtubeUrl = portfolio.getYoutubeUrl();
         this.projectList = portfolio.getProjectList().stream().map(ProjectResponseDto::new).collect(Collectors.toList());
     }
 }

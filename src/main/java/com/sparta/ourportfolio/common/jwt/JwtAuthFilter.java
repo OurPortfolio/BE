@@ -1,7 +1,6 @@
 package com.sparta.ourportfolio.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.SecurityExceptionDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
@@ -36,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String refresh_token = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
 
         // 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리
-        if(access_token == null){
+        if (access_token == null) {
             filterChain.doFilter(request, response);
         } else {
             if (jwtUtil.validateToken(access_token)) {
