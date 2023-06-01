@@ -26,7 +26,6 @@ dependencies {
     //Redis cache
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -57,7 +56,11 @@ dependencies {
 jar {
     enabled = false
 }
+//애플리케이션의 빌드 과정에서 중복 파일을 제외
+bootJar {
 
+    duplicatesStrategy 'exclude'
+}
 //tasks.named('test') {
 //    useJUnitPlatform()
 //}
