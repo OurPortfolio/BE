@@ -56,11 +56,6 @@ dependencies {
 jar {
     enabled = false
 }
-//애플리케이션의 빌드 과정에서 중복 파일을 제외
-bootJar {
-
-    duplicatesStrategy 'exclude'
-}
 //tasks.named('test') {
 //    useJUnitPlatform()
 //}
