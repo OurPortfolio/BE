@@ -138,11 +138,11 @@ public class UserService {
         userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
-        if(!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
             throw new GlobalException(BAD_REQUEST);
         }
 
-        if(!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
+        if (!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
             throw new GlobalException(COINCIDE_PASSWORD);
         }
 
@@ -170,8 +170,8 @@ public class UserService {
     }
 
     // 회원 탈퇴(hard delete)
-    public ResponseDto<HttpStatus> deleteUserHard(Long id) {
-        userRepository.deleteById(id);
+    public ResponseDto<HttpStatus> deleteUserHard(Long id, User user) {
+        userRepository.deleteById(user.getId());
         return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제");
     }
 
@@ -180,4 +180,3 @@ public class UserService {
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
     }
 }
-

@@ -32,14 +32,14 @@ class SignupServiceTest {
     @Test
     void signup() {
         // given
-        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com","Password123","test4567",null);
+        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com", "Password123", "test4567", null);
 
         // when (회원가입 메서드 호출)
         ResponseDto<HttpStatus> response = userService.signup(signupRequestDto1);
 
         // then (결과 검증)
         assertThat(response)
-                .extracting("statusCode","message")
+                .extracting("statusCode", "message")
                 .contains(HttpStatus.OK, "회원가입 성공!");
 
         // 저장소에 사용자가 저장되었는지 확인
@@ -47,7 +47,7 @@ class SignupServiceTest {
         assertThat(users).hasSize(1)
                 .extracting("email", "nickname", "profileImage")
                 .containsExactlyInAnyOrder(
-                tuple("test4567@example.com", "test4567", null)
+                        tuple("test4567@example.com", "test4567", null)
                 );
 
     }
@@ -56,10 +56,10 @@ class SignupServiceTest {
     @Test
     void signupWitheDuplicateEmail() {
         // given
-        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@example.com","Password123","test4",null);
+        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@example.com", "Password123", "test4", null);
 
         // when // then
-        assertThatThrownBy(()-> userService.signup(signupRequestDto2))
+        assertThatThrownBy(() -> userService.signup(signupRequestDto2))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("중복된 아이디가 이미 존재합니다.");
 
@@ -69,9 +69,9 @@ class SignupServiceTest {
     @Test
     void signupWitheDuplicateNickname() {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4@example.com","Password123","test4567",null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4@example.com", "Password123", "test4567", null);
         // when // then
-        assertThatThrownBy(()-> userService.signup(signupRequestDto3))
+        assertThatThrownBy(() -> userService.signup(signupRequestDto3))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("중복된 닉네임이 이미 존재합니다.");
 
