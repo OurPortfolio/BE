@@ -1,4 +1,3 @@
-
 spring:
   profiles:
     include: aws
@@ -16,7 +15,3 @@ spring:
     multipart:
       enabled: true
       max-file-size: 10MB  # 원하는 파일 크기로 설정
-  data:
-    redis:
-      host: 1.231.8.249
-      port: 6379

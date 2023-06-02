@@ -18,13 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -107,20 +106,10 @@ public class UserService {
         // 닉네임 수정
         if (updateUserRequestDto != null && updateUserRequestDto.getNickname() != null && !updateUserRequestDto.getNickname().isEmpty()) {
             String newNickname = updateUserRequestDto.getNickname().orElse("");
-            // 닉네임이 현재와 같은지 체크
-            if (newNickname.equals((userinfo.getNickname()))) {
-                throw new GlobalException(EXISTED_NICK_NAME);
-            }
             // 중복된 닉네임이 있는지 체크
-            if (userRepository.existsByNickname(newNickname)) {
+            if (!newNickname.equals(userinfo.getNickname()) && userRepository.existsByNickname(newNickname)) {
                 throw new GlobalException(DUPLICATED_NICK_NAME);
             }
-            // 닉네임 형식이 일치하는지 체크
-            Pattern passPattern1 = Pattern.compile("^[a-zA-Z가-힣0-9]{1,10}$");
-            Matcher matcher1 = passPattern1.matcher(newNickname);
-            if (!matcher1.find()) {
-                throw new GlobalException(NICKNAME_REGEX);
-            };
             userinfo.updateNickname(newNickname);
             isUpdated = true;
         }
@@ -129,6 +118,10 @@ public class UserService {
         if (image.isPresent() && !image.get().isEmpty()) {
             String imageUrl = s3Service.uploadFile(image.get());
             userinfo.updateProfileImage(imageUrl);
+            isUpdated = true;
+        } else if (updateUserRequestDto != null && updateUserRequestDto.getProfileImage() == null) {
+            // profileImage가 null로 요청이 들어올 때 기존의 이미지를 null로 업데이트
+            userinfo.updateProfileImage(null);
             isUpdated = true;
         }
 

@@ -33,9 +33,6 @@ public class PortfolioController {
                                                PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        String techStackData = portfolioRequestDto.getTechStack();
-        List<String> techStackList = Arrays.asList(techStackData.split(","));
-        portfolioService.addAutocompleteKeyword(techStackList);
 
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
@@ -80,7 +77,7 @@ public class PortfolioController {
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         String techStackData = portfolioRequestDto.getTechStack();
         List<String> techStackList = Arrays.asList(techStackData.split(","));
-        portfolioService.addAutocompleteKeyword(techStackList);
+        portfolioService.addAutocompleteKeyword(techStackList, id);
 
         return portfolioService.updatePortfolio(id, portfolioRequestDto, image, userDetails.getUser());
     }
