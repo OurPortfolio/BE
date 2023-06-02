@@ -18,7 +18,7 @@ public class SignupRequestDto {
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,}$",
-            message = "비밀번호는 최소 6글자 이상이며 알파벳 대소문자와 숫자로 구성되어야 합니다.")
+            message = "비밀번호는 최소 6글자 이상이며 영어와 숫자로 구성되어야 합니다.")
     private String password;
 
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")

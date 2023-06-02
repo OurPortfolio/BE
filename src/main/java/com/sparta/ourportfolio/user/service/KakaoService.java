@@ -28,6 +28,8 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+//    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=http://localhost:8080/api/users/kakao&response_type=code
+
     public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
@@ -42,7 +44,7 @@ public class KakaoService {
         String createToken = jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "카카오 로그인 성공!");
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -133,7 +135,7 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = new User(kakaoId, email, kakaoUserInfo.getNickname(), encodedPassword, profileImage);
+                kakaoUser = new User(kakaoId, null, null, email, kakaoUserInfo.getNickname(), encodedPassword, profileImage);
             }
             userRepository.save(kakaoUser);
         }

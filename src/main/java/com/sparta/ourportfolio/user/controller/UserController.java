@@ -5,6 +5,7 @@ import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.user.dto.*;
 import com.sparta.ourportfolio.user.service.KakaoService;
+import com.sparta.ourportfolio.user.service.NaverService;
 import com.sparta.ourportfolio.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final NaverService naverService;
 
 
     // 회원가입
@@ -82,5 +84,11 @@ public class UserController {
     @GetMapping ("/kakao")
     public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
+    }
+
+    // 네이버 로그인
+    @GetMapping("/naver")
+    public ResponseDto<String> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
+        return naverService.naverLogin(code, state, response);
     }
 }

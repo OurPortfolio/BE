@@ -50,6 +50,8 @@ public class QPortfolio extends EntityPathBase<Portfolio> {
 
     public final com.sparta.ourportfolio.user.entity.QUser user;
 
+    public final StringPath youtubeUrl = createString("youtubeUrl");
+
     public QPortfolio(String variable) {
         this(Portfolio.class, forVariable(variable), INITS);
     }
