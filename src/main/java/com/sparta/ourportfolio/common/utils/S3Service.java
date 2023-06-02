@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,13 @@ public class S3Service {
     public List<ProjectImage> fileFactory(List<MultipartFile> images, Project project) throws IOException {
         List<ProjectImage> projectImageList = new ArrayList<>();
 
+        images = images.stream()
+                .map(s -> s.isEmpty() ? null : s)
+                .collect(Collectors.toList());
+
         for (MultipartFile image : images) {
+            if (image == null) break;
+
             String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             String imageUrl = null;
 
