@@ -9,8 +9,10 @@ import java.util.Optional;
 @NoArgsConstructor
 public class UpdateUserRequestDto {
     private Optional<String> nickname;
+    private String profileImage;
 
-    public UpdateUserRequestDto(Optional<String> nickname) {
+    public UpdateUserRequestDto(Optional<String> nickname, String profileImage) {
         this.nickname = nickname;
+        this.profileImage = profileImage;
     }
 }
