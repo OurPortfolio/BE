@@ -4,6 +4,7 @@ import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
+import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.project.entity.Project;
@@ -13,7 +14,6 @@ import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.Trie;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,16 +34,27 @@ public class PortfolioService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final S3Service s3Service;
-    private final RedisTemplate<String,String> redisTemplate;
-    private final Trie<String,String> trie;
+    private final Trie<String, List<Long>> trie;
 
     @PostConstruct
     public void initializeTrieFromRedis() {
-        List<String> autocompleteData = redisTemplate.opsForList().range("autocomplete", 0, -1);
+        List<TechStackDto> allTechStackData = portfolioRepository.findAll().stream()
+                .map(TechStackDto::new)
+                .toList();
         trie.clear(); // 기존 Trie 데이터 초기화
-        assert autocompleteData != null;
-        for (String data : autocompleteData) {
-            trie.put(data, null);
+
+        for (TechStackDto data : allTechStackData) {
+            Long id = data.getPortfolioId();
+            if (data.getTechStack() != null) {
+                for (String techStack : Arrays.stream(data.getTechStack().split(",")).toList()) {
+                    List<Long> idList = trie.get(techStack);
+                    if (idList == null) {
+                        idList = new ArrayList<>();
+                    }
+                    idList.add(id);
+                    trie.put(techStack, idList);
+                }
+            }
         }
     }
 
@@ -53,18 +64,28 @@ public class PortfolioService {
         return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
     }
 
-    public void addAutocompleteKeyword(List<String> techStackList) {
+    public void addAutocompleteKeyword(List<String> techStackList, Long id) {
         for (String techStack : techStackList) {
-            this.trie.put(techStack, null);
-            redisTemplate.opsForList().rightPush("autocomplete", techStack);
+            List<Long> idList = trie.get(techStack);
+            if (idList == null) {
+                idList = new ArrayList<>();
+            }
+            idList.add(id);
+            trie.put(techStack, idList);
         }
     }
 
-    public void deleteAutocompleteKeyword(List<String> techStackList) {
+    public void deleteAutocompleteKeyword(List<String> techStackList, Long id) {
         for (String techStack : techStackList) {
-            this.trie.remove(techStack);
-            redisTemplate.opsForList().remove("autocomplete", 0, techStack);
+            List<Long> ids = trie.get(techStack);
+            if (ids.contains(id)) {
+                ids.remove(id);
+                if (ids.isEmpty()) {
+                    trie.remove(techStack);
+                }
+            }
         }
+
     }
 
     @Transactional
@@ -100,6 +121,12 @@ public class PortfolioService {
         }
 
         portfolioRepository.saveAndFlush(portfolio);
+
+        if (portfolioRequestDto.getTechStack() != null) {
+            String techStackData = portfolioRequestDto.getTechStack();
+            List<String> techStackList = Arrays.asList(techStackData.split(","));
+            addAutocompleteKeyword(techStackList, portfolio.getId());
+        }
 
         return ResponseDto.setSuccess(HttpStatus.OK, "포트폴리오 생성 완료");
     }
@@ -158,7 +185,7 @@ public class PortfolioService {
 
         String techStackData = portfolio.getTechStack();
         List<String> techStackList = Arrays.asList(techStackData.split(","));
-        deleteAutocompleteKeyword(techStackList);
+        deleteAutocompleteKeyword(techStackList, portfolio.getId());
 
         portfolioRepository.delete(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "삭제 완료");
