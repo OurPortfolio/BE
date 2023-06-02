@@ -23,10 +23,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+    //Redis cache
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     compileOnly 'org.projectlombok:lombok'
-//    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -49,13 +50,16 @@ dependencies {
     //AWS S3
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 
+    //Redis
     implementation 'org.apache.commons:commons-collections4:4.4'
+
+    //JAXB
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 //-plain.jar 가 만들어 지지 않도록 하는 설정 (ci/cd)
 jar {
     enabled = false
 }
-
 //tasks.named('test') {
 //    useJUnitPlatform()
 //}

@@ -25,6 +25,9 @@ public class Portfolio {
     private String portfolioTitle;
 
     @Column(nullable = false)
+    private String intro;
+
+    @Column(nullable = false)
     private String techStack;
 
     private String residence;
@@ -34,8 +37,6 @@ public class Portfolio {
     private String telephone;
 
     private String githubId;
-
-    private String experience;
 
     private String blogUrl;
 
@@ -49,7 +50,7 @@ public class Portfolio {
     @Lob
     private String portfolioImage;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Project> projectList = new ArrayList<>();
 
     @JsonIgnore
@@ -59,12 +60,12 @@ public class Portfolio {
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
+        this.intro = portfolioRequestDto.getIntro();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();
         this.telephone = portfolioRequestDto.getTelephone();
         this.githubId = portfolioRequestDto.getGithubId();
-        this.experience = portfolioRequestDto.getExperience();
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
@@ -74,12 +75,12 @@ public class Portfolio {
 
     public void update(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
+        this.intro = portfolioRequestDto.getIntro();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
         this.location = portfolioRequestDto.getLocation();
         this.telephone = portfolioRequestDto.getTelephone();
         this.githubId = portfolioRequestDto.getGithubId();
-        this.experience = portfolioRequestDto.getExperience();
         this.blogUrl = portfolioRequestDto.getBlogUrl();
         this.category = portfolioRequestDto.getCategory();
         this.filter = portfolioRequestDto.getFilter();
