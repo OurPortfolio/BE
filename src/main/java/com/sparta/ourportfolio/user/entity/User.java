@@ -3,8 +3,8 @@ package com.sparta.ourportfolio.user.entity;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
-import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,12 +38,17 @@ public class User extends TimeStamped {
 
     private Long kakaoId;
 
-    private Long naverId;
-
-    private Long googleId;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Portfolio> portfolioList = new ArrayList<>();
+
+    @Builder
+    public User(Long id, String email, String password, String nickname, boolean isDeleted) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.isDeleted = isDeleted;
+    }
 
     public User(String password, SignupRequestDto signupRequestDto) {
         this.email = signupRequestDto.getEmail();
@@ -52,26 +57,17 @@ public class User extends TimeStamped {
         this.profileImage = signupRequestDto.getProfileImage();
     }
 
-    // 소셜 회원가입
-    public User(Long kakaoId, Long naverId, Long googleId, String email, String nickname, String password, String profileImage) {
+    //카카오 회원가입
+    public User(Long kakaoId, String email, String nickname, String password, String profileImage) {
         this.kakaoId = kakaoId;
-        this.naverId = naverId;
-        this.googleId = googleId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.profileImage = profileImage;
     }
 
-    public User kakaoUpdate(Long kakaoId, String profileImage) {
+    public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
-        this.profileImage = profileImage;
-        return this;
-    }
-
-    public User naverUpdate(Long naverId, String profileImage) {
-        this.naverId = naverId;
-        this.profileImage = profileImage;
         return this;
     }
 

@@ -5,14 +5,12 @@ import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.user.dto.*;
 import com.sparta.ourportfolio.user.service.KakaoService;
-import com.sparta.ourportfolio.user.service.NaverService;
 import com.sparta.ourportfolio.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +26,6 @@ public class UserController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
-    private final NaverService naverService;
 
 
     // 회원가입
@@ -44,13 +41,13 @@ public class UserController {
     }
 
     // 회원 조회
-    @GetMapping ("/{id}")
+    @GetMapping("/{id}")
     public ResponseDto<UserDto> getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     // 회원 정보 수정
-    @PatchMapping (value = "/{id}",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> updateUser(@PathVariable Long id,
                                           @RequestPart(name = "nickname", required = false) UpdateUserRequestDto updateUserRequestDto,
@@ -76,19 +73,14 @@ public class UserController {
 
     // 회원 탈퇴(hard)
     @DeleteMapping("/hard/{id}")
-    public ResponseDto<HttpStatus> deleteUserHard(@PathVariable Long id) {
-        return userService.deleteUserHard(id);
+    public ResponseDto<HttpStatus> deleteUserHard(@PathVariable Long id,
+                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.deleteUserHard(id, userDetails.getUser());
     }
 
     // 카카오 로그인
-    @GetMapping ("/kakao")
+    @GetMapping("/kakao")
     public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
-    }
-
-    // 네이버 로그인
-    @GetMapping("/naver")
-    public ResponseDto<String> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
-        return naverService.naverLogin(code, state, response);
     }
 }

@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -107,17 +108,17 @@ public class UserService {
         if (updateUserRequestDto != null && updateUserRequestDto.getNickname() != null && !updateUserRequestDto.getNickname().isEmpty()) {
             String newNickname = updateUserRequestDto.getNickname().orElse("");
             // 닉네임이 현재와 같은지 체크
-            if(newNickname.equals((userinfo.getNickname()))){
+            if (newNickname.equals((userinfo.getNickname()))) {
                 throw new GlobalException(EXISTED_NICK_NAME);
             }
             // 중복된 닉네임이 있는지 체크
-            if(userRepository.existsByNickname(newNickname)) {
+            if (userRepository.existsByNickname(newNickname)) {
                 throw new GlobalException(DUPLICATED_NICK_NAME);
             }
             // 닉네임 형식이 일치하는지 체크
             Pattern passPattern1 = Pattern.compile("^[a-zA-Z가-힣0-9]{1,10}$");
             Matcher matcher1 = passPattern1.matcher(newNickname);
-            if(!matcher1.find()) {
+            if (!matcher1.find()) {
                 throw new GlobalException(NICKNAME_REGEX);
             };
             userinfo.updateNickname(newNickname);
@@ -144,11 +145,11 @@ public class UserService {
         userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
-        if(!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
             throw new GlobalException(BAD_REQUEST);
         }
 
-        if(!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
+        if (!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
             throw new GlobalException(COINCIDE_PASSWORD);
         }
 
@@ -176,8 +177,8 @@ public class UserService {
     }
 
     // 회원 탈퇴(hard delete)
-    public ResponseDto<HttpStatus> deleteUserHard(Long id) {
-        userRepository.deleteById(id);
+    public ResponseDto<HttpStatus> deleteUserHard(Long id, User user) {
+        userRepository.deleteById(user.getId());
         return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제");
     }
 
@@ -186,4 +187,3 @@ public class UserService {
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
     }
 }
-
