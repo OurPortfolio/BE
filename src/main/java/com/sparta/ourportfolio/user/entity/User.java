@@ -38,6 +38,10 @@ public class User extends TimeStamped {
 
     private Long kakaoId;
 
+    private Long naverId;
+
+    private Long googleId;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Portfolio> portfolioList = new ArrayList<>();
 
@@ -57,17 +61,26 @@ public class User extends TimeStamped {
         this.profileImage = signupRequestDto.getProfileImage();
     }
 
-    //카카오 회원가입
-    public User(Long kakaoId, String email, String nickname, String password, String profileImage) {
+    // 소셜 회원가입
+    public User(Long kakaoId, Long naverId, Long googleId, String email, String nickname, String password, String profileImage) {
         this.kakaoId = kakaoId;
+        this.naverId = naverId;
+        this.googleId = googleId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.profileImage = profileImage;
     }
 
-    public User kakaoIdUpdate(Long kakaoId) {
+    public User kakaoUpdate(Long kakaoId, String profileImage) {
         this.kakaoId = kakaoId;
+        this.profileImage = profileImage;
+        return this;
+    }
+
+    public User naverUpdate(Long naverId, String profileImage) {
+        this.naverId = naverId;
+        this.profileImage = profileImage;
         return this;
     }
 
