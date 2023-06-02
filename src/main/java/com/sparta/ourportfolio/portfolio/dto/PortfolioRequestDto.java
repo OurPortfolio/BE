@@ -7,13 +7,13 @@ import java.util.List;
 @Getter
 public class PortfolioRequestDto {
     private String portfolioTitle;
+    private String intro;
     private String techStack;
     private String residence;
     private String location;
     private String telephone;
     private String email;
     private String githubId;
-    private String experience;
     private String blogUrl;
     private String category;
     private String filter;
