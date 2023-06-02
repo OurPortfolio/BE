@@ -62,10 +62,12 @@ class DeleteUserControllerTest {
     @Test
     void hardDelete() throws Exception {
         // given
+        User user1 = createUser(1L, "test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
         User user2 = createUser(2L, "test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        userRepository.save(user1);
         userRepository.save(user2);
 
-        UserDetailsImpl userDetails2 = new UserDetailsImpl(userRepository.findById(1L).get());
+        UserDetailsImpl userDetails2 = new UserDetailsImpl(userRepository.findById(2L).get());
         ResponseDto<HttpStatus> hardDeleteUserResponse = userService.deleteUserHard(user2.getId(), user2);
         // when // then
         mockMvc.perform(

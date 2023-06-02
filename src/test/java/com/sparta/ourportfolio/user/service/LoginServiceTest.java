@@ -36,10 +36,10 @@ class LoginServiceTest {
     @Test
     void login() {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4", false);
         userRepository.save(user1);
 
-        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test4567@example.com", "Password123");
+        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test4@example.com", "Password123");
 
         // 로그인 요청 수행
         ResponseDto<String> loginResponse = userService.login(loginRequestDto1, response);
@@ -54,7 +54,7 @@ class LoginServiceTest {
     @Test
     void loginNotFoundUser() {
         // given
-        User user2 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user2 = createUser("test5@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5", false);
         userRepository.save(user2);
 
         LoginRequestDto loginRequestDto2 = createLoginRequestDto("test45678@example.com", "Password123");
@@ -69,10 +69,10 @@ class LoginServiceTest {
     @Test
     void loginAlreadyDeleteUser() {
         // given
-        User user3 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", true);
+        User user3 = createUser("test6@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test6", true);
         userRepository.save(user3);
 
-        LoginRequestDto loginRequestDto3 = createLoginRequestDto("test4567@example.com", "Password123");
+        LoginRequestDto loginRequestDto3 = createLoginRequestDto("test6@example.com", "Password123");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto3, response))
@@ -84,10 +84,10 @@ class LoginServiceTest {
     @Test
     void loginWithWrongPassword() {
         // given
-        User user4 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user4 = createUser("test7@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test7", false);
         userRepository.save(user4);
 
-        LoginRequestDto loginRequestDto4 = createLoginRequestDto("test4567@example.com", "Password");
+        LoginRequestDto loginRequestDto4 = createLoginRequestDto("test7@example.com", "Password");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto4, response))
