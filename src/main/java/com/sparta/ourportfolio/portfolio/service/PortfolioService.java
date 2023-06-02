@@ -21,9 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
@@ -34,13 +34,14 @@ public class PortfolioService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final S3Service s3Service;
-    private final RedisTemplate<String, String> redisTemplate;
-    private final Trie trie;
+    private final RedisTemplate<String,String> redisTemplate;
+    private final Trie<String,String> trie;
 
     @PostConstruct
     public void initializeTrieFromRedis() {
         List<String> autocompleteData = redisTemplate.opsForList().range("autocomplete", 0, -1);
         trie.clear(); // 기존 Trie 데이터 초기화
+        assert autocompleteData != null;
         for (String data : autocompleteData) {
             trie.put(data, null);
         }
@@ -48,9 +49,7 @@ public class PortfolioService {
 
     @Transactional(readOnly = true)
     public ResponseDto<List<String>> autoComplete(String keyword) {
-        List<String> result = (List<String>) this.trie.prefixMap(keyword).keySet()
-                .stream()
-                .collect(Collectors.toList());
+        List<String> result = new ArrayList<>(this.trie.prefixMap(keyword).keySet());
         return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
     }
 
