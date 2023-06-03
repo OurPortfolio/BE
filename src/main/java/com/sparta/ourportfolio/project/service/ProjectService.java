@@ -39,9 +39,9 @@ public class ProjectService {
 
         Project project = new Project(projectRequestDto, user);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(project));
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(savedProject));
     }
 
     // 프로젝트 상세조회

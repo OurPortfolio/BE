@@ -23,8 +23,8 @@ public class ProjectController {
     private final ProjectService projectService;
 
     // 프로젝트 작성 및 파일 업로드
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseDto<ProjectResponseDto> creatProject(@RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseDto<ProjectResponseDto> creatProject(@RequestPart ProjectRequestDto projectRequestDto,
                                             @RequestPart(name = "images", required = false) List<MultipartFile> images,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return projectService.creatProject(projectRequestDto, images, userDetails.getUser());

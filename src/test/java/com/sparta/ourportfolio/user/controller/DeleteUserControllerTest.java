@@ -13,9 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +49,7 @@ class DeleteUserControllerTest {
         // when // then
         mockMvc.perform(
                         delete("/api/users/1")
-                                .with(SecurityMockMvcRequestPostProcessors.user(userDetails1))
+                                .with(user(userDetails1))
                                 .content(objectMapper.writeValueAsString(deleteUserResponse))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -72,7 +72,7 @@ class DeleteUserControllerTest {
         // when // then
         mockMvc.perform(
                         delete("/api/users/hard/2")
-                                .with(SecurityMockMvcRequestPostProcessors.user(userDetails2))
+                                .with(user(userDetails2))
                                 .content(objectMapper.writeValueAsString(hardDeleteUserResponse))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
