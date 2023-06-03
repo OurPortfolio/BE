@@ -139,7 +139,7 @@ public class UserService {
                 () -> new GlobalException(NOT_FOUND_USER));
 
         if (!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
-            throw new GlobalException(BAD_REQUEST);
+            throw new GlobalException(PRESENT_PASSWORD);
         }
 
         if (!updatePasswordRequestDto.getNewPassword().equals(updatePasswordRequestDto.getCheckNewPassword())) {
