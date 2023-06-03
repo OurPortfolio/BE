@@ -26,13 +26,13 @@ public class QPortfolio extends EntityPathBase<Portfolio> {
 
     public final StringPath category = createString("category");
 
-    public final StringPath experience = createString("experience");
-
     public final StringPath filter = createString("filter");
 
     public final StringPath githubId = createString("githubId");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final StringPath intro = createString("intro");
 
     public final StringPath location = createString("location");
 
@@ -49,6 +49,8 @@ public class QPortfolio extends EntityPathBase<Portfolio> {
     public final StringPath telephone = createString("telephone");
 
     public final com.sparta.ourportfolio.user.entity.QUser user;
+
+    public final StringPath youtubeUrl = createString("youtubeUrl");
 
     public QPortfolio(String variable) {
         this(Portfolio.class, forVariable(variable), INITS);
