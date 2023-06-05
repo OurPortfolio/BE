@@ -23,10 +23,10 @@ public class ProjectController {
     private final ProjectService projectService;
 
     // 프로젝트 작성 및 파일 업로드
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseDto<ProjectResponseDto> creatProject(@RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
-                                            @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseDto<ProjectResponseDto> creatProject(@RequestPart ProjectRequestDto projectRequestDto,
+                                                        @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return projectService.creatProject(projectRequestDto, images, userDetails.getUser());
     }
 
@@ -38,17 +38,17 @@ public class ProjectController {
 
     // 프로젝트 수정
     @PatchMapping("/{project-id}")
-    public ResponseDto<String> updateProject(@PathVariable(name = "project-id") Long id,
-                                             @RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
-                                             @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<ProjectResponseDto> updateProject(@PathVariable(name = "project-id") Long id,
+                                                         @RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
+                                                         @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return projectService.updateProject(id, projectRequestDto, images, userDetails.getUser());
     }
 
     // 프로젝트 삭제
     @DeleteMapping("/{project-id}")
-    public ResponseDto<String> deleteProject(@PathVariable(name = "project-id") Long id,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<ProjectResponseDto> deleteProject(@PathVariable(name = "project-id") Long id,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return projectService.deleteProject(id, userDetails.getUser());
     }
 
