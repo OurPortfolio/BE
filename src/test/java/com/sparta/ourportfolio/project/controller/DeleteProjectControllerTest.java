@@ -1,10 +1,10 @@
 package com.sparta.ourportfolio.project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
+import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
-import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
+import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.repository.ProjectRepository;
 import com.sparta.ourportfolio.project.service.ProjectService;
 import com.sparta.ourportfolio.user.entity.User;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CreateProjectControllerTest {
+class DeleteProjectControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,11 +45,14 @@ class CreateProjectControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private S3Service s3Service;
+
+    @Autowired
     private ProjectService projectService;
 
-    @DisplayName("프로젝트 생성")
+    @DisplayName("프로젝트 삭제 완료")
     @Test
-    void createProject() throws Exception {
+    void deleteProject() throws Exception {
         // given
         User user1 = createUser(1L, "test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
         userRepository.save(user1);
@@ -57,8 +60,8 @@ class CreateProjectControllerTest {
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(1L).get());
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
-        String createJson = objectMapper.writeValueAsString(projectRequestDto1);
-        MockMultipartFile requestDto1 = new MockMultipartFile("projectRequestDto", "projectRequestDto1", "application/json", createJson.getBytes(StandardCharsets.UTF_8));
+        String createJson1 = objectMapper.writeValueAsString(projectRequestDto1);
+        MockMultipartFile requestDto1 = new MockMultipartFile("projectRequestDto", "projectRequestDto1", "application/json", createJson1.getBytes(StandardCharsets.UTF_8));
 
         // 이미지 파일을 생성하여 리스트에 추가
         List<MultipartFile> images = new ArrayList<>();
@@ -67,16 +70,13 @@ class CreateProjectControllerTest {
         images.add(imageFile1);
         images.add(imageFile2);
 
-        ResponseDto<ProjectResponseDto> projectResponse = projectService.creatProject(projectRequestDto1, images, user1);
+        Project project = new Project(projectRequestDto1, user1);
+        project.setImageFile(s3Service.fileFactory(images, project));
+        project = projectRepository.save(project);
 
         // when // then
         mockMvc.perform(
-                        multipart("/api/projects")
-                                .file(requestDto1)
-                                .file("images", imageFile1.getBytes())
-                                .file("images", imageFile2.getBytes())
-                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                                .contentType(MediaType.APPLICATION_JSON)
+                        multipart(HttpMethod.DELETE, "/api/projects/1")
                                 .with(user(userDetails1))
                 )
                 .andDo(print())

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CreateProjectControllerTest {
+class GetProjectControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,9 +48,9 @@ class CreateProjectControllerTest {
     @Autowired
     private ProjectService projectService;
 
-    @DisplayName("프로젝트 생성")
+    @DisplayName("프로젝트 상세 조회")
     @Test
-    void createProject() throws Exception {
+    void getProject() throws Exception {
         // given
         User user1 = createUser(1L, "test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
         userRepository.save(user1);
@@ -71,12 +72,11 @@ class CreateProjectControllerTest {
 
         // when // then
         mockMvc.perform(
-                        multipart("/api/projects")
+                        multipart(HttpMethod.GET, "/api/projects/1")
                                 .file(requestDto1)
                                 .file("images", imageFile1.getBytes())
                                 .file("images", imageFile2.getBytes())
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                                .contentType(MediaType.APPLICATION_JSON)
                                 .with(user(userDetails1))
                 )
                 .andDo(print())
