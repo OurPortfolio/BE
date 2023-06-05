@@ -3,10 +3,10 @@ os: linux
 files:
 
   - source: /
-    destination: /home/ubuntu/firstcicd
+    destination: /home/ubuntu/firstcicd-ec2
 permissions:
 
-  - object: /home/ubuntu/firstcicd/
+  - object: /home/ubuntu/firstcicd-ec2/
     owner: ubuntu
     group: ubuntu
 hooks:
