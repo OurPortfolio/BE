@@ -20,7 +20,8 @@ import org.thymeleaf.util.StringUtils;
 import java.io.IOException;
 import java.util.List;
 
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_PROJECT;
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.UNAUTHORIZED;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +35,14 @@ public class ProjectService {
 
     // 프로젝트 작성
     public ResponseDto<ProjectResponseDto> creatProject(ProjectRequestDto projectRequestDto,
-                                            List<MultipartFile> images, User user) throws IOException {
+                                                        List<MultipartFile> images, User user) throws IOException {
 
 
         Project project = new Project(projectRequestDto, user);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(project));
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 작성 완료", new ProjectResponseDto(savedProject));
     }
 
     // 프로젝트 상세조회
@@ -54,9 +55,9 @@ public class ProjectService {
     }
 
     // 프로젝트 수정
-    public ResponseDto<String> updateProject(Long id,
-                                             ProjectRequestDto projectRequestDto,
-                                             List<MultipartFile> images, User user) throws IOException {
+    public ResponseDto<ProjectResponseDto> updateProject(Long id,
+                                                         ProjectRequestDto projectRequestDto,
+                                                         List<MultipartFile> images, User user) throws IOException {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_PROJECT)
         );
@@ -69,12 +70,12 @@ public class ProjectService {
         fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
         project.setImageFile(s3Service.fileFactory(images, project));
         project.updateProject(projectRequestDto);
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 수정 완료.", null);
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 수정 완료", null);
 
     }
 
     // 프로젝트 삭제
-    public ResponseDto<String> deleteProject(Long id, User user) {
+    public ResponseDto<ProjectResponseDto> deleteProject(Long id, User user) {
         Project project = projectRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_PROJECT)
         );
@@ -85,7 +86,7 @@ public class ProjectService {
         }
 
         projectRepository.deleteById(id);
-        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 삭제를 완료했습니다.", null);
+        return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 삭제 완료", null);
     }
 
 }
