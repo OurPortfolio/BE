@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class PortfolioDetailResponseDto {
     private Long id;
     private Long userId;
+    private String profileImage;
     private String portfolioTitle;
     private String intro;
     private String techStack;
@@ -31,6 +32,7 @@ public class PortfolioDetailResponseDto {
     public PortfolioDetailResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();
         this.userId = portfolio.getUser().getId();
+        this.profileImage = portfolio.getUser().getProfileImage();
         this.portfolioTitle = portfolio.getPortfolioTitle();
         this.intro = portfolio.getIntro();
         this.techStack = portfolio.getTechStack();
