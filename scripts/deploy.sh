@@ -1,5 +1,4 @@
-REPOSITORY=/home/ubuntu/firstcicd-ec2
-
+REPOSITORY=/home/ubuntu/firstcicd
 cd $REPOSITORY
 
 APP_NAME=firstcicd-ec2

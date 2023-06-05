@@ -30,9 +30,9 @@ class SignupControllerTest {
 
     @DisplayName("신규회원가입")
     @Test
-    void signup() throws Exception{
+    void signup() throws Exception {
         // given
-        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com","Password123","test4567",null);
+        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com", "Password123", "test4567", null);
 
         // when // then
         mockMvc.perform(
@@ -49,7 +49,7 @@ class SignupControllerTest {
     @Test
     void signupWithWrongEmail() throws Exception {
         // given
-        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@examplecom","Password123","test4567",null);
+        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@examplecom", "Password123", "test4567", null);
 
         // when // then
         mockMvc.perform(
@@ -66,7 +66,7 @@ class SignupControllerTest {
     @Test
     void signupWithEmailIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null,"Password123","test4567",null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null, "Password123", "test4567", null);
 
         // when // then
         mockMvc.perform(
@@ -83,7 +83,7 @@ class SignupControllerTest {
     @Test
     void signupWithWrongPassword() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com","password","test4567",null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password", "test4567", null);
 
         // when // then
         mockMvc.perform(
@@ -100,7 +100,7 @@ class SignupControllerTest {
     @Test
     void signupWithPasswordIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com",null,"test4567",null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", null, "test4567", null);
 
         // when // then
         mockMvc.perform(
@@ -117,7 +117,7 @@ class SignupControllerTest {
     @Test
     void signupWithWrongNickname() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com","password123","test3456789",null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password123", "test3456789", null);
 
         // when // then
         mockMvc.perform(
@@ -134,7 +134,7 @@ class SignupControllerTest {
     @Test
     void signupWithNicknameIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com","password123",null,null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password123", null, null);
 
         // when // then
         mockMvc.perform(
