@@ -36,16 +36,18 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final S3Service s3Service;
 
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,}$";
+    private static final String NICKNAME_PATTERN = "^[a-zA-Z가-힣0-9]{1,10}$";
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     //회원가입
     public ResponseDto<HttpStatus> signup(SignupRequestDto signupRequestDto) {
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+        validateEmail(signupRequestDto.getEmail());
+        validatePassword(signupRequestDto.getPassword());
+        validateNickname(signupRequestDto.getNickname());
 
-        Optional<User> findUserByEmail = userRepository.findByEmail(signupRequestDto.getEmail());
-        if (findUserByEmail.isPresent()) {
-            throw new GlobalException(DUPLICATED_USER_NAME);
-        }
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         Optional<User> findNicknameByEmail = userRepository.findByNickname(signupRequestDto.getNickname());
         if (findNicknameByEmail.isPresent()) {
@@ -61,6 +63,11 @@ public class UserService {
     public ResponseDto<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
+
+        //이메일, 비밀번호 패턴 검사
+        validateEmail(email);
+        validatePassword(password);
+
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
@@ -68,7 +75,7 @@ public class UserService {
             throw new GlobalException(USER_IS_DELETED);
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new GlobalException(BAD_REQUEST);
+            throw new GlobalException(BAD_PASSWORD);
         }
 
         JwtTokenDto tokenDto = jwtUtil.createAllToken(email, user.getId());
@@ -110,6 +117,7 @@ public class UserService {
             if (!newNickname.equals(userinfo.getNickname()) && userRepository.existsByNickname(newNickname)) {
                 throw new GlobalException(DUPLICATED_NICK_NAME);
             }
+            validateNickname(newNickname); // 닉네임 패턴 검사
             userinfo.updateNickname(newNickname);
             isUpdated = true;
         }
@@ -146,12 +154,8 @@ public class UserService {
             throw new GlobalException(COINCIDE_PASSWORD);
         }
 
-        // 비밀번호 형식이 일치하는지 체크
-        Pattern passPattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,}$");
-        Matcher matcher = passPattern.matcher(updatePasswordRequestDto.getNewPassword());
-        if (!matcher.find()) {
-            throw new GlobalException(PASSWORD_REGEX);
-        };
+        // 비밀번호 패턴 검사
+        validatePassword(updatePasswordRequestDto.getNewPassword());
 
         user.updatePassword(passwordEncoder.encode(updatePasswordRequestDto.getNewPassword()));
         userRepository.save(user);
@@ -178,5 +182,43 @@ public class UserService {
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
+    }
+
+    //이메일 중복 검사
+    public ResponseDto<Boolean> checkEmail(String email) {
+        validateEmail(email);
+
+        boolean exists = userRepository.existsByEmail(email);
+        if (exists) {
+            throw new GlobalException(DUPLICATED_EMAIL);
+        }
+        return ResponseDto.setSuccess(HttpStatus.OK, "이메일이 중복되지 않습니다.");
+    }
+
+    //이메일 패턴 검사
+    private void validateEmail(String email) {
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            throw new GlobalException(EMAIL_REGEX);
+        }
+    }
+
+    //비밀번호 패턴 검사
+    private void validatePassword(String password) {
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.matches()) {
+            throw new GlobalException(PASSWORD_REGEX);
+        }
+    }
+
+    //닉네임 패턴 검사
+    private void validateNickname(String nickname) {
+        Pattern pattern = Pattern.compile(NICKNAME_PATTERN);
+        Matcher matcher = pattern.matcher(nickname);
+        if (!matcher.matches()) {
+            throw new GlobalException(NICKNAME_REGEX);
+        }
     }
 }

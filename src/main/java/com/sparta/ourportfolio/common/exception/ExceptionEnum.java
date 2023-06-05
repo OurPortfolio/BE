@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionEnum {
     // 400 Bad Request
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "400", "아이디 또는 비밀번호가 일치하지 않습니다."),
+    BAD_PASSWORD(HttpStatus.BAD_REQUEST, "400", "비밀번호가 일치하지 않습니다."),
     PRESENT_PASSWORD(HttpStatus.BAD_REQUEST, "400", "입력한 비밀번호와 기존 비밀번호가 일치하지 않습니다."),
     PASSWORD_REGEX(HttpStatus.BAD_REQUEST, "400", "비밀번호는 8~15자리, 영어, 숫자 조합으로 구성되어야 합니다."),
-    NICKNAME_REGEX(HttpStatus.BAD_REQUEST, "400", "닉네임은 닉네임은 10자리, 영어, 한글, 숫자 조합으로 구성되어야합니다."),
+    NICKNAME_REGEX(HttpStatus.BAD_REQUEST, "400", "닉네임은 10자리이내로 문자, 숫자 조합으로 구성되어야합니다."),
+    EMAIL_REGEX(HttpStatus.BAD_REQUEST, "400", "이메일 형식이 올바르지 않습니다."),
     USER_INFORMATION(HttpStatus.BAD_REQUEST, "400", "변경할 회원정보를 작성하지 않았습니다."),
     COINCIDE_PASSWORD(HttpStatus.BAD_REQUEST, "400", "새로운 비밀번호와 확인 비밀번호가 일치하지 않습니다."),
     REQUEST_DATA_BAD_REQUEST(HttpStatus.BAD_REQUEST,"400","요청 데이터가 NULL 인지 확인 하세요."),
@@ -36,6 +38,7 @@ public enum ExceptionEnum {
     // 409 Conflict
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "409", "중복된 아이디가 이미 존재합니다."),
     DUPLICATED_NICK_NAME(HttpStatus.CONFLICT, "409", "중복된 닉네임이 이미 존재합니다."),
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT, "409", "중복된 이메일이 이미 존재합니다."),
     EXISTED_NICK_NAME(HttpStatus.CONFLICT, "409", "기존 닉네임과 동일합니다."),
     USER_IS_DELETED(HttpStatus.CONFLICT, "409", "회원 탈퇴가 된 상태입니다.");
 
