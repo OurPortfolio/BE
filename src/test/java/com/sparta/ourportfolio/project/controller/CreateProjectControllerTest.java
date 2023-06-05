@@ -56,9 +56,9 @@ class CreateProjectControllerTest {
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(1L).get());
 
-        ProjectRequestDto requestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
-        String createJson = objectMapper.writeValueAsString(requestDto1);
-        MockMultipartFile projectRequestDto1 = new MockMultipartFile("projectRequestDto", "projectRequestDto1", "application/json", createJson.getBytes(StandardCharsets.UTF_8));
+        ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
+        String createJson = objectMapper.writeValueAsString(projectRequestDto1);
+        MockMultipartFile requestDto1 = new MockMultipartFile("projectRequestDto", "projectRequestDto1", "application/json", createJson.getBytes(StandardCharsets.UTF_8));
 
         // 이미지 파일을 생성하여 리스트에 추가
         List<MultipartFile> images = new ArrayList<>();
@@ -67,12 +67,12 @@ class CreateProjectControllerTest {
         images.add(imageFile1);
         images.add(imageFile2);
 
-        ResponseDto<ProjectResponseDto> projectResponse = projectService.creatProject(requestDto1, images, user1);
+        ResponseDto<ProjectResponseDto> projectResponse = projectService.creatProject(projectRequestDto1, images, user1);
 
         // when // then
         mockMvc.perform(
                         multipart("/api/projects")
-                                .file(projectRequestDto1)
+                                .file(requestDto1)
                                 .file("images", imageFile1.getBytes())
                                 .file("images", imageFile2.getBytes())
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
