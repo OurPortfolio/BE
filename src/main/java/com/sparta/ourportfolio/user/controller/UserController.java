@@ -29,7 +29,6 @@ public class UserController {
     private final KakaoService kakaoService;
     private final NaverService naverService;
 
-
     // 회원가입
     @PostMapping("/signup")
     public ResponseDto<HttpStatus> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
@@ -53,7 +52,7 @@ public class UserController {
             MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<String> updateUser(@PathVariable Long id,
                                           @RequestPart(name = "nickname", required = false) UpdateUserRequestDto updateUserRequestDto,
-                                          @RequestPart(name = "profileImage", required = false) Optional<MultipartFile> image,
+                                          @RequestPart(name = "profileImage", required = false) MultipartFile image,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return userService.updateUser(id, updateUserRequestDto, image, userDetails.getUser());
     }
