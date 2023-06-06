@@ -79,13 +79,8 @@ public class UserService {
         }
 
         JwtTokenDto tokenDto = jwtUtil.createAllToken(email, user.getId());
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(user.getEmail());
-        if (refreshToken.isPresent()) {
-            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-        } else {
-            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), user.getEmail());
-            refreshTokenRepository.save(newToken);
-        }
+        setRefreshToken(response, tokenDto.getRefreshToken(), user.getEmail());
+
         setHeader(response, tokenDto);
         return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
     }
@@ -101,7 +96,7 @@ public class UserService {
     // 회원 정보 수정
     public ResponseDto<String> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
                                           Optional<MultipartFile> image, User user) throws IOException {
-        User userinfo = userRepository.findById(user.getId()).orElseThrow(
+        User userinfo = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
         if (!StringUtils.equals(user.getId(), userinfo.getId())) {
@@ -111,21 +106,15 @@ public class UserService {
         boolean isUpdated = false;
 
         // 닉네임 수정
-        if (updateUserRequestDto != null && updateUserRequestDto.getNickname() != null && !updateUserRequestDto.getNickname().isEmpty()) {
+        if (updateUserRequestDto != null && !updateUserRequestDto.getNickname().isEmpty()) {
             String newNickname = updateUserRequestDto.getNickname().orElse("");
-            // 중복된 닉네임이 있는지 체크
-            if (!newNickname.equals(userinfo.getNickname()) && userRepository.existsByNickname(newNickname)) {
-                throw new GlobalException(DUPLICATED_NICK_NAME);
-            }
-            validateNickname(newNickname); // 닉네임 패턴 검사
-            userinfo.updateNickname(newNickname);
+            updateNickname(userinfo, newNickname);
             isUpdated = true;
         }
 
-        // 클라이언트가 제공한 이미지로 업데이트
+        // 업로드한 이미지로 업데이트
         if (image.isPresent() && !image.get().isEmpty()) {
-            String imageUrl = s3Service.uploadFile(image.get());
-            userinfo.updateProfileImage(imageUrl);
+            updateProfileImage(userinfo, image.get());
             isUpdated = true;
         } else if (updateUserRequestDto != null && updateUserRequestDto.getProfileImage() == null) {
             // profileImage가 null로 요청이 들어올 때 기존의 이미지를 null로 업데이트
@@ -154,8 +143,7 @@ public class UserService {
             throw new GlobalException(COINCIDE_PASSWORD);
         }
 
-        // 비밀번호 패턴 검사
-        validatePassword(updatePasswordRequestDto.getNewPassword());
+        validatePassword(updatePasswordRequestDto.getNewPassword()); // 비밀번호 패턴 검사
 
         user.updatePassword(passwordEncoder.encode(updatePasswordRequestDto.getNewPassword()));
         userRepository.save(user);
@@ -182,6 +170,17 @@ public class UserService {
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
+    }
+
+    private void setRefreshToken(HttpServletResponse response, String refreshToken, String email) {
+        Optional<RefreshToken> existingToken = refreshTokenRepository.findByEmail(email);
+        RefreshToken newToken;
+        if (existingToken.isPresent()) {
+            newToken = existingToken.get().updateToken(refreshToken);
+        } else {
+            newToken = new RefreshToken(refreshToken, email);
+        }
+        refreshTokenRepository.save(newToken);
     }
 
     //이메일 중복 검사
@@ -220,5 +219,20 @@ public class UserService {
         if (!matcher.matches()) {
             throw new GlobalException(NICKNAME_REGEX);
         }
+    }
+
+    // 닉네임 업데이트 메서드
+    private void updateNickname(User user, String newNickname) {
+        if (!newNickname.equals(user.getNickname()) && userRepository.existsByNickname(newNickname)) {
+            throw new GlobalException(DUPLICATED_NICK_NAME);
+        }
+        validateNickname(newNickname); // 닉네임 패턴 검사
+        user.updateNickname(newNickname);
+    }
+
+    // 프로필 이미지 업데이트 메서드
+    private void updateProfileImage(User user, MultipartFile image) throws IOException {
+        String imageUrl = s3Service.uploadFile(image);
+        user.updateProfileImage(imageUrl);
     }
 }
