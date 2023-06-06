@@ -39,7 +39,6 @@ public class UserService {
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{6,}$";
     private static final String NICKNAME_PATTERN = "^[a-zA-Z가-힣0-9]{1,10}$";
-    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     //회원가입
     public ResponseDto<HttpStatus> signup(SignupRequestDto signupRequestDto) {
@@ -95,7 +94,7 @@ public class UserService {
 
     // 회원 정보 수정
     public ResponseDto<String> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
-                                          Optional<MultipartFile> image, User user) throws IOException {
+                                          MultipartFile image, User user) throws IOException {
         User userinfo = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
@@ -106,18 +105,18 @@ public class UserService {
         boolean isUpdated = false;
 
         // 닉네임 수정
-        if (updateUserRequestDto != null && !updateUserRequestDto.getNickname().isEmpty()) {
-            String newNickname = updateUserRequestDto.getNickname().orElse("");
+        if (updateUserRequestDto != null && updateUserRequestDto.getNickname().isEmpty()) {
+            String newNickname = updateUserRequestDto.getNickname();
             updateNickname(userinfo, newNickname);
             isUpdated = true;
         }
 
         // 업로드한 이미지로 업데이트
-        if (image.isPresent() && !image.get().isEmpty()) {
-            updateProfileImage(userinfo, image.get());
+        if (image != null && !user.getProfileImage().isEmpty()) {
+            updateProfileImage(userinfo, image);
             isUpdated = true;
         } else if (updateUserRequestDto != null && updateUserRequestDto.getProfileImage() == null) {
-            // profileImage가 null로 요청이 들어올 때 기존의 이미지를 null로 업데이트
+            // profileImage 가 null 로 요청이 들어올 때 기존의 이미지를 null 로 업데이트
             userinfo.updateProfileImage(null);
             isUpdated = true;
         }
