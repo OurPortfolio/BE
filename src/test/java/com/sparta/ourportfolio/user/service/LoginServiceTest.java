@@ -43,7 +43,7 @@ class LoginServiceTest {
         LoginRequestDto loginRequestDto1 = createLoginRequestDto("test4@example.com", "Password123");
 
         // 로그인 요청 수행
-        ResponseDto<String> loginResponse = userService.login(loginRequestDto1, response);
+        ResponseDto<UserDto> loginResponse = userService.login(loginRequestDto1, response);
 
         // 응답 검증
         assertThat(loginResponse)
