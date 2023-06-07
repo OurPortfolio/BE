@@ -36,7 +36,7 @@ public class KakaoService {
     private String kakaoClientSecret;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String redirectUri;
+    private String kakaoRedirectUri;
 
 //    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=http://localhost:8080/api/users/kakao&response_type=code
 
@@ -68,7 +68,8 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
         body.add("client_secret", kakaoClientSecret);
-        body.add("redirect_uri", redirectUri);
+//        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
+        body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
         // HTTP 요청 보내기
