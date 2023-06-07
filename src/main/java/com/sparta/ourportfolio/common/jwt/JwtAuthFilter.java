@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         // JWT 토큰을 해석하여 추출
         String access_token = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
@@ -41,20 +41,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(access_token)) {
                 setAuthentication(jwtUtil.getUserInfoFromToken(access_token));
             } else if (refresh_token != null && jwtUtil.refreshTokenValid(refresh_token)) {
-                //Refresh토큰으로 유저명 가져오기
+                //Refresh 토큰으로 유저명 가져오기
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 //유저명으로 유저 정보 가져오기
                 User user = userRepository.findByEmail(userEmail).get();
                 //새로운 ACCESS TOKEN 발급
                 String newAccessToken = jwtUtil.createToken(userEmail, "Access", user.getId());
-                //Header에 ACCESS TOKEN 추가
+                //Header 에 ACCESS TOKEN 추가
                 jwtUtil.setHeaderAccessToken(response, newAccessToken);
                 setAuthentication(userEmail);
             } else if (refresh_token == null) {
-                jwtExceptionHandler(response, "AccessToken이 만료되었습니다.", HttpStatus.BAD_REQUEST.value());
+                jwtExceptionHandler(response, "AccessToken 이 만료되었습니다.", HttpStatus.BAD_REQUEST.value());
                 return;
             } else {
-                jwtExceptionHandler(response, "RefreshToken이 만료되었습니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST.value());
+                jwtExceptionHandler(response, "RefreshToken 이 만료되었습니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST.value());
                 return;
             }
             // 다음 필터로 요청과 응답을 전달하여 필터 체인 계속 실행
@@ -62,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
     }
 
-    // 인증 객체를 생성하여 SecurityContext에 설정
+    // 인증 객체를 생성하여 SecurityContext 에 설정
     public void setAuthentication(String userEmail) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = jwtUtil.createAuthentication(userEmail);
