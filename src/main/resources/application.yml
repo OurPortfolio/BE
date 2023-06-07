@@ -14,4 +14,5 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 10MB  # 원하는 파일 크기로 설정
+      max-file-size: 10MB
+      max-request-size: 10MB   #원하는 파일 크기로 설정
