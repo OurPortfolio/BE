@@ -11,6 +11,7 @@ import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,15 @@ public class NaverService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+    private String naverClientId;
+
+    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+    private String naverClientSecret;
+
+    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    private String naverRedirectUri;
 
 //    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=http://localhost:8080/api/users/naver&state=state
 
@@ -54,10 +64,10 @@ public class NaverService {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "bA_xFHysO1Zxe8CywEoE");
-        body.add("client_secret", "FgdEOJyeeJ");
-        body.add("redirect_uri", "http://localhost:8080/api/users/naver");
-        body.add("redirect_uri", "http://3.34.102.60:8080//api/users/naver");
+        body.add("client_id", naverClientId);
+        body.add("client_secret", naverClientSecret);
+//        body.add("redirect_uri", "http://localhost:8080/api/users/naver");
+        body.add("redirect_uri", naverRedirectUri);
         body.add("code", code);
         body.add("state", state);
 
