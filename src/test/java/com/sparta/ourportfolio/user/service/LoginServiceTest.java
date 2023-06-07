@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.user.service;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.user.dto.LoginRequestDto;
+import com.sparta.ourportfolio.user.dto.UserDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;

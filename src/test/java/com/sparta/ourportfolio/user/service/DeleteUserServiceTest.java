@@ -2,6 +2,7 @@ package com.sparta.ourportfolio.user.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
+import com.sparta.ourportfolio.user.dto.UserDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ class DeleteUserServiceTest {
         userRepository.save(user1);
 
         // when
-        ResponseDto<HttpStatus> deleteUserResponse = userService.deleteUser(user1.getId(), user1);
+        ResponseDto<UserDto> deleteUserResponse = userService.deleteUser(user1.getId(), user1);
 
         // then
         assertThat(deleteUserResponse)
@@ -46,7 +47,7 @@ class DeleteUserServiceTest {
         userRepository.save(user2);
 
         // when
-        ResponseDto<HttpStatus> hardDeleteUserResponse = userService.deleteUserHard(user2.getId(), user2);
+        ResponseDto<UserDto> hardDeleteUserResponse = userService.deleteUserHard(user2.getId(), user2);
 
         // then
         assertThat(hardDeleteUserResponse)

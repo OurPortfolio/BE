@@ -14,12 +14,15 @@ public class UserDto {
 
     private final Long kakaoId;
 
-    public UserDto(Long id, String email, String nickname, String profileImage, Long kakaoId) {
+    private final Long naverId;
+
+    public UserDto(Long id, String email, String nickname, String profileImage, Long kakaoId, Long naverId) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.kakaoId = kakaoId;
+        this.naverId = naverId;
     }
 
 }
