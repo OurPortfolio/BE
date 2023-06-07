@@ -15,7 +15,7 @@ public enum ExceptionEnum {
     USER_INFORMATION(HttpStatus.BAD_REQUEST, "400", "변경할 회원정보를 작성하지 않았습니다."),
     COINCIDE_PASSWORD(HttpStatus.BAD_REQUEST, "400", "새로운 비밀번호와 확인 비밀번호가 일치하지 않습니다."),
     REQUEST_DATA_BAD_REQUEST(HttpStatus.BAD_REQUEST,"400","요청 데이터가 NULL 인지 확인 하세요."),
-    PORTFOLIO_ID_LIST_IS_NULL(HttpStatus.BAD_REQUEST,"400", "portfolioIdList가 null입니다. portfolioRequestDto에 추가하세요."),
+    PORTFOLIO_ID_LIST_IS_NULL(HttpStatus.BAD_REQUEST,"400", "portfolioIdList 가 null 입니다. portfolioRequestDto 에 추가하세요."),
 
     // 401 Unauthorized
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "권한이 없습니다."),
