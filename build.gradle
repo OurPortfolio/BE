@@ -55,6 +55,8 @@ dependencies {
 
     //JAXB
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 //-plain.jar 가 만들어 지지 않도록 하는 설정 (ci/cd)
 jar {

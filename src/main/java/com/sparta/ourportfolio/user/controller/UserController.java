@@ -31,13 +31,13 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseDto<HttpStatus> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseDto<UserDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseDto<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto<UserDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         return userService.login(loginRequestDto, response);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
     // 회원 정보 수정
     @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseDto<String> updateUser(@PathVariable Long id,
+    public ResponseDto<UserDto> updateUser(@PathVariable Long id,
                                           @RequestPart(name = "nickname", required = false) UpdateUserRequestDto updateUserRequestDto,
                                           @RequestPart(name = "profileImage", required = false) MultipartFile image,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
@@ -59,7 +59,7 @@ public class UserController {
 
     // 비밀번호 변경
     @PutMapping("/{id}/password")
-    public ResponseDto<String> updatePassword(@PathVariable Long id,
+    public ResponseDto<UserDto> updatePassword(@PathVariable Long id,
                                               @Valid @RequestBody UpdatePasswordRequestDto updatePasswordRequestDto,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.updatePassword(id, updatePasswordRequestDto, userDetails.getUser());
@@ -67,14 +67,14 @@ public class UserController {
 
     // 회원 탈퇴(soft)
     @DeleteMapping("/{id}")
-    public ResponseDto<HttpStatus> deleteUser(@PathVariable Long id,
+    public ResponseDto<UserDto> deleteUser(@PathVariable Long id,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.deleteUser(id, userDetails.getUser());
     }
 
     // 회원 탈퇴(hard)
     @DeleteMapping("/hard/{id}")
-    public ResponseDto<HttpStatus> deleteUserHard(@PathVariable Long id,
+    public ResponseDto<UserDto> deleteUserHard(@PathVariable Long id,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.deleteUserHard(id, userDetails.getUser());
     }

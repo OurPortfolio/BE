@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.user.service;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
+import com.sparta.ourportfolio.user.dto.UserDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,7 @@ class SignupServiceTest {
         SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com", "Password123", "test4567", null);
 
         // when (회원가입 메서드 호출)
-        ResponseDto<HttpStatus> response = userService.signup(signupRequestDto1);
+        ResponseDto<UserDto> response = userService.signup(signupRequestDto1);
 
         // then (결과 검증)
         assertThat(response)

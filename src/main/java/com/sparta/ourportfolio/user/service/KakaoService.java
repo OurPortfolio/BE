@@ -9,6 +9,7 @@ import com.sparta.ourportfolio.user.dto.KakaoUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -27,6 +28,15 @@ public class KakaoService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String kakaoClientId;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    private String kakaoClientSecret;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String redirectUri;
 
 //    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=http://localhost:8080/api/users/kakao&response_type=code
 
@@ -56,9 +66,9 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "acf4c39ccdb7be5096df83b38e86fe27");
-        body.add("client_secret", "YOxz7CyQ980OeysVQw5jLQ6RaWQRfoSA");
-        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
+        body.add("client_id", kakaoClientId);
+        body.add("client_secret", kakaoClientSecret);
+        body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
         // HTTP 요청 보내기
