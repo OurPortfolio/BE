@@ -18,7 +18,7 @@ public class ProjectImage {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project-id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     public ProjectImage(String imageUrl, Project project) {
