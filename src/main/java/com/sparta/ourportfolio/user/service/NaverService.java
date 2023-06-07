@@ -57,6 +57,7 @@ public class NaverService {
         body.add("client_id", "bA_xFHysO1Zxe8CywEoE");
         body.add("client_secret", "FgdEOJyeeJ");
         body.add("redirect_uri", "http://localhost:8080/api/users/naver");
+        body.add("redirect_uri", "http://3.34.102.60:8080//api/users/naver");
         body.add("code", code);
         body.add("state", state);
 

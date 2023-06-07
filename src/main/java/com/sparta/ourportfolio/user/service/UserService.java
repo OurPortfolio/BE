@@ -41,7 +41,7 @@ public class UserService {
     private static final String NICKNAME_PATTERN = "^[a-zA-Z가-힣0-9]{1,10}$";
 
     //회원가입
-    public ResponseDto<HttpStatus> signup(SignupRequestDto signupRequestDto) {
+    public ResponseDto<UserDto> signup(SignupRequestDto signupRequestDto) {
         validateEmail(signupRequestDto.getEmail());
         validatePassword(signupRequestDto.getPassword());
         validateNickname(signupRequestDto.getNickname());
@@ -55,11 +55,11 @@ public class UserService {
 
         User user = new User(password, signupRequestDto);
         userRepository.save(user);
-        return ResponseDto.setSuccess(HttpStatus.OK, "회원가입 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원가입 성공!", null);
     }
 
     //로그인
-    public ResponseDto<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto<UserDto> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
@@ -81,19 +81,20 @@ public class UserService {
         setRefreshToken(response, tokenDto.getRefreshToken(), user.getEmail());
 
         setHeader(response, tokenDto);
-        return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공!", null);
     }
 
     // 회원 조회
     public ResponseDto<UserDto> getUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
-        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(), user.getKakaoId());
+        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getNickname(),
+                user.getProfileImage(), user.getKakaoId(), user.getNaverId());
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 조회 성공!", userDto);
     }
 
     // 회원 정보 수정
-    public ResponseDto<String> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
+    public ResponseDto<UserDto> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
                                           MultipartFile image, User user) throws IOException {
         User userinfo = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
@@ -105,14 +106,14 @@ public class UserService {
         boolean isUpdated = false;
 
         // 닉네임 수정
-        if (updateUserRequestDto != null && updateUserRequestDto.getNickname().isEmpty()) {
+        if (updateUserRequestDto != null && !StringUtils.isEmpty(updateUserRequestDto.getNickname())) {
             String newNickname = updateUserRequestDto.getNickname();
             updateNickname(userinfo, newNickname);
             isUpdated = true;
         }
 
         // 업로드한 이미지로 업데이트
-        if (image != null && !user.getProfileImage().isEmpty()) {
+        if (image != null) {
             updateProfileImage(userinfo, image);
             isUpdated = true;
         } else if (updateUserRequestDto != null && updateUserRequestDto.getProfileImage() == null) {
@@ -126,11 +127,11 @@ public class UserService {
         }
 
         userRepository.save(userinfo);
-        return ResponseDto.setSuccess(HttpStatus.OK, "회원 정보 수정 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원 정보 수정 성공!", null);
     }
 
     // 비밀번호 변경
-    public ResponseDto<String> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
+    public ResponseDto<UserDto> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
         userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
@@ -146,24 +147,24 @@ public class UserService {
 
         user.updatePassword(passwordEncoder.encode(updatePasswordRequestDto.getNewPassword()));
         userRepository.save(user);
-        return ResponseDto.setSuccess(HttpStatus.OK, "비밀번호 변경 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "비밀번호 변경 성공!", null);
     }
 
     // 회원 탈퇴(soft, default)
-    public ResponseDto<HttpStatus> deleteUser(Long id, User user) {
+    public ResponseDto<UserDto> deleteUser(Long id, User user) {
         userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
         user.deleteUser(); // Soft delete 수행
         userRepository.save(user);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "회원 탈퇴 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "회원 탈퇴 성공!", null);
     }
 
     // 회원 탈퇴(hard delete)
-    public ResponseDto<HttpStatus> deleteUserHard(Long id, User user) {
+    public ResponseDto<UserDto> deleteUserHard(Long id, User user) {
         userRepository.deleteById(user.getId());
-        return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제");
+        return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제", null);
     }
 
     private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {

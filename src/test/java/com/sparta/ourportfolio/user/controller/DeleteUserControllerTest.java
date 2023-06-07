@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
+import com.sparta.ourportfolio.user.dto.UserDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import com.sparta.ourportfolio.user.service.UserService;
@@ -44,7 +45,7 @@ class DeleteUserControllerTest {
         userRepository.save(user1);
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(1L).get());
-        ResponseDto<HttpStatus> deleteUserResponse = userService.deleteUser(user1.getId(), user1);
+        ResponseDto<UserDto> deleteUserResponse = userService.deleteUser(user1.getId(), user1);
 
         // when // then
         mockMvc.perform(
@@ -68,7 +69,7 @@ class DeleteUserControllerTest {
         userRepository.save(user2);
 
         UserDetailsImpl userDetails2 = new UserDetailsImpl(userRepository.findById(2L).get());
-        ResponseDto<HttpStatus> hardDeleteUserResponse = userService.deleteUserHard(user2.getId(), user2);
+        ResponseDto<UserDto> hardDeleteUserResponse = userService.deleteUserHard(user2.getId(), user2);
         // when // then
         mockMvc.perform(
                         delete("/api/users/hard/2")
