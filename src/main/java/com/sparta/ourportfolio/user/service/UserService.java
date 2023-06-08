@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -95,45 +96,32 @@ public class UserService {
 
     // 회원 정보 수정
     public ResponseDto<UserDto> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
-                                          MultipartFile image, User user) throws IOException {
-        User userinfo = userRepository.findById(id).orElseThrow(
-                () -> new GlobalException(NOT_FOUND_USER));
-
-        if (!StringUtils.equals(user.getId(), userinfo.getId())) {
+                                           MultipartFile image, User user) throws IOException {
+        if (!StringUtils.equals(id, user.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
 
-        boolean isUpdated = false;
+        if (!StringUtils.equals(updateUserRequestDto.getNickname(), user.getNickname()) && userRepository.existsByNickname(updateUserRequestDto.getNickname())) {
+            throw new GlobalException(DUPLICATED_NICK_NAME);
+        }
+        validateNickname(updateUserRequestDto.getNickname());
 
-        // 닉네임 수정
-        if (updateUserRequestDto != null && !StringUtils.isEmpty(updateUserRequestDto.getNickname())) {
-            String newNickname = updateUserRequestDto.getNickname();
-            updateNickname(userinfo, newNickname);
-            isUpdated = true;
+        String imageUrl = null;
+        if (!image.isEmpty()) {
+            imageUrl = s3Service.uploadFile(image);
         }
 
-        // 업로드한 이미지로 업데이트
-        if (image != null) {
-            updateProfileImage(userinfo, image);
-            isUpdated = true;
-        } else if (updateUserRequestDto != null && updateUserRequestDto.getProfileImage() == null) {
-            // profileImage 가 null 로 요청이 들어올 때 기존의 이미지를 null 로 업데이트
-            userinfo.updateProfileImage(null);
-            isUpdated = true;
-        }
+        user.updateUser(updateUserRequestDto, imageUrl);
+        userRepository.save(user);
 
-        if (!isUpdated) {
-            throw new GlobalException(USER_INFORMATION);
-        }
-
-        userRepository.save(userinfo);
         return ResponseDto.setSuccess(HttpStatus.OK, "회원 정보 수정 성공!", null);
     }
 
     // 비밀번호 변경
     public ResponseDto<UserDto> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
-        userRepository.findById(id).orElseThrow(
-                () -> new GlobalException(NOT_FOUND_USER));
+        if (!StringUtils.equals(id, user.getId())) {
+            throw new GlobalException(UNAUTHORIZED);
+        }
 
         if (!passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(), user.getPassword())) {
             throw new GlobalException(PRESENT_PASSWORD);
@@ -221,18 +209,4 @@ public class UserService {
         }
     }
 
-    // 닉네임 업데이트 메서드
-    private void updateNickname(User user, String newNickname) {
-        if (!newNickname.equals(user.getNickname()) && userRepository.existsByNickname(newNickname)) {
-            throw new GlobalException(DUPLICATED_NICK_NAME);
-        }
-        validateNickname(newNickname); // 닉네임 패턴 검사
-        user.updateNickname(newNickname);
-    }
-
-    // 프로필 이미지 업데이트 메서드
-    private void updateProfileImage(User user, MultipartFile image) throws IOException {
-        String imageUrl = s3Service.uploadFile(image);
-        user.updateProfileImage(imageUrl);
-    }
 }
