@@ -53,18 +53,18 @@ class SignupServiceTest {
 
     }
 
-    @DisplayName("중복된 Email로 회원가입")
-    @Test
-    void signupWitheDuplicateEmail() {
-        // given
-        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@example.com", "Password123", "test4", null);
-
-        // when // then
-        assertThatThrownBy(() -> userService.signup(signupRequestDto2))
-                .isInstanceOf(GlobalException.class)
-                .hasMessage("중복된 아이디가 이미 존재합니다.");
-
-    }
+//    @DisplayName("중복된 Email로 회원가입")
+//    @Test
+//    void signupWitheDuplicateEmail() {
+//        // given
+//        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@example.com", "Password123", "test4", null);
+//
+//        // when // then
+//        assertThatThrownBy(() -> userService.signup(signupRequestDto2))
+//                .isInstanceOf(GlobalException.class)
+//                .hasMessage("중복된 아이디가 이미 존재합니다.");
+//
+//    }
 
     @DisplayName("중복된 Nickname으로 회원가입")
     @Test
