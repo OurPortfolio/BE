@@ -37,7 +37,7 @@ public class PortfolioController {
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
 
-    @GetMapping("/{portfolio-id}")
+    @GetMapping("/test/{portfolio-id}")
     public ResponseDto<PortfolioDetailResponseDto> getPortfolio(@PathVariable(name = "portfolio-id") Long id) {
         return portfolioInquiryService.getPortfolio(id);
     }
