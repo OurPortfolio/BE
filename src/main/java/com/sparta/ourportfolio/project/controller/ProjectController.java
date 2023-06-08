@@ -31,7 +31,7 @@ public class ProjectController {
     }
 
     // 프로젝트 상세 조회
-    @GetMapping("/{project-id}/test")
+    @GetMapping("/test/{project-id}")
     public ResponseDto<ProjectResponseDto> getProject(@PathVariable(name = "project-id") Long id) {
         return projectService.getProject(id);
     }
