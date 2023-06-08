@@ -2,7 +2,9 @@ package com.sparta.ourportfolio.user.entity;
 
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
+import com.sparta.ourportfolio.project.entity.ProjectImage;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
+import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,6 +63,11 @@ public class User extends TimeStamped {
         this.profileImage = signupRequestDto.getProfileImage();
     }
 
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto, String imageUrl) {
+        this.nickname = updateUserRequestDto.getNickname();
+        this.profileImage = imageUrl;
+    }
+
     // 소셜 회원가입
     public User(Long kakaoId, Long naverId, Long googleId, String email, String nickname, String password, String profileImage) {
         this.kakaoId = kakaoId;
@@ -86,14 +93,6 @@ public class User extends TimeStamped {
 
     public void addPortfolio(Portfolio portfolio) {
         this.portfolioList.add(portfolio);
-    }
-
-    public void updateProfileImage(String imageUrl) {
-        this.profileImage = imageUrl;
-    }
-
-    public void updateNickname(String newNickname) {
-        this.nickname = newNickname;
     }
 
     public void updatePassword(String newPassword) {

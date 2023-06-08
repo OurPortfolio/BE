@@ -10,14 +10,12 @@ import com.sparta.ourportfolio.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,34 +46,33 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
-            MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<UserDto> updateUser(@PathVariable Long id,
-                                          @RequestPart(name = "nickname", required = false) UpdateUserRequestDto updateUserRequestDto,
-                                          @RequestPart(name = "profileImage", required = false) MultipartFile image,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                           @RequestPart UpdateUserRequestDto updateUserRequestDto,
+                                           @RequestPart(name = "profileImage", required = false) MultipartFile image,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return userService.updateUser(id, updateUserRequestDto, image, userDetails.getUser());
     }
 
     // 비밀번호 변경
     @PutMapping("/{id}/password")
     public ResponseDto<UserDto> updatePassword(@PathVariable Long id,
-                                              @Valid @RequestBody UpdatePasswordRequestDto updatePasswordRequestDto,
-                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                               @Valid @RequestBody UpdatePasswordRequestDto updatePasswordRequestDto,
+                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.updatePassword(id, updatePasswordRequestDto, userDetails.getUser());
     }
 
     // 회원 탈퇴(soft)
     @DeleteMapping("/{id}")
     public ResponseDto<UserDto> deleteUser(@PathVariable Long id,
-                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.deleteUser(id, userDetails.getUser());
     }
 
     // 회원 탈퇴(hard)
     @DeleteMapping("/hard/{id}")
     public ResponseDto<UserDto> deleteUserHard(@PathVariable Long id,
-                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.deleteUserHard(id, userDetails.getUser());
     }
 
