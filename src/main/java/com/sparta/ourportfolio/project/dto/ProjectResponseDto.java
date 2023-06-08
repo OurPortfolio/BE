@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectResponseDto {
     private Long id;
+    private Long userId;
     private String title;
     private String term;
     private String people;
@@ -20,6 +21,7 @@ public class ProjectResponseDto {
 
     public ProjectResponseDto(Project project) {
         this.id = project.getId();
+        this.userId = project.getUser().getId();
         this.title = project.getTitle();
         this.term = project.getTerm();
         this.people = project.getPeople();
