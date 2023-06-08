@@ -36,7 +36,7 @@ jobs:
 
       - name: Set YML
         run: |
-          echo "${{secrets.APPLICATION_TEST_SECRET_KEY}}" | base64 --decode > src/test/resources/applicationTest-aws.yml
+          echo "${{secrets.APPLICATION_TEST_SECRET_KEY}}" | base64 --decode > src/test/resources/application-test-aws.yml
           find src
 
       - name: Set YML
