@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "*", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "https://ppol.pro", exposedHeaders = "Authorization")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/projects")
