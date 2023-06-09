@@ -56,6 +56,7 @@ public class S3Service {
 
     //파일을 s3에 업로드
     public String uploadFile(MultipartFile multipartFile) throws IOException {
+        isFileExists(multipartFile);
         String fileName = UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -67,6 +68,12 @@ public class S3Service {
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
+    //파일 유 / 무 확인 메서드
+    private void isFileExists(MultipartFile multipartFile) {
+        if (multipartFile.isEmpty()) {
+            throw new NullPointerException("파일이 존재하지 않습니다.");
+        }
+    }
 
 }
 

@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateUserRequestDto {
     private String nickname;
+    private String profileImage;
 
-    public UpdateUserRequestDto(String nickname) {
+    public UpdateUserRequestDto(String nickname, String profileImage) {
         this.nickname = nickname;
+        this.profileImage = profileImage;
     }
 }
