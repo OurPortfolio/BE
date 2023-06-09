@@ -1,11 +1,9 @@
 package com.sparta.ourportfolio.project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
-import com.sparta.ourportfolio.project.dto.ProjectResponseDto;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.repository.ProjectRepository;
 import com.sparta.ourportfolio.project.service.ProjectService;
@@ -53,7 +51,7 @@ class UpdateProjectControllerTest {
     @Autowired
     private ProjectService projectService;
 
-    @DisplayName("프로젝트 완료")
+    @DisplayName("프로젝트 수정 완료")
     @Test
     void updateProject() throws Exception {
         // given
@@ -63,8 +61,6 @@ class UpdateProjectControllerTest {
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(1L).get());
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
-        String createJson1 = objectMapper.writeValueAsString(projectRequestDto1);
-        MockMultipartFile requestDto1 = new MockMultipartFile("projectRequestDto", "projectRequestDto1", "application/json", createJson1.getBytes(StandardCharsets.UTF_8));
 
         // 이미지 파일을 생성하여 리스트에 추가
         List<MultipartFile> images = new ArrayList<>();
@@ -86,8 +82,6 @@ class UpdateProjectControllerTest {
         MockMultipartFile imageFile4 = new MockMultipartFile("image4", "test4.jpg", "image/jpeg", "Test Image".getBytes());
         newImages.add(imageFile3);
         newImages.add(imageFile4);
-
-        ResponseDto<ProjectResponseDto> projectResponse = projectService.updateProject(project.getId(), newProjectRequestDto, newImages, user1);
 
         // when // then
         mockMvc.perform(

@@ -37,7 +37,6 @@ public class ProjectService {
     public ResponseDto<ProjectResponseDto> creatProject(ProjectRequestDto projectRequestDto,
                                                         List<MultipartFile> images, User user) throws IOException {
 
-
         Project project = new Project(projectRequestDto, user);
         project.setImageFile(s3Service.fileFactory(images, project));
         Project savedProject = projectRepository.save(project);

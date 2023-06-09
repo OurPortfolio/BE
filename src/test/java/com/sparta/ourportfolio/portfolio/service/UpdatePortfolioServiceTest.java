@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.ExceptionEnum;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -95,6 +98,113 @@ class UpdatePortfolioServiceTest {
                 .contains(HttpStatus.OK, "수정 완료");
     }
 
+    @DisplayName("사용자가 작성하지 않은 포트폴리오는 수정할 수 없고 예외가 발생한다.")
+    @Test
+    void updatePortfolioByUnAuthorizeUser() throws IOException {
+        //given
+        //포트폴리오 생성
+        User testUser = createUser(1L, "test@gmail.com",
+                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
+                "test", false);
+        userRepository.save(testUser);
+        Project project1 = createProject(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        projectIdList.add(project1.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
+                "techStack", "residence","location","010********",
+                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        portfolioRepository.save(portfolio);
+
+        //수정 데이터 준비
+        User anonymous = createUser(2L, "anonymous@gmail.com",
+                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
+                "anonymous", false);
+        userRepository.save(anonymous);
+        Project project2 = createProject(testUser);
+        List<Long> updateProjectIdList = new ArrayList<>();
+        updateProjectIdList.add(project2.getId());
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
+                "upTechStack", "upResidence","upLocation","01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
+                updateProjectIdList
+        );
+        MockMultipartFile updateImageFile = new MockMultipartFile(
+                "image",
+                "update-test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String updateImageUrl = s3Service.uploadFile(imageFile);
+
+        portfolio.update(updatePortfolioRequestDto, updateImageUrl);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.updatePortfolio(
+                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, anonymous))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
+    }
+
+//    @DisplayName("사용자가 작성하지 않은 포트폴리오는 수정할 수 없고 예외가 발생한다.")
+//    @Test
+//    void updatePortfolioByUnAuthorizeUser() throws IOException {
+//        //given
+//        //포트폴리오 생성
+//        User testUser = createUser(1L, "test@gmail.com",
+//                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
+//                "test", false);
+//        userRepository.save(testUser);
+//        Project project1 = createProject(testUser);
+//        List<Long> projectIdList = new ArrayList<>();
+//        projectIdList.add(project1.getId());
+//        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
+//                "techStack", "residence","location","010********",
+//                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+//                projectIdList
+//        );
+//        MockMultipartFile imageFile = new MockMultipartFile(
+//                "image",
+//                "test.jpg",
+//                "image/jpeg", "Test Image".getBytes());
+//        String imageUrl = s3Service.uploadFile(imageFile);
+//
+//        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+//        portfolioRepository.save(portfolio);
+//
+//        //수정 데이터 준비
+//        User anonymous = createUser(2L, "anonymous@gmail.com",
+//                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
+//                "anonymous", false);
+//        userRepository.save(anonymous);
+//        Project project2 = createProject(testUser);
+//        List<Long> updateProjectIdList = new ArrayList<>();
+//        updateProjectIdList.add(project2.getId());
+//        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
+//                "upTechStack", "upResidence","upLocation","01055489692",
+//                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
+//                updateProjectIdList
+//        );
+//        MockMultipartFile updateImageFile = new MockMultipartFile(
+//                "image",
+//                "update-test.jpg",
+//                "image/jpeg", "Test Image".getBytes());
+//        String updateImageUrl = s3Service.uploadFile(imageFile);
+//
+//        portfolio.update(updatePortfolioRequestDto, updateImageUrl);
+//
+//        //when //then
+//        assertThatThrownBy(() -> portfolioService.updatePortfolio(
+//                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, anonymous))
+//                .isInstanceOf(GlobalException.class)
+//                .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
+//    }
 
     private Project createProject(User testUser) throws IOException {
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto(
@@ -171,5 +281,6 @@ class UpdatePortfolioServiceTest {
                 .user(user)
                 .build();
     }
+
 
 }

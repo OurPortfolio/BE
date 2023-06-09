@@ -105,13 +105,8 @@ public class PortfolioService {
         portfolio.setUser(userNow);
         userNow.addPortfolio(portfolio);
 
-        if (portfolioRequestDto.getProjectIdList() == null) {
-            throw new GlobalException(PORTFOLIO_ID_LIST_IS_NULL);
-        }
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
-            Project project = projectRepository.findById(projectId).orElseThrow(
-                    () -> new GlobalException(NOT_FOUND_PROJECT)
-            );
+            Project project = isExistProject(projectId);
             if (StringUtils.equals(project.getUser().getId(), userNow.getId())) {
                 portfolio.addProject(project);
                 project.setPortfolio(portfolio);
@@ -119,7 +114,6 @@ public class PortfolioService {
                 throw new GlobalException(PROJECT_FORBIDDEN);
             }
         }
-
         portfolioRepository.saveAndFlush(portfolio);
 
         if (portfolioRequestDto.getTechStack() != null) {
@@ -145,13 +139,8 @@ public class PortfolioService {
             throw new GlobalException(UNAUTHORIZED);
         }
 
-        if (portfolioRequestDto.getProjectIdList() == null) {
-            throw new GlobalException(PORTFOLIO_ID_LIST_IS_NULL);
-        }
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
-            Project project = projectRepository.findById(projectId).orElseThrow(
-                    () -> new GlobalException(NOT_FOUND_PROJECT)
-            );
+            Project project = isExistProject(projectId);
             if (!portfolio.getProjectList().contains(projectId) &&
                     StringUtils.equals(project.getUser().getId(), userNow.getId())) {
                 portfolio.addProject(project);
@@ -198,5 +187,11 @@ public class PortfolioService {
         );
     }
 
+    //프로젝트 존재 확인
+    private Project isExistProject(Long projectId) {
+        return projectRepository.findById(projectId).orElseThrow(
+                () -> new GlobalException(NOT_FOUND_PROJECT)
+        );
+    }
 
 }

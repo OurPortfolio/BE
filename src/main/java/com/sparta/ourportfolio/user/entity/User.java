@@ -5,6 +5,7 @@ import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.project.entity.ProjectImage;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class User extends TimeStamped {
         this.profileImage = signupRequestDto.getProfileImage();
     }
 
-    public void updateUser(UpdateUserRequestDto updateUserRequestDto, String imageUrl) {
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto, @Nullable String imageUrl) {
         this.nickname = updateUserRequestDto.getNickname();
         this.profileImage = imageUrl;
     }
