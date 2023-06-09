@@ -97,7 +97,7 @@ public class PortfolioService {
         );
 
         String imageUrl = null;
-        if (!image.isEmpty()) {
+        if (image != null) {
             imageUrl = s3Service.uploadFile(image);
         }
         Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
@@ -151,12 +151,11 @@ public class PortfolioService {
         }
 
         String imageUrl = null;
-        if (!image.isEmpty()) {
+        if (image != null) {
             imageUrl = s3Service.uploadFile(image);
         }
 
         portfolio.update(portfolioRequestDto, imageUrl);
-        portfolioRepository.save(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "수정 완료");
     }
 
