@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests().requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
