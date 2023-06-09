@@ -58,12 +58,6 @@ public class PortfolioService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public ResponseDto<List<String>> autoComplete(String keyword) {
-        List<String> result = new ArrayList<>(this.trie.prefixMap(keyword).keySet());
-        return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
-    }
-
     public void addAutocompleteKeyword(List<String> techStackList, Long id) {
         for (String techStack : techStackList) {
             List<Long> idList = trie.get(techStack);
@@ -77,15 +71,21 @@ public class PortfolioService {
 
     public void deleteAutocompleteKeyword(List<String> techStackList, Long id) {
         for (String techStack : techStackList) {
-            List<Long> ids = trie.get(techStack);
-            if (ids.contains(id)) {
-                ids.remove(id);
-                if (ids.isEmpty()) {
+            List<Long> idList = trie.get(techStack);
+            if (idList != null && idList.contains(id)) {
+                idList.remove(id);
+                if (idList.isEmpty()) {
                     trie.remove(techStack);
                 }
             }
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<List<String>> autoComplete(String keyword) {
+        List<String> result = new ArrayList<>(this.trie.prefixMap(keyword).keySet());
+        return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
     }
 
     @Transactional
@@ -182,12 +182,12 @@ public class PortfolioService {
         if (!StringUtils.equals(portfolio.getUser().getId(), userNow.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
+        portfolioRepository.delete(portfolio);
 
         String techStackData = portfolio.getTechStack();
         List<String> techStackList = Arrays.asList(techStackData.split(","));
         deleteAutocompleteKeyword(techStackList, portfolio.getId());
 
-        portfolioRepository.delete(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "삭제 완료");
     }
 
