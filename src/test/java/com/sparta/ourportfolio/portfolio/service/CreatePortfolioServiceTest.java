@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.portfolio.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.ExceptionEnum;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -79,6 +82,77 @@ class CreatePortfolioServiceTest {
                 .contains(HttpStatus.OK, "포트폴리오 생성 완료");
     }
 
+    @DisplayName("포트폴리오 생성 시 존재하지 않는 프로젝트를 추가하면 예외가 발생한다.")
+    @Test
+    void createPortfolioWithNotExistProject() throws IOException {
+        //given
+        User testUser = createUser(1L, "test@gmail.com",
+                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
+                "test", false);
+        userRepository.save(testUser);
+
+        List<Long> projectIdList = new ArrayList<>();
+        projectIdList.add(1L);
+        projectIdList.add(2L);
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
+                "techStack", "residence","location","010********",
+                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+                "youtube",projectIdList
+        );
+
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+
+        Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
+        portfolioRepository.save(portfolio);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.createPortfolio(portfolioRequestDto, imageFile, testUser))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_PROJECT.getMessage());
+    }
+
+    @DisplayName("포트폴리오 생성 시 본인의 프로젝트가 아닌 프로젝트를 추가하면 예외가 발생한다.")
+    @Test
+    void createPortfolioWithUnAuthorizedProject() throws IOException {
+        //given
+        User testUser = createUser(1L, "test@gmail.com",
+                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
+                "test", false);
+        userRepository.save(testUser);
+        User anonymous = createUser(2L, "anonymous@gmail.com",
+                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
+                "anonymous", false);
+        userRepository.save(anonymous);
+
+        Project project1 = createProject(anonymous);
+        Project project2 = createProject(anonymous);
+        List<Long> projectIdList = new ArrayList<>();
+        projectIdList.add(project1.getId());
+        projectIdList.add(project2.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
+                "techStack", "residence","location","010********",
+                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+                "youtube",projectIdList
+        );
+
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+
+        Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
+        portfolioRepository.save(portfolio);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.createPortfolio(portfolioRequestDto, imageFile, testUser))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.PROJECT_FORBIDDEN.getMessage());
+    }
 
     private Project createProject(User testUser) throws IOException {
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto(

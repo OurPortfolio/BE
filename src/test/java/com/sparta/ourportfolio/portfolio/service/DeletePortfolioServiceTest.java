@@ -81,7 +81,7 @@ class DeletePortfolioServiceTest {
 
     @DisplayName("사용자가 작성하지 않은 포트폴리오는 삭제할 수 없고 예외가 발생한다.")
     @Test
-    void deletePortfolioByNotWriter() throws IOException {
+    void deletePortfolioByUnAuthorizeUser() throws IOException {
         //given
         //포트폴리오 생성
         User writeUser = createUser(1L, "yes@gmail.com",
@@ -112,10 +112,40 @@ class DeletePortfolioServiceTest {
         //when //then
         assertThatThrownBy(() -> portfolioService.deletePortfolio(1L, notWriterUser))
                 .isInstanceOf(GlobalException.class)
-                .hasMessage("권한이 없습니다.");
+                .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
 
+    @DisplayName("존재하지 않는 포트폴리오를 삭제 하려는 경우 예외가 발생한다.")
+    @Test
+    void deleteNotExistPortfolio() throws IOException {
+        //given
+        //포트폴리오 생성
+        User testUser = createUser(1L, "yes@gmail.com",
+                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
+                "yes", false);
+        userRepository.save(testUser);
+        Project project1 = createProject(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        projectIdList.add(project1.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
+                "techStack", "residence","location","010********",
+                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
 
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        portfolioRepository.save(portfolio);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(2L, testUser))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_PORTFOLIO.getMessage());
+    }
 
     private Project createProject(User testUser) throws IOException {
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto(
