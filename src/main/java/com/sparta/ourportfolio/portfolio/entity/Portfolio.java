@@ -6,6 +6,7 @@ import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.user.entity.User;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,6 +58,27 @@ public class Portfolio {
     @JoinColumn(name = "user_id")
     @ManyToOne
     private User user;
+
+    @Builder
+    public Portfolio(Long id, String portfolioTitle, String intro, String techStack, String residence, String location,
+                     String telephone, String githubId, String blogUrl, String category, String filter,
+                     String youtubeUrl, String portfolioImage, List<Project> projectList, User user) {
+        this.id = id;
+        this.portfolioTitle = portfolioTitle;
+        this.intro = intro;
+        this.techStack = techStack;
+        this.residence = residence;
+        this.location = location;
+        this.telephone = telephone;
+        this.githubId = githubId;
+        this.blogUrl = blogUrl;
+        this.category = category;
+        this.filter = filter;
+        this.youtubeUrl = youtubeUrl;
+        this.portfolioImage = portfolioImage;
+        this.projectList = projectList;
+        this.user = user;
+    }
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
