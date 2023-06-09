@@ -54,15 +54,15 @@ class UpdateUserControllerTest {
 
         UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test1234");
         String newCreateJson = objectMapper.writeValueAsString(updateUserRequestDto1);
-        MockMultipartFile newRequestDto = new MockMultipartFile("updateUserRequestDto", "updateUserRequestDto1", "application/json", newCreateJson.getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile newRequestDto = new MockMultipartFile("nickname", "updateUserRequestDto1", "application/json", newCreateJson.getBytes(StandardCharsets.UTF_8));
 
-        MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", "Test Image".getBytes());
+        MockMultipartFile image = new MockMultipartFile("profileImage", "test.jpg", "image/jpeg", "Test Image".getBytes());
 
         // when // then
         mockMvc.perform(
                         multipart(HttpMethod.PATCH, "/api/users/1")
                                 .file(newRequestDto)
-                                .file("profileImage", image.getBytes())
+                                .file(image)
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                                 .with(user(userDetails1))
                 )

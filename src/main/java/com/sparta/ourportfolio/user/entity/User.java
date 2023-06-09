@@ -2,7 +2,6 @@ package com.sparta.ourportfolio.user.entity;
 
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
-import com.sparta.ourportfolio.project.entity.ProjectImage;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
 import com.sparta.ourportfolio.user.dto.UpdateUserRequestDto;
 import jakarta.persistence.*;
@@ -30,8 +29,7 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-    @Column(nullable = true)
-    @Lob
+    @Column
     private String profileImage;
 
     // soft delete

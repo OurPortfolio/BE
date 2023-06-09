@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
+import reactor.util.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class UserService {
         validateNickname(updateUserRequestDto.getNickname());
 
         String imageUrl = null;
-        if (!image.isEmpty()) {
+        if (image != null) {
             imageUrl = s3Service.uploadFile(image);
         }
 

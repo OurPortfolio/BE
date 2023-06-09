@@ -48,7 +48,7 @@ public class UserController {
     // 회원 정보 수정
     @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<UserDto> updateUser(@PathVariable Long id,
-                                           @RequestPart UpdateUserRequestDto updateUserRequestDto,
+                                           @RequestPart(name = "nickname") UpdateUserRequestDto updateUserRequestDto,
                                            @RequestPart(name = "profileImage", required = false) MultipartFile image,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return userService.updateUser(id, updateUserRequestDto, image, userDetails.getUser());
