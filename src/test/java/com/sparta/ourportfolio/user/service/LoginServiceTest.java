@@ -88,12 +88,12 @@ class LoginServiceTest {
         User user4 = createUser("test7@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test7", false);
         userRepository.save(user4);
 
-        LoginRequestDto loginRequestDto4 = createLoginRequestDto("test7@example.com", "Password");
+        LoginRequestDto loginRequestDto4 = createLoginRequestDto("test7@example.com", "Password7891");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto4, response))
                 .isInstanceOf(GlobalException.class)
-                .hasMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
+                .hasMessage("비밀번호가 일치하지 않습니다.");
     }
 
     private User createUser(String email, String password, String nickname, boolean isDeleted) {
