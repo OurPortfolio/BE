@@ -33,7 +33,7 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN = "REFRESHTOKEN";
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();
-    private static final long REFRESH_TIME = Duration.ofDays(14).toMillis();
+    private static final long REFRESH_TIME = Duration.ofDays(30).toMillis();
 
     @Value("${jwt.secret.key}")
     private String secretKey;
