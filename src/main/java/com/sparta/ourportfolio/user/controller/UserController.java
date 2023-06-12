@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.user.dto.*;
+import com.sparta.ourportfolio.user.service.GoogleService;
 import com.sparta.ourportfolio.user.service.KakaoService;
 import com.sparta.ourportfolio.user.service.NaverService;
 import com.sparta.ourportfolio.user.service.UserService;
@@ -26,6 +27,7 @@ public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
     private final NaverService naverService;
+    private final GoogleService googleService;
 
     // 회원가입
     @PostMapping("/signup")
@@ -92,5 +94,11 @@ public class UserController {
     @GetMapping("/naver")
     public ResponseDto<String> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
         return naverService.naverLogin(code, state, response);
+    }
+
+    // 구글 로그인
+    @GetMapping("/google")
+    public ResponseDto<String> googleLogin(@RequestParam String code, @RequestParam String scope, HttpServletResponse response) throws JsonProcessingException {
+        return googleService.googleLogin(code, scope, response);
     }
 }
