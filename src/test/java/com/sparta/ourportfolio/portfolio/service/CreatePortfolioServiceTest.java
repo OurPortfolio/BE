@@ -5,7 +5,6 @@ import com.sparta.ourportfolio.common.exception.ExceptionEnum;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
-import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
 import com.sparta.ourportfolio.project.entity.Project;
@@ -58,10 +57,10 @@ class CreatePortfolioServiceTest {
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
         projectIdList.add(project2.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
-                "youtube",projectIdList
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                "youtube", projectIdList
         );
 
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -76,7 +75,7 @@ class CreatePortfolioServiceTest {
 
         //then
         assertThat(result)
-                .extracting("statusCode","message")
+                .extracting("statusCode", "message")
                 .contains(HttpStatus.OK, "포트폴리오 생성 완료");
     }
 
@@ -92,10 +91,10 @@ class CreatePortfolioServiceTest {
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(1L);
         projectIdList.add(2L);
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
-                "youtube",projectIdList
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                "youtube", projectIdList
         );
 
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -128,10 +127,10 @@ class CreatePortfolioServiceTest {
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
         projectIdList.add(project2.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
-                "youtube",projectIdList
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                "youtube", projectIdList
         );
 
         MockMultipartFile imageFile = new MockMultipartFile(

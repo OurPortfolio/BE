@@ -19,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -56,9 +55,9 @@ class DeletePortfolioServiceTest {
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -67,7 +66,8 @@ class DeletePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //when
@@ -75,7 +75,7 @@ class DeletePortfolioServiceTest {
 
         //then
         assertThat(result)
-                .extracting("statusCode","message")
+                .extracting("statusCode", "message")
                 .contains(HttpStatus.OK, "삭제 완료");
     }
 
@@ -95,9 +95,9 @@ class DeletePortfolioServiceTest {
         Project project1 = createProject(writeUser);
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -106,11 +106,12 @@ class DeletePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, writeUser);;
+        Portfolio portfolio = createPortfolio(2L, portfolioRequestDto, imageUrl, writeUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(1L, notWriterUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(2L, notWriterUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
@@ -127,9 +128,9 @@ class DeletePortfolioServiceTest {
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -138,11 +139,12 @@ class DeletePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(3L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(2L, testUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(3L, testUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.NOT_FOUND_PORTFOLIO.getMessage());
     }
