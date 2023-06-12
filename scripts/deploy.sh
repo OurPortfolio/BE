@@ -2,10 +2,10 @@ REPOSITORY=/home/ubuntu/firstcicd-ec2/build/libs
 cd $REPOSITORY
 
 APP_NAME=firstcicd-ec2
-JAR_NAME=$(ls $REPOSITORY | grep '-SNAPSHOT.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY | grep 'SNAPSHOT.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/$JAR_NAME
 
-JAR 파일에 실행 권한 설정
+#JAR 파일에 실행 권한 설정
 sudo chmod +x "$JAR_PATH"
 
 CURRENT_PID=$(pgrep -f $APP_NAME)
@@ -15,7 +15,7 @@ then
   echo "> 종료할것 없음."
 else
   echo "> kill -9 $CURRENT_PID"
-  kill -9 $CURRENT_PID
+  kill -15 $CURRENT_PID
   sleep 5
 fi
 
