@@ -2,7 +2,6 @@ package com.sparta.ourportfolio.portfolio.inquiryService;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
-import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -40,26 +37,26 @@ class GetLastPortfolioIdTest {
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "Develop", "Backend","Backend",
+        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "Develop", "Backend", "Backend",
                 projectIdList
         );
-        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "Design", "Graphic","Graphic",
+        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "Design", "Graphic", "Graphic",
                 projectIdList
         );
-        PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("title2","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "Photographer", "Wedding","Graphic",
+        PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("title2", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "Photographer", "Wedding", "Graphic",
                 projectIdList
         );
         String imageUrl = "";
 
         Portfolio portfolio1 = createPortfolio(1L, portfolioRequestDto1, imageUrl, testUser);
-        Portfolio portfolio2 = createPortfolio( 2L, portfolioRequestDto2, imageUrl, testUser);
-        Portfolio portfolio3 = createPortfolio( 3L, portfolioRequestDto3, imageUrl, testUser);
+        Portfolio portfolio2 = createPortfolio(2L, portfolioRequestDto2, imageUrl, testUser);
+        Portfolio portfolio3 = createPortfolio(3L, portfolioRequestDto3, imageUrl, testUser);
         portfolioRepository.save(portfolio1);
         portfolioRepository.save(portfolio2);
         portfolioRepository.save(portfolio3);
