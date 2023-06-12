@@ -39,26 +39,26 @@ class GetAllPortfolioTest {
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1", "intro",
+        PortfolioRequestDto portfolioRequestDto4 = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
-                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                "test@email.com", "coze", "Develop", "Frontend", "Backend",
                 projectIdList
         );
-        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2", "intro",
+        PortfolioRequestDto portfolioRequestDto5 = createPortfolioRequestDto("title2", "intro",
                 "techStack", "residence", "location", "010********",
-                "test@email.com", "coze", "velog.coze", "Design", "Graphic",
+                "test@email.com", "coze", "Design", "Graphic", "Graphic",
                 projectIdList
         );
         String imageUrl = "";
 
-        Portfolio portfolio1 = createPortfolio(1L, portfolioRequestDto1, imageUrl, testUser);
-        Portfolio portfolio2 = createPortfolio(2L, portfolioRequestDto2, imageUrl, testUser);
-        portfolioRepository.save(portfolio1);
-        portfolioRepository.save(portfolio2);
+        Portfolio portfolio4 = createPortfolio(4L, portfolioRequestDto4, imageUrl, testUser);
+        Portfolio portfolio5 = createPortfolio(5L, portfolioRequestDto5, imageUrl, testUser);
+        portfolioRepository.save(portfolio4);
+        portfolioRepository.save(portfolio5);
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                3L, 9, "", "");
+                5L, 9, "", "");
 
         //then
         assertThat(result)
@@ -67,7 +67,7 @@ class GetAllPortfolioTest {
 
         Slice<PortfolioResponseDto> responseData = result.getData();
         List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(portfolioResults).hasSize(2);
+        assertThat(portfolioResults).hasSize(5);
     }
 
     @DisplayName("카테고리와 필터를 지정하면 해당하는 포트폴리오를 조회한다.")

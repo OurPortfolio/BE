@@ -4,7 +4,6 @@ import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.ExceptionEnum;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
-import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
@@ -56,10 +55,10 @@ class UpdatePortfolioServiceTest {
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
         projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
-                 projectIdList
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image",
@@ -67,7 +66,8 @@ class UpdatePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
@@ -75,10 +75,10 @@ class UpdatePortfolioServiceTest {
         List<Long> updateProjectIdList = new ArrayList<>();
         updateProjectIdList.add(project1.getId());
         updateProjectIdList.add(project2.getId());
-        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
-                "upTechStack", "upResidence","upLocation","01055489692",
-                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
-                 updateProjectIdList
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
+                updateProjectIdList
         );
         MockMultipartFile updateImageFile = new MockMultipartFile(
                 "image",
@@ -95,7 +95,7 @@ class UpdatePortfolioServiceTest {
 
         //then
         assertThat(result)
-                .extracting("statusCode","message")
+                .extracting("statusCode", "message")
                 .contains(HttpStatus.OK, "수정 완료");
     }
 
@@ -108,12 +108,12 @@ class UpdatePortfolioServiceTest {
                 "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
                 "test", false);
         userRepository.save(testUser);
-        Project project1 = createProject(testUser);
+        Project project3 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        projectIdList.add(project3.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -122,7 +122,8 @@ class UpdatePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
@@ -130,12 +131,12 @@ class UpdatePortfolioServiceTest {
                 "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
                 "anonymous", false);
         userRepository.save(anonymous);
-        Project project2 = createProject(testUser);
+        Project project4 = createProject(testUser);
         List<Long> updateProjectIdList = new ArrayList<>();
-        updateProjectIdList.add(project2.getId());
-        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
-                "upTechStack", "upResidence","upLocation","01055489692",
-                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
+        updateProjectIdList.add(project4.getId());
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
                 updateProjectIdList
         );
         MockMultipartFile updateImageFile = new MockMultipartFile(
@@ -160,12 +161,12 @@ class UpdatePortfolioServiceTest {
         //포트폴리오 생성
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
-        Project project1 = createProject(testUser);
+        Project project5 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        projectIdList.add(project5.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -174,15 +175,17 @@ class UpdatePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
         List<Long> updateProjectIdList = new ArrayList<>();
-        updateProjectIdList.add(2L);
-        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
-                "upTechStack", "upResidence","upLocation","01055489692",
-                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
+        updateProjectIdList.add(6L);
+        updateProjectIdList.add(7L);
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
                 updateProjectIdList
         );
         MockMultipartFile updateImageFile = new MockMultipartFile(
@@ -207,12 +210,12 @@ class UpdatePortfolioServiceTest {
         //포트폴리오 생성
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
-        Project project1 = createProject(testUser);
+        Project project6 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        projectIdList.add(project6.getId());
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -221,18 +224,19 @@ class UpdatePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);;
+        Portfolio portfolio = createPortfolio(1L, portfolioRequestDto, imageUrl, testUser);
+        ;
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
         User anonymous = createUser(2L, "anonymous@gmail.com", "test-password", "anonymous", false);
         userRepository.save(anonymous);
-        Project project2 = createProject(anonymous);
+        Project project7 = createProject(anonymous);
         List<Long> updateProjectIdList = new ArrayList<>();
-        updateProjectIdList.add(project2.getId());
-        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle","upIntro",
-                "upTechStack", "upResidence","upLocation","01055489692",
-                "update@email.com", "updateId", "updateBlog", "Develop","Backend",
+        updateProjectIdList.add(project7.getId());
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
                 updateProjectIdList
         );
         MockMultipartFile updateImageFile = new MockMultipartFile(

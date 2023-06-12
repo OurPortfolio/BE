@@ -3,15 +3,11 @@ package com.sparta.ourportfolio.portfolio.inquiryService;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.ExceptionEnum;
 import com.sparta.ourportfolio.common.exception.GlobalException;
-import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
 import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
-import com.sparta.ourportfolio.project.dto.ProjectRequestDto;
-import com.sparta.ourportfolio.project.entity.Project;
-import com.sparta.ourportfolio.project.repository.ProjectRepository;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,16 +35,16 @@ class GetPortfolioTest {
     @Autowired
     private UserRepository userRepository;
 
-    @DisplayName("포트폴리오 Id로 포트폴리오를 가져올 수 있다.")
+    @DisplayName("포트폴리오 Id로 포트폴리오를 조회할 수 있다.")
     @Test
     void getPortfolio() throws IOException {
         //given
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
 
@@ -75,9 +69,9 @@ class GetPortfolioTest {
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title","intro",
-                "techStack", "residence","location","010********",
-                "test@email.com", "coze", "velog.coze", "Develop","Backend",
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
 
