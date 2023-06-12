@@ -40,6 +40,7 @@ public class NaverService {
     private String naverRedirectUri;
 
 //    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=http://localhost:8080/api/users/naver&state=state
+//    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=http://3.34.102.60:8080/api/users/naver&state=state
 
     public ResponseDto<String> naverLogin(String code, String state, HttpServletResponse response) throws JsonProcessingException {
         // 인가코드, state 로 네이버한테 access_token 요청
