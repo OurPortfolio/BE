@@ -151,6 +151,9 @@ public class PortfolioService {
         }
 
         String imageUrl = null;
+        if (image == null) {
+            imageUrl = portfolio.getPortfolioImage();
+        }
         if (image != null) {
             imageUrl = s3Service.uploadFile(image);
         }

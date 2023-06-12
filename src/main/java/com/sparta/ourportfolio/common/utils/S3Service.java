@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.entity.ProjectImage;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,7 @@ public class S3Service {
 
     //파일을 s3에 업로드
     public String uploadFile(MultipartFile multipartFile) throws IOException {
-        isFileExists(multipartFile);
+//        isFileExists(multipartFile);
         String fileName = UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -69,11 +70,11 @@ public class S3Service {
     }
 
     //파일 유 / 무 확인 메서드
-    private void isFileExists(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty()) {
-            throw new NullPointerException("파일이 존재하지 않습니다.");
-        }
-    }
+//    private void isFileExists(MultipartFile multipartFile) {
+//        if (multipartFile != null) {
+//            throw new GlobalException("파일이 존재하지 않습니다.");
+//        }
+//    }
 
 }
 
