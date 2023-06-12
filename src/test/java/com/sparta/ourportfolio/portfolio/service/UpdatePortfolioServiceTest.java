@@ -158,9 +158,7 @@ class UpdatePortfolioServiceTest {
     void updatePortfolioWithNotExistProject() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser(1L, "test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -207,9 +205,7 @@ class UpdatePortfolioServiceTest {
     void updatePortfolioWithUnAuthorizedProject() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser(1L, "test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -229,9 +225,7 @@ class UpdatePortfolioServiceTest {
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
-        User anonymous = createUser(2L, "anonymous@gmail.com",
-                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
-                "anonymous", false);
+        User anonymous = createUser(2L, "anonymous@gmail.com", "test-password", "anonymous", false);
         userRepository.save(anonymous);
         Project project2 = createProject(anonymous);
         List<Long> updateProjectIdList = new ArrayList<>();
