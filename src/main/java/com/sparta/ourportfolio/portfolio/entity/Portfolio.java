@@ -95,7 +95,7 @@ public class Portfolio {
         this.portfolioImage = imageUrl;
     }
 
-    public void update(PortfolioRequestDto portfolioRequestDto, String imageUrl) {
+    public void update(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
         this.intro = portfolioRequestDto.getIntro();
         this.techStack = portfolioRequestDto.getTechStack();
