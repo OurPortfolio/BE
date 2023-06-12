@@ -108,6 +108,10 @@ public class UserService {
         validateNickname(updateUserRequestDto.getNickname());
 
         String imageUrl = null;
+
+        if (image == null) {
+            imageUrl = user.getProfileImage();
+        }
         if (image != null) {
             imageUrl = s3Service.uploadFile(image);
         }
