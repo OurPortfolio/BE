@@ -12,12 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class SearchPortfolioTest {
+class GetLastPortfolioIdTest {
 
     @Autowired
     private PortfolioRepository portfolioRepository;
@@ -35,25 +33,25 @@ class SearchPortfolioTest {
     @Autowired
     private UserRepository userRepository;
 
-    @DisplayName("포트폴리오의 제목과 기술 스택에 키워드가 해당하는 포트폴리오들을 조회할 수 있다.")
+    @DisplayName("카테고리와 필터를 지정하면 해당하는 포트폴리오를 조회한다.")
     @Test
-    void searchPortfolios() {
+    void getPortfolioWithCategoryAndFilter() {
         //given
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("success","intro",
+        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1","intro",
                 "techStack", "residence","location","010********",
                 "test@email.com", "coze", "Develop", "Backend","Backend",
                 projectIdList
         );
-        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("fail","intro",
+        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2","intro",
                 "techStack", "residence","location","010********",
                 "test@email.com", "coze", "Design", "Graphic","Graphic",
                 projectIdList
         );
         PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("title2","intro",
-                "success", "residence","location","010********",
+                "techStack", "residence","location","010********",
                 "test@email.com", "coze", "Photographer", "Wedding","Graphic",
                 projectIdList
         );
@@ -67,19 +65,15 @@ class SearchPortfolioTest {
         portfolioRepository.save(portfolio3);
 
         //when
-        ResponseDto<Page<PortfolioResponseDto>> result = portfolioInquiryService.searchPortfolios("success", 0, 9);
+        ResponseDto<Long> result = portfolioInquiryService.getLastPortfolioId("Photographer", "Wedding");
 
         //then
         assertThat(result)
                 .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "검색 완료");
+                .contains(HttpStatus.OK, "Last Id 조회 완료");
 
-        Page<PortfolioResponseDto> responseData = result.getData();
-        List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(responseData).hasSize(2);
-
-        assertThat(portfolioResults.get(0).getId()).isEqualTo(3L);
-        assertThat(portfolioResults.get(1).getId()).isEqualTo(1L);
+        Long resultId = result.getData();
+        assertThat(resultId).isEqualTo(4);
     }
 
     private User createUser(Long id, String email, String password, String nickname, boolean isDeleted) {

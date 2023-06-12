@@ -1,6 +1,8 @@
 package com.sparta.ourportfolio.portfolio.inquiryService;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.ExceptionEnum;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
@@ -13,20 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class SearchPortfolioTest {
+class GetMyPortfolioTest {
 
     @Autowired
     private PortfolioRepository portfolioRepository;
@@ -35,12 +36,14 @@ class SearchPortfolioTest {
     @Autowired
     private UserRepository userRepository;
 
-    @DisplayName("포트폴리오의 제목과 기술 스택에 키워드가 해당하는 포트폴리오들을 조회할 수 있다.")
+    @DisplayName("사용자 Id로 사용자의 포트폴리오 리스트를 조회할 수 있다.")
     @Test
-    void searchPortfolios() {
+    void getMyPortfolios() {
         //given
         User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
+        User anonymous = createUser(2L, "anonymous@gmail.com", "test-password", "anonymous", false);
         userRepository.save(testUser);
+        userRepository.save(anonymous);
         List<Long> projectIdList = new ArrayList<>();
         PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("success","intro",
                 "techStack", "residence","location","010********",
@@ -61,25 +64,35 @@ class SearchPortfolioTest {
 
         Portfolio portfolio1 = createPortfolio(1L, portfolioRequestDto1, imageUrl, testUser);
         Portfolio portfolio2 = createPortfolio( 2L, portfolioRequestDto2, imageUrl, testUser);
-        Portfolio portfolio3 = createPortfolio( 3L, portfolioRequestDto3, imageUrl, testUser);
+        Portfolio portfolio3 = createPortfolio( 3L, portfolioRequestDto3, imageUrl, anonymous);
         portfolioRepository.save(portfolio1);
         portfolioRepository.save(portfolio2);
         portfolioRepository.save(portfolio3);
 
         //when
-        ResponseDto<Page<PortfolioResponseDto>> result = portfolioInquiryService.searchPortfolios("success", 0, 9);
+        ResponseDto<List<PortfolioResponseDto>> result = portfolioInquiryService.getMyPortfolios(testUser);
 
         //then
         assertThat(result)
                 .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "검색 완료");
+                .contains(HttpStatus.OK, "MY PORTFOLIO 조회 완료");
 
-        Page<PortfolioResponseDto> responseData = result.getData();
-        List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(responseData).hasSize(2);
+        List<PortfolioResponseDto> portfolioResults = result.getData();
+        assertThat(portfolioResults).hasSize(2);
+    }
 
-        assertThat(portfolioResults.get(0).getId()).isEqualTo(3L);
-        assertThat(portfolioResults.get(1).getId()).isEqualTo(1L);
+    @DisplayName("존재하지 않는 사용자 Id로 조회할 경우 예외가 발생한다.")
+    @Test
+    void getMyPortfoliosWithNotExistUser() {
+        //given
+        User testUser = createUser(1L, "test@gmail.com", "test-password", "test", false);
+        User anonymous = createUser(2L, "anonymous@gmail.com", "test-password", "anonymous", false);
+        userRepository.save(testUser);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioInquiryService.getMyPortfolios(anonymous))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
     }
 
     private User createUser(Long id, String email, String password, String nickname, boolean isDeleted) {
