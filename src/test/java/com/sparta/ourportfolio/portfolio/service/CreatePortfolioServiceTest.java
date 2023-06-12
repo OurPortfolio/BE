@@ -70,8 +70,6 @@ class CreatePortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
-        portfolioRepository.save(portfolio);
 
         //when
         ResponseDto<String> result = portfolioService.createPortfolio(portfolioRequestDto, imageFile, testUser);
@@ -105,9 +103,6 @@ class CreatePortfolioServiceTest {
                 "test.jpg",
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
-
-        Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
-        portfolioRepository.save(portfolio);
 
         //when //then
         assertThatThrownBy(() -> portfolioService.createPortfolio(portfolioRequestDto, imageFile, testUser))
@@ -144,9 +139,6 @@ class CreatePortfolioServiceTest {
                 "test.jpg",
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
-
-        Portfolio portfolio = new Portfolio(portfolioRequestDto, imageUrl);
-        portfolioRepository.save(portfolio);
 
         //when //then
         assertThatThrownBy(() -> portfolioService.createPortfolio(portfolioRequestDto, imageFile, testUser))
