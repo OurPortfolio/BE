@@ -22,7 +22,7 @@ public class PortfolioRequestDto {
 
     @Builder
     public PortfolioRequestDto(String portfolioTitle, String intro, String techStack, String residence,
-                               String location, String telephone, String email, String githubId, String blogUrl,
+                               String location, String telephone, String githubId, String blogUrl,
                                String category, String filter, String youtubeUrl, List<Long> projectIdList) {
         this.portfolioTitle = portfolioTitle;
         this.intro = intro;
