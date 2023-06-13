@@ -1,16 +1,14 @@
 version: 0.0
 os: linux
 files:
-
   - source: /
     destination: /home/ubuntu/firstcicd-ec2
-permissions:
 
+permissions:
   - object: /home/ubuntu/firstcicd-ec2/
     owner: ubuntu
     group: ubuntu
+
 hooks:
   AfterInstall:
     - location: scripts/deploy.sh
-
-##수정된 것이 올라가는지 test 하는 주석
