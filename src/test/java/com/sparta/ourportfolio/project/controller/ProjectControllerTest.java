@@ -124,13 +124,13 @@ class ProjectControllerTest {
 
         Project project = new Project(projectRequestDto1, user1);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Long projectId = projectRepository.save(project).getId();
 
         ResponseDto<ProjectResponseDto> projectResponse = projectService.creatProject(projectRequestDto1, images, user1);
 
         // when // then
         mockMvc.perform(
-                        multipart(HttpMethod.GET, "/api/projects/3")
+                        multipart(HttpMethod.GET, "/api/projects/" + projectId)
                                 .file(requestDto1)
                                 .file("images", imageFile1.getBytes())
                                 .file("images", imageFile2.getBytes())
@@ -162,7 +162,7 @@ class ProjectControllerTest {
 
         Project project = new Project(projectRequestDto1, user1);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Long projectId = projectRepository.save(project).getId();
 
         ProjectRequestDto newProjectRequestDto = createProjectRequestDto("5", "4", "3", "2", "1");
         String newCreateJson = objectMapper.writeValueAsString(newProjectRequestDto);
@@ -176,7 +176,7 @@ class ProjectControllerTest {
 
         // when // then
         mockMvc.perform(
-                        multipart(HttpMethod.PATCH, "/api/projects/1")
+                        multipart(HttpMethod.PATCH, "/api/projects/" + projectId)
                                 .file(newRequestDto)
                                 .file("images", imageFile3.getBytes())
                                 .file("images", imageFile4.getBytes())
@@ -210,11 +210,11 @@ class ProjectControllerTest {
 
         Project project = new Project(projectRequestDto1, user1);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Long projectId = projectRepository.save(project).getId();
 
         // when // then
         mockMvc.perform(
-                        multipart(HttpMethod.DELETE, "/api/projects/2")
+                        multipart(HttpMethod.DELETE, "/api/projects/" + projectId)
                                 .with(user(userDetails1))
                 )
                 .andDo(print())
