@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.common.jwt;
 
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
 import com.sparta.ourportfolio.common.security.UserDetailsServiceImpl;
@@ -22,6 +23,8 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.EXPIRED_JWT_TOKEN;
 
 @Slf4j
 @Component
@@ -77,6 +80,21 @@ public class JwtUtil {
                         .compact();
     }
 
+    //Refresh Token 재발급
+    public String createNewRefreshToken(String email, long time, Long id) {
+        Date date = new Date();
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(email)
+                        .claim("userId", id)
+                        .setExpiration(new Date(date.getTime() + time))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
+    }
+
+
     // 토큰 검증
     public boolean validateToken(String token) {
         try {
@@ -85,7 +103,7 @@ public class JwtUtil {
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token, 만료된 JWT token 입니다.");
+            log.info("Expired JWT token, 만료된 JWT token 입니다.11");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
@@ -108,10 +126,47 @@ public class JwtUtil {
     public boolean refreshTokenValid(String token) {
         if (!validateToken(token)) return false;
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(getUserInfoFromToken(token));
+
+        //해당유저의 리프레시 토큰이 DB에 없는 경우 예외처리
+        if (refreshToken == null) {
+            throw new GlobalException(EXPIRED_JWT_TOKEN);
+        }
+
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }
+
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
         response.setHeader(ACCESS_TOKEN, accessToken);
     }
 
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        response.setHeader(REFRESH_TOKEN, refreshToken);
+    }
+
+    public void createAndSetToken(HttpServletResponse response, String email, Long id) {
+        JwtTokenDto tokenDto = createAllToken(email, id);
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(email);
+        if (refreshToken.isPresent()) {
+            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+        } else {
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), email);
+            refreshTokenRepository.save(newToken);
+        }
+        response.setHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
+        response.setHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
+    }
+
+    // 토큰에서 만료 시간 정보 추출
+    public long getExpirationTime(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        // 현재 시간과 만료 시간의 차이를 계산하여 반환
+        Date expirationDate = claims.getExpiration();
+        Date now = new Date();
+        long diff = (expirationDate.getTime() - now.getTime()) / 1000;
+        return diff;
+    }
 }

@@ -46,10 +46,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 //유저명으로 유저 정보 가져오기
                 User user = userRepository.findByEmail(userEmail).get();
                 //새로운 ACCESS TOKEN 발급
-                String newAccessToken = jwtUtil.createToken(userEmail, "Access", user.getId());
+                log.info("===== 새로운 Access Token");
+                String newAccessToken = jwtUtil.createToken(user.getEmail(), "Access", user.getId());
                 //Header 에 ACCESS TOKEN 추가
                 jwtUtil.setHeaderAccessToken(response, newAccessToken);
                 setAuthentication(userEmail);
+                // Refresh Token 재발급 로직
+                log.info("===== Create New Refresh Token");
+                long refreshTime = jwtUtil.getExpirationTime(refresh_token);
+                String newRefreshToken = jwtUtil.createNewRefreshToken(user.getEmail(), refreshTime, user.getId());
+                jwtUtil.setHeaderRefreshToken(response, newRefreshToken);
             } else if (refresh_token == null) {
                 jwtExceptionHandler(response, "AccessToken 이 만료되었습니다.", HttpStatus.BAD_REQUEST.value());
                 return;

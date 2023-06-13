@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.common.jwt.refreshToken;
 
+import com.sparta.ourportfolio.common.utils.TimeStamped;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class RefreshToken {
+public class RefreshToken extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

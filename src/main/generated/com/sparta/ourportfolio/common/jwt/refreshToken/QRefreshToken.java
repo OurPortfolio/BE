@@ -19,9 +19,17 @@ public class QRefreshToken extends EntityPathBase<RefreshToken> {
 
     public static final QRefreshToken refreshToken1 = new QRefreshToken("refreshToken1");
 
+    public final com.sparta.ourportfolio.common.utils.QTimeStamped _super = new com.sparta.ourportfolio.common.utils.QTimeStamped(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath refreshToken = createString("refreshToken");
 

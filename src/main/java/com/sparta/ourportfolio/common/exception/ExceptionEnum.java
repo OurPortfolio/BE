@@ -19,7 +19,7 @@ public enum ExceptionEnum {
 
     // 401 Unauthorized
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "권한이 없습니다."),
-    INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED,"401", "Invalid JWT Signature, 유효하지 않는 JWT 서명 입니다."),
+    INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED,"401", "유효하지 않은 token입니다."),
     EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "401", "Expired JWT token, 만료된 JWT token 입니다."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED,"401","Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
     JWT_CLAIMS_IS_EMPTY(HttpStatus.UNAUTHORIZED,"401","JWT claims is empty, 잘못된 JWT 토큰 입니다."),
