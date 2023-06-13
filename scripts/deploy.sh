@@ -1,4 +1,4 @@
-REPOSITORY=/home/ubuntu/firstcicd-ec2/build/libs
+REPOSITORY=/firstcicd-ec2/build/libs
 cd $REPOSITORY
 
 APP_NAME=firstcicd-ec2
