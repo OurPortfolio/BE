@@ -33,7 +33,6 @@ public class PortfolioController {
                                                PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-
         return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
     }
 

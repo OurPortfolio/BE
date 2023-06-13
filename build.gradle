@@ -72,8 +72,8 @@ test {
 jacocoTestReport {
     dependsOn test // 테스트 실행이 끝난 후 보고서 생성
     reports {
-        xml.enabled false // XML 형식의 보고서 생성
-        html.enabled true // HTML 형식의 보고서 생성
-        html.destination file("${buildDir}/jacocoHtml") // HTML 보고서의 출력 디렉토리 지정
+        html.enabled true // html 설정
+        csv.enabled true // csv 설정
+        xml.enabled false // xml 미설정
     }
 }
