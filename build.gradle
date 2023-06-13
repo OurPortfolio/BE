@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.7'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'jacoco'
 }
 
 group = 'com.sparta'
@@ -62,6 +63,17 @@ dependencies {
 jar {
     enabled = false
 }
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // 테스트가 끝난 후 자동으로 JaCoCo 보고서를 생성하도록 설정
+}
+
+jacocoTestReport {
+    dependsOn test // 테스트 실행이 끝난 후 보고서 생성
+    reports {
+        xml.enabled false // XML 형식의 보고서 생성
+        html.enabled true // HTML 형식의 보고서 생성
+        html.destination file("${buildDir}/jacocoHtml") // HTML 보고서의 출력 디렉토리 지정
+    }
+}
