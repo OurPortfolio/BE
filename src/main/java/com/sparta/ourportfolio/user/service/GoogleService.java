@@ -20,6 +20,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -78,11 +80,18 @@ public class GoogleService {
                 tokenRequest,
                 String.class
         );
-        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
+
+        // HTTP 응답 (JSON) -> 액세스 토큰 & 리프레시 토큰 파싱
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        return jsonNode.get("access_token").asText();
+        String accessToken = jsonNode.get("access_token").asText();
+        String refreshToken = jsonNode.get("refresh_token").asText();
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", accessToken);
+        tokens.put("refresh_token", refreshToken);
+        return tokens.toString();
 
     }
 
@@ -118,7 +127,7 @@ public class GoogleService {
     private User registerGoogleUserIfNeeded(GoogleUserInfoDto googleUserInfo) {
         Long googleId = googleUserInfo.getId();
         String profileImage = googleUserInfo.getProfileImage();
-        User googleUser = userRepository.findByKakaoId(googleId)
+        User googleUser = userRepository.findByGoogleId(googleId)
                 .orElse(null);
         if (googleUser == null) {
             // 구글 사용자 email 동일한 email 가진 회원이 있는지 확인
@@ -127,7 +136,7 @@ public class GoogleService {
             if (sameEmailUser != null) {
                 googleUser = sameEmailUser;
                 // 기존 회원정보에 구글 Id, 프로필 이미지 추가
-                googleUser = googleUser.kakaoUpdate(googleId, profileImage);
+                googleUser = googleUser.googleUpdate(googleId, profileImage);
             } else {
                 // 신규 회원가입
                 // password: random UUID
