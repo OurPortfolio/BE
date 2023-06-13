@@ -104,11 +104,11 @@ class PortfolioInquiryServiceTest {
         Portfolio portfolio1 = createPortfolio(portfolioRequestDto1, imageUrl, testUser);
         Portfolio portfolio2 = createPortfolio(portfolioRequestDto2, imageUrl, testUser);
         portfolioRepository.save(portfolio1);
-        portfolioRepository.save(portfolio2);
+        Long portfolioId = portfolioRepository.save(portfolio2).getId();
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                10L, 10, "", "");
+                portfolioId+1, 10, "", "");
 
         //then
         assertThat(result)
@@ -147,13 +147,13 @@ class PortfolioInquiryServiceTest {
         Portfolio portfolio1 = createPortfolio(portfolioRequestDto1, imageUrl, testUser);
         Portfolio portfolio2 = createPortfolio(portfolioRequestDto2, imageUrl, testUser);
         Portfolio portfolio3 = createPortfolio(portfolioRequestDto3, imageUrl, testUser);
-        portfolioRepository.save(portfolio1);
+        Long portfolioId = portfolioRepository.save(portfolio1).getId();
         portfolioRepository.save(portfolio2);
         portfolioRepository.save(portfolio3);
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                20L, 9, "Develop", "Backend");
+                portfolioId+1, 9, "Develop", "Backend");
 
         //then
         assertThat(result)
@@ -263,7 +263,7 @@ class PortfolioInquiryServiceTest {
         portfolioRepository.save(portfolio3);
 
         //when
-        ResponseDto<Page<PortfolioResponseDto>> result = portfolioInquiryService.searchPortfolios("success", 0, 20);
+        ResponseDto<Page<PortfolioResponseDto>> result = portfolioInquiryService.searchPortfolios("success", 0, 100);
 
         //then
         assertThat(result)
@@ -308,7 +308,7 @@ class PortfolioInquiryServiceTest {
         Portfolio portfolio3 = createPortfolio(portfolioRequestDto3, imageUrl, testUser);
         portfolioRepository.save(portfolio1);
         portfolioRepository.save(portfolio2);
-        portfolioRepository.save(portfolio3);
+        Long portfolioId = portfolioRepository.save(portfolio3).getId();
 
         //when
         ResponseDto<Long> result = portfolioInquiryService.getLastPortfolioId("Photographer", "Wedding");
@@ -319,7 +319,7 @@ class PortfolioInquiryServiceTest {
                 .contains(HttpStatus.OK, "Last Id 조회 완료");
 
         Long resultId = result.getData();
-        assertThat(resultId).isEqualTo(12);
+        assertThat(resultId).isEqualTo(portfolioId+1);
     }
 
     private User createUser(String email, String password, String nickname, boolean isDeleted) {
