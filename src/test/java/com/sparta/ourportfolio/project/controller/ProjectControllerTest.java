@@ -142,14 +142,14 @@ class ProjectControllerTest {
 
     }
 
-    @DisplayName("프로젝트 수정 완료")
+    @DisplayName("프로젝트 수정")
     @Test
     void updateProject() throws Exception {
         // given
         User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
         userRepository.save(user1);
 
-        UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(1L).get());
+        UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user1.getId()).get());
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
 
@@ -188,7 +188,7 @@ class ProjectControllerTest {
 
     }
 
-    @DisplayName("프로젝트 삭제 완료")
+    @DisplayName("프로젝트 삭제")
     @Test
     void deleteProject() throws Exception {
         // given
