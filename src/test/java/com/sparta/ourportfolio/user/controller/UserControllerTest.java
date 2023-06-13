@@ -55,7 +55,7 @@ class UserControllerTest {
     @Test
     void signup() throws Exception {
         // given
-        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test4567@example.com", "Password123", "test4567", null);
+        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test1@example.com", "Password123", "test1", null);
 
         // when // then
         mockMvc.perform(
@@ -72,7 +72,7 @@ class UserControllerTest {
     @Test
     void signupWithWrongEmail() throws Exception {
         // given
-        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test4567@examplecom", "Password123", "test4567", null);
+        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test2@examplecom", "Password123", "2", null);
 
         // when // then
         mockMvc.perform(
@@ -89,7 +89,7 @@ class UserControllerTest {
     @Test
     void signupWithEmailIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null, "Password123", "test4567", null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null, "Password123", "test3", null);
 
         // when // then
         mockMvc.perform(
@@ -106,12 +106,12 @@ class UserControllerTest {
     @Test
     void signupWithWrongPassword() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password", "test4567", null);
+        SignupRequestDto signupRequestDto4 = createSignupRequestDto("test4@example.com", "password", "test4", null);
 
         // when // then
         mockMvc.perform(
                         post("/api/users/signup")
-                                .content(objectMapper.writeValueAsString(signupRequestDto3))
+                                .content(objectMapper.writeValueAsString(signupRequestDto4))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -123,12 +123,12 @@ class UserControllerTest {
     @Test
     void signupWithPasswordIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", null, "test4567", null);
+        SignupRequestDto signupRequestDto5 = createSignupRequestDto("test5@example.com", null, "test5", null);
 
         // when // then
         mockMvc.perform(
                         post("/api/users/signup")
-                                .content(objectMapper.writeValueAsString(signupRequestDto3))
+                                .content(objectMapper.writeValueAsString(signupRequestDto5))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -140,12 +140,12 @@ class UserControllerTest {
     @Test
     void signupWithWrongNickname() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password123", "test3456789", null);
+        SignupRequestDto signupRequestDto6 = createSignupRequestDto("test6@example.com", "password123", "test67890123", null);
 
         // when // then
         mockMvc.perform(
                         post("/api/users/signup")
-                                .content(objectMapper.writeValueAsString(signupRequestDto3))
+                                .content(objectMapper.writeValueAsString(signupRequestDto6))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -157,12 +157,12 @@ class UserControllerTest {
     @Test
     void signupWithNicknameIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto("test4567@example.com", "password123", null, null);
+        SignupRequestDto signupRequestDto7 = createSignupRequestDto("test7@example.com", "password123", null, null);
 
         // when // then
         mockMvc.perform(
                         post("/api/users/signup")
-                                .content(objectMapper.writeValueAsString(signupRequestDto3))
+                                .content(objectMapper.writeValueAsString(signupRequestDto7))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -174,10 +174,10 @@ class UserControllerTest {
     @Test
     void login() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test8@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test8", false);
         userRepository.save(user1);
 
-        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test4567@example.com", "Password123");
+        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test8@example.com", "Password123");
 
         // when // then
         mockMvc.perform(
@@ -195,12 +195,13 @@ class UserControllerTest {
     void getUser() throws Exception {
         // given
         User user2 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        userRepository.save(user2);
+        Long userId = userRepository.save(user2).getId();
+
 
         ResponseDto<UserDto> getUserResponse = userService.getUser(user2.getId());
         // when // then
         mockMvc.perform(
-                        get("/api/users/6")
+                        get("/api/users/" + userId)
                                 .content(objectMapper.writeValueAsString(getUserResponse))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -214,7 +215,7 @@ class UserControllerTest {
     void updateUser() throws Exception {
         // given
         User user3 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        userRepository.save(user3);
+        Long userId = userRepository.save(user3).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user3.getId()).get());
 
@@ -226,7 +227,7 @@ class UserControllerTest {
 
         // when // then
         mockMvc.perform(
-                        multipart(HttpMethod.PATCH, "/api/users/5")
+                        multipart(HttpMethod.PATCH, "/api/users/" + userId)
                                 .file(newRequestDto)
                                 .file(image)
                                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -242,7 +243,7 @@ class UserControllerTest {
     void updatePassword() throws Exception {
         // given
         User user4 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        userRepository.save(user4);
+        Long userId = userRepository.save(user4).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user4.getId()).get());
 
@@ -250,7 +251,7 @@ class UserControllerTest {
 
         // when // then
         mockMvc.perform(
-                        put("/api/users/8/password")
+                        put("/api/users/" + userId + "/password")
                                 .content(objectMapper.writeValueAsString(updatePasswordRequestDto1))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(user(userDetails1))
@@ -265,14 +266,14 @@ class UserControllerTest {
     void softDelete() throws Exception {
         // given
         User user5 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        userRepository.save(user5);
+        Long userId = userRepository.save(user5).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user5.getId()).get());
         ResponseDto<UserDto> deleteUserResponse = userService.deleteUser(user5.getId(), user5);
 
         // when // then
         mockMvc.perform(
-                        delete("/api/users/4")
+                        delete("/api/users/" + userId)
                                 .with(user(userDetails1))
                                 .content(objectMapper.writeValueAsString(deleteUserResponse))
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -288,14 +289,14 @@ class UserControllerTest {
         // given
         User user6 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
         User user7 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
-        userRepository.save(user6);
-        userRepository.save(user7);
+        Long userId1 = userRepository.save(user6).getId();
+        Long userId2 = userRepository.save(user7).getId();
 
         UserDetailsImpl userDetails2 = new UserDetailsImpl(userRepository.findById(user7.getId()).get());
         ResponseDto<UserDto> hardDeleteUserResponse = userService.deleteUserHard(user7.getId(), user7);
         // when // then
         mockMvc.perform(
-                        delete("/api/users/hard/3")
+                        delete("/api/users/hard/" + userId2)
                                 .with(user(userDetails2))
                                 .content(objectMapper.writeValueAsString(hardDeleteUserResponse))
                                 .contentType(MediaType.APPLICATION_JSON)
