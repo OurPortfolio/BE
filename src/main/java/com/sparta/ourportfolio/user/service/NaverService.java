@@ -19,6 +19,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -75,17 +77,24 @@ public class NaverService {
         HttpEntity<MultiValueMap<String, String>> naverTokenRequest =
                 new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> naverResponse = rt.exchange(
+        ResponseEntity<String> response = rt.exchange(
                 "https://nid.naver.com/oauth2.0/token",
                 HttpMethod.POST,
                 naverTokenRequest,
                 String.class
         );
 
-        String responseBody = naverResponse.getBody();
+        // HTTP 응답 (JSON) -> 액세스 토큰 & 리프레시 토큰 파싱
+        String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        return jsonNode.get("access_token").asText();
+        String accessToken = jsonNode.get("access_token").asText();
+        String refreshToken = jsonNode.get("refresh_token").asText();
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", accessToken);
+        tokens.put("refresh_token", refreshToken);
+        return tokens.toString();
     }
 
     private NaverUserInfoDto getNaverUserinfo(String accessToken) throws JsonProcessingException {

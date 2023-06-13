@@ -90,6 +90,12 @@ public class User extends TimeStamped {
         return this;
     }
 
+    public User googleUpdate(Long googleId, String profileImage) {
+        this.googleId = googleId;
+        this.profileImage = profileImage;
+        return this;
+    }
+
     public void addPortfolio(Portfolio portfolio) {
         this.portfolioList.add(portfolio);
     }

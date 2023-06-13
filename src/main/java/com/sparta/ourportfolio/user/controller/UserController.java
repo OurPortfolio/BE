@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,5 +101,11 @@ public class UserController {
     @GetMapping("/google")
     public ResponseDto<String> googleLogin(@RequestParam String code, @RequestParam String scope, HttpServletResponse response) throws JsonProcessingException {
         return googleService.googleLogin(code, scope, response);
+    }
+
+    //Refresh 토큰으로 Access 토큰 재발급
+    @GetMapping("/reissue")
+    public ResponseDto<UserDto> reissueToken(@RequestParam(value = "REFRESH_TOKEN", required = false) String refreshToken, HttpServletResponse response){
+        return userService.reissueToken(refreshToken, response);
     }
 }
