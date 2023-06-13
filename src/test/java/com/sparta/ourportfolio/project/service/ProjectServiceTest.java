@@ -162,7 +162,7 @@ class ProjectServiceTest {
                 .contains(HttpStatus.OK, "프로젝트 수정 완료");
     }
 
-    @DisplayName("잘못된 프로젝트 id로 수정했을 시 예외를 반환한다.")
+    @DisplayName("프로젝트를 수정할 때 잘못된 프로젝트 id로 수정했을 시 예외를 반환한다.")
     @Test
     @Transactional
     void updateProjectWithWrongId() throws Exception {
@@ -199,12 +199,13 @@ class ProjectServiceTest {
         project.updateProject(newProjectRequestDto);
 
         // when // then
-        assertThatThrownBy(() -> projectService.updateProject(2L, newProjectRequestDto, newImages, user1))
+        Project finalProject = project;
+        assertThatThrownBy(() -> projectService.updateProject(100L, newProjectRequestDto, newImages, user1))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("프로젝트가 존재하지 않습니다.");
     }
 
-    @DisplayName("프로젝트 user id와 현재 로그인한 user id가 다를 시 예외를 반환한다.")
+    @DisplayName("프로젝트를 수정할 때 프로젝트 user id와 현재 로그인한 user id가 다를 시 예외를 반환한다.")
     @Test
     @Transactional
     void updateProjectWithUnauthorized() throws Exception {
@@ -225,7 +226,7 @@ class ProjectServiceTest {
 
         Project project = new Project(projectRequestDto1, user1);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
+        Long projectId = projectRepository.save(project).getId();
 
         // 해당되는 전체 이미지 삭제
         fileRepository.deleteByProjectId(project.getId());
@@ -240,11 +241,9 @@ class ProjectServiceTest {
 
 
         project.setImageFile(s3Service.fileFactory(newImages, project));
-        project.updateProject(newProjectRequestDto);
 
         // when // then
-        Project finalProject = project;
-        assertThatThrownBy(() -> projectService.updateProject(finalProject.getId(), newProjectRequestDto, newImages, user2))
+        assertThatThrownBy(() -> projectService.updateProject(projectId, newProjectRequestDto, newImages, user2))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("권한이 없습니다.");
     }
@@ -276,7 +275,7 @@ class ProjectServiceTest {
                 .contains(HttpStatus.OK, "프로젝트 삭제 완료");
     }
 
-    @DisplayName("프로젝트 삭제할 때 잘못된 프로젝트 id를 입력 시 예외를 반환한다")
+    @DisplayName("프로젝트를 삭제할 때 잘못된 프로젝트 id를 입력 시 예외를 반환한다")
     @Test
     void deleteProjectWithWrongId() throws IOException {
         // given
@@ -289,7 +288,7 @@ class ProjectServiceTest {
                 .hasMessage("프로젝트가 존재하지 않습니다.");
     }
 
-    @DisplayName("프로젝트 user id와 현재 로그인한 user id가 다를 시 예외를 반환한다.")
+    @DisplayName("프로젝트를 삭제할 때 프로젝트 user id와 현재 로그인한 user id가 다를 시 예외를 반환한다.")
     @Test
     @Transactional
     void deleteProjectWithUnauthorized() throws Exception {
@@ -328,7 +327,8 @@ class ProjectServiceTest {
         project.updateProject(newProjectRequestDto);
 
         // when // then
-        assertThatThrownBy(() -> projectService.deleteProject(8L, user4))
+        Project finalProject = project;
+        assertThatThrownBy(() -> projectService.deleteProject(finalProject.getId(), user4))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("권한이 없습니다.");
     }
