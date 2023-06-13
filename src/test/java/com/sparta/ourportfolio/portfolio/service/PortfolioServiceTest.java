@@ -60,9 +60,7 @@ class PortfolioServiceTest {
     @Test
     void createPortfolio() throws IOException {
         //given
-        User testUser = createUser( "test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser( "test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
 
         Project project1 = createProject(testUser);
@@ -97,9 +95,7 @@ class PortfolioServiceTest {
     @Test
     void createPortfolioWithNotExistProject() throws IOException {
         //given
-        User testUser = createUser( "test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser( "test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
 
         List<Long> projectIdList = new ArrayList<>();
@@ -127,13 +123,9 @@ class PortfolioServiceTest {
     @Test
     void createPortfolioWithUnAuthorizedProject() throws IOException {
         //given
-        User testUser = createUser("test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
-        User anonymous = createUser("anonymous@gmail.com",
-                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
-                "anonymous", false);
+        User anonymous = createUser("anonymous@gmail.com", "test password", "anonymous", false);
         userRepository.save(anonymous);
 
         Project project1 = createProject(anonymous);
@@ -159,15 +151,36 @@ class PortfolioServiceTest {
                 .hasMessage(ExceptionEnum.PROJECT_FORBIDDEN.getMessage());
     }
 
+    @DisplayName("존재하지 않는 유저가 포트폴리오를 추가하면 예외가 발생한다.")
+    @Test
+    void createPortfolioWithAnonymousUser() {
+        //given
+        User anonymous = User.builder()
+                .id(10L)
+                .build();
+        List<Long> projectIdList = new ArrayList<>();
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.createPortfolio(portfolioRequestDto, imageFile, anonymous))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
+    }
+
     //Update Test
     @DisplayName("기존 포트폴리오의 내용과 이미지를 수정할 수 있다.")
     @Test
     void updatePortfolio() throws IOException {
         //given
-        //포트폴리오 생성
-        User testUser = createUser("test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -221,9 +234,7 @@ class PortfolioServiceTest {
     void updatePortfolioByUnAuthorizeUser() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser("test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
         Project project3 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -244,9 +255,7 @@ class PortfolioServiceTest {
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
-        User anonymous = createUser("anonymous@gmail.com",
-                "$2a$10$A0zvEj9bN5AMwf8uQiPuXut6Q4c31.bW6OGqiKL2c.a2xklfTNwLK",
-                "anonymous", false);
+        User anonymous = createUser("anonymous@gmail.com", "test password", "anonymous", false);
         userRepository.save(anonymous);
         Project project4 = createProject(testUser);
         List<Long> updateProjectIdList = new ArrayList<>();
@@ -276,7 +285,7 @@ class PortfolioServiceTest {
     void updatePortfolioWithNotExistProject() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
         Project project5 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -325,7 +334,7 @@ class PortfolioServiceTest {
     void updatePortfolioWithUnAuthorizedProject() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
         Project project6 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -346,7 +355,7 @@ class PortfolioServiceTest {
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
-        User anonymous = createUser("anonymous@gmail.com", "test-password", "anonymous", false);
+        User anonymous = createUser("anonymous@gmail.com", "test password", "anonymous", false);
         userRepository.save(anonymous);
         Project project7 = createProject(anonymous);
         List<Long> updateProjectIdList = new ArrayList<>();
@@ -371,15 +380,55 @@ class PortfolioServiceTest {
                 .hasMessage(ExceptionEnum.PROJECT_FORBIDDEN.getMessage());
     }
 
+    @DisplayName("존재하지 않는 유저가 포트폴리오 수정 시 예외가 발생한다.")
+    @Test
+    void updatePortfolioWithAnonymousUser() throws IOException {
+        //given
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
+        userRepository.save(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
+        portfolioRepository.save(portfolio);
+
+        //수정 데이터 준비
+        User anonymous = User.builder()
+                .id(10L)
+                .build();
+        List<Long> updateProjectIdList = new ArrayList<>();
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
+                updateProjectIdList
+        );
+        MockMultipartFile updateImageFile = new MockMultipartFile(
+                "image",
+                "update-test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String updateImageUrl = s3Service.uploadFile(imageFile);
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.updatePortfolio(
+                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, anonymous))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
+    }
+
     //Delete Test
     @DisplayName("사용자가 작성한 포트폴리오라면 삭제할 수 있다.")
     @Test
     void deletePortfolioByWriter() throws IOException {
         //given
-        //포트폴리오 생성
-        User testUser = createUser("test@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -413,13 +462,9 @@ class PortfolioServiceTest {
     void deletePortfolioByUnAuthorizeUser() throws IOException {
         //given
         //포트폴리오 생성
-        User writeUser = createUser("yes@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "yes", false);
+        User writeUser = createUser("yes@gmail.com", "test password", "yes", false);
         userRepository.save(writeUser);
-        User notWriterUser = createUser("not@gmail.com",
-                "$2a$10$C4bmIc7E5TMAB77CnGObNetLMdxb751tCqp1oX/E093L6G.EuDFhW",
-                "not", false);
+        User notWriterUser = createUser("not@gmail.com", "test password", "not", false);
         userRepository.save(notWriterUser);
         Project project1 = createProject(writeUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -450,9 +495,7 @@ class PortfolioServiceTest {
     void deleteNotExistPortfolio() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser( "yes@gmail.com",
-                "$2a$10$McegJX6C8dwvMP9/178LEOFgRY/3Xe4KKUEHebjz3hep8.oKmflTy",
-                "yes", false);
+        User testUser = createUser( "yes@gmail.com", "test password", "yes", false);
         userRepository.save(testUser);
         Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
@@ -476,6 +519,36 @@ class PortfolioServiceTest {
         assertThatThrownBy(() -> portfolioService.deletePortfolio(2L, testUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.NOT_FOUND_PORTFOLIO.getMessage());
+    }
+
+    @DisplayName("존재하지 않는 유저가 포트폴리오 삭제 시 예외가 발생한다.")
+    @Test
+    void deletePortfolioWithAnonymousUser() throws IOException {
+        //given
+        User testUser = createUser( "yes@gmail.com", "test password", "yes", false);
+        userRepository.save(testUser);
+        User anonymous = User.builder()
+                .id(10L)
+                .build();
+        List<Long> projectIdList = new ArrayList<>();
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
+
+        //when //then
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolioId, anonymous))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
     }
 
     private Project createProject(User testUser) throws IOException {
