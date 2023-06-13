@@ -1,8 +1,10 @@
-REPOSITORY=/firstcicd-ec2/build/libs
+#!/bin/bash
+
+REPOSITORY=/home/ubuntu/firstcicd-ec2/build/libs/
 cd $REPOSITORY
 
 APP_NAME=firstcicd-ec2
-JAR_NAME=$(ls $REPOSITORY | grep 'OurPortfolio-0.0.1-SNAPSHOT.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY | grep 'SNAPSHOT.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/$JAR_NAME
 
 sudo chmod +x "$JAR_PATH"
@@ -11,7 +13,7 @@ CURRENT_PID=$(pgrep -f $APP_NAME)
 
 if [ -z $CURRENT_PID ]
 then
-  echo "> 종료할것 없음."
+  echo "> 종료할 것 없음."
 else
   echo "> kill -9 $CURRENT_PID"
   kill -15 $CURRENT_PID
