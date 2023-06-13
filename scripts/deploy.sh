@@ -2,7 +2,7 @@ REPOSITORY=/home/ubuntu/firstcicd-ec2/build/libs
 cd $REPOSITORY
 
 APP_NAME=firstcicd-ec2
-JAR_NAME=$(ls $REPOSITORY | grep 'SNAPSHOT.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY | grep 'OurPortfolio-0.0.1-SNAPSHOT.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/$JAR_NAME
 
 #JAR 파일에 실행 권한 설정
