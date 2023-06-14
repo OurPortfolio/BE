@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.user.entity;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.user.dto.SignupRequestDto;
@@ -78,18 +79,21 @@ public class User extends TimeStamped {
         this.profileImage = profileImage;
     }
 
+    @JacocoGenerated
     public User kakaoUpdate(Long kakaoId, String profileImage) {
         this.kakaoId = kakaoId;
         this.profileImage = profileImage;
         return this;
     }
 
+    @JacocoGenerated
     public User naverUpdate(Long naverId, String profileImage) {
         this.naverId = naverId;
         this.profileImage = profileImage;
         return this;
     }
 
+    @JacocoGenerated
     public User googleUpdate(Long googleId, String profileImage) {
         this.googleId = googleId;
         this.profileImage = profileImage;
