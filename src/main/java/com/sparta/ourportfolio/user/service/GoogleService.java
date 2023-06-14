@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
-import com.sparta.ourportfolio.common.enums.UserRoleEnum;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
 import com.sparta.ourportfolio.user.dto.GoogleUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;

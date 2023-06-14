@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class GlobalException extends RuntimeException {
-    private ExceptionEnum error;
+    private final ExceptionEnum error;
 
     public GlobalException(ExceptionEnum e) {
         super(e.getMessage());
