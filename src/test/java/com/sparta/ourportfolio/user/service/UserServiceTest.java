@@ -365,6 +365,37 @@ class UserServiceTest {
                 .hasMessage("회원이 존재하지 않습니다.");
     }
 
+    @DisplayName("중복된 이메일로 회원가입 시 예외를 반환한다")
+    @Test
+    void checkEmail() {
+        // given
+        User user4 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
+        userRepository.save(user4);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+
+        // when
+        ResponseDto<Boolean> responseDto = userService.checkEmail(signupRequestDto.getEmail());
+
+        // then
+        assertThat(responseDto)
+                .extracting("statusCode", "message")
+                .contains(HttpStatus.OK, "이메일이 중복되지 않습니다.");;
+    }
+
+    @DisplayName("중복된 이메일로 회원가입 시 예외를 반환한다")
+    @Test
+    void checkEmailWithDuplicatedEmail() {
+        // given
+        User user4 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
+        userRepository.save(user4);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test3456@example.com", "test1234", "test1234", null);
+
+        // when // then
+        assertThatThrownBy(() -> userService.checkEmail(signupRequestDto.getEmail()))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("중복된 이메일이 이미 존재합니다.");
+    }
+
     private SignupRequestDto createSignupRequestDto(String email, String password, String nickname, String profileImage) {
         return SignupRequestDto.builder()
                 .email(email)

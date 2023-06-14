@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.portfolio.service;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
@@ -82,6 +83,7 @@ public class PortfolioService {
 
     }
 
+    @JacocoGenerated
     @Transactional(readOnly = true)
     public ResponseDto<List<String>> autoComplete(String keyword) {
         List<String> result = new ArrayList<>(this.trie.prefixMap(keyword).keySet());

@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.portfolio.controller;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioDetailResponseDto;
@@ -87,6 +88,7 @@ public class PortfolioController {
         return portfolioService.deletePortfolio(id, userDetails.getUser());
     }
 
+    @JacocoGenerated
     @GetMapping("/autocomplete")
     public ResponseDto<List<String>> autocomplete(@RequestParam String keyword) {
         return portfolioService.autoComplete(keyword);

@@ -1,5 +1,8 @@
 package com.sparta.ourportfolio.common.enums;
 
+import com.sparta.ourportfolio.JacocoGenerated;
+
+@JacocoGenerated
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한
     ADMIN(Authority.ADMIN);  // 관리자 권한
