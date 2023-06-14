@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.common.jwt;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
 import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 import static com.sparta.ourportfolio.common.exception.ExceptionEnum.EXPIRED_JWT_TOKEN;
 
+@JacocoGenerated
 @Slf4j
 @Component
 @RequiredArgsConstructor

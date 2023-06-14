@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.common.jwt.refreshToken;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JacocoGenerated
 @Getter
 @Entity
 @NoArgsConstructor

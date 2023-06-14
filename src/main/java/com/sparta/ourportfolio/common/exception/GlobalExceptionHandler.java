@@ -1,11 +1,13 @@
 package com.sparta.ourportfolio.common.exception;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+@JacocoGenerated
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(GlobalException.class)

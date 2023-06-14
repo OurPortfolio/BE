@@ -1,8 +1,10 @@
 package com.sparta.ourportfolio.common.jwt;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JacocoGenerated
 @Data
 @NoArgsConstructor
 public class JwtTokenDto {
