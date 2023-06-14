@@ -1,8 +1,10 @@
 package com.sparta.ourportfolio.user.dto;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JacocoGenerated
 @Getter
 @NoArgsConstructor
 public class KakaoUserInfoDto {

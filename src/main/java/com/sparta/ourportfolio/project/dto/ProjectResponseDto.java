@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.project.dto;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.entity.ProjectImage;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@JacocoGenerated
 @Getter
 @NoArgsConstructor
 public class ProjectResponseDto {
