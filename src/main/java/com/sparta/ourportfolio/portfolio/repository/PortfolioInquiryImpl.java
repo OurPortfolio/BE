@@ -53,12 +53,8 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         List<PortfolioResponseDto> content = resultSlice.stream()
                 .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
+        boolean hasNext = content.size() >= pageRequest.getPageSize();
 
-        boolean hasNext = false;
-        if (content.size() > pageRequest.getPageSize()) {
-            resultSlice.remove(pageRequest.getPageSize());
-            hasNext = true;
-        }
         return new SliceImpl<>(content, pageRequest, hasNext);
     }
 
