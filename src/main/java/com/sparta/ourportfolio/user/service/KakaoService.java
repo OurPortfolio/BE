@@ -40,8 +40,7 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
-//    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=http://localhost:8080/api/users/kakao&response_type=code
-//    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=http://3.34.102.60:8080/api/users/kakao&response_type=code
+//    kauth.kakao.com/oauth/authorize?client_id=acf4c39ccdb7be5096df83b38e86fe27&redirect_uri=https://ppol.pro/api/users/kakao&response_type=code
 
     public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -71,7 +70,6 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
         body.add("client_secret", kakaoClientSecret);
-//        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 

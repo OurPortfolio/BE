@@ -41,8 +41,7 @@ public class NaverService {
     @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String naverRedirectUri;
 
-//    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=http://localhost:8080/api/users/naver&state=state
-//    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=http://3.34.102.60:8080/api/users/naver&state=state
+//    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=https://ppol.pro/api/users/naver&state=state
 
     public ResponseDto<String> naverLogin(String code, String state, HttpServletResponse response) throws JsonProcessingException {
         // 인가코드, state 로 네이버한테 access_token 요청
@@ -69,7 +68,6 @@ public class NaverService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", naverClientId);
         body.add("client_secret", naverClientSecret);
-//        body.add("redirect_uri", "http://localhost:8080/api/users/naver");
         body.add("redirect_uri", naverRedirectUri);
         body.add("code", code);
         body.add("state", state);
