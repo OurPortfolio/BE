@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.user.service;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
@@ -191,6 +192,7 @@ public class UserService {
     }
 
     //토큰 재발급
+    @JacocoGenerated
     public ResponseDto<UserDto> reissueToken(String refreshToken, HttpServletResponse response) {
         jwtUtil.refreshTokenValid(refreshToken);
         String email = jwtUtil.getUserInfoFromToken(refreshToken);

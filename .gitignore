@@ -40,5 +40,6 @@ out/
 src/main/resources/application-aws.yml
 src/main/resources/application-aws.properties
 src/test/resources/application-test-aws.yml
+src/test/resources/application-aws.properties
 
 htmlReport
