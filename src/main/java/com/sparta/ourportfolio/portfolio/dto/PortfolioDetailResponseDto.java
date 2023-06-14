@@ -39,7 +39,7 @@ public class PortfolioDetailResponseDto {
         this.residence = portfolio.getResidence();
         this.location = portfolio.getLocation();
         this.telephone = portfolio.getTelephone();
-        this.email = portfolio.getUser().getEmail();
+        this.email = portfolio.getEmail();
         this.githubId = portfolio.getGithubId();
         this.experience = portfolio.getProjectList().stream().map(Project::getTitle).collect(Collectors.toList());
         this.blogUrl = portfolio.getBlogUrl();

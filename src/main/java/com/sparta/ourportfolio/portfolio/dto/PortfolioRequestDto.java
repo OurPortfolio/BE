@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 public class PortfolioRequestDto {
     private String portfolioTitle;
+    private String email;
     private String intro;
     private String techStack;
     private String residence;
@@ -21,10 +22,11 @@ public class PortfolioRequestDto {
     private List<Long> projectIdList;
 
     @Builder
-    public PortfolioRequestDto(String portfolioTitle, String intro, String techStack, String residence,
+    public PortfolioRequestDto(String portfolioTitle, String email, String intro, String techStack, String residence,
                                String location, String telephone, String githubId, String blogUrl,
                                String category, String filter, String youtubeUrl, List<Long> projectIdList) {
         this.portfolioTitle = portfolioTitle;
+        this.email = email;
         this.intro = intro;
         this.techStack = techStack;
         this.residence = residence;
