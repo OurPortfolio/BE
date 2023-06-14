@@ -3,6 +3,7 @@ package com.sparta.ourportfolio.user.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.enums.UserRoleEnum;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@JacocoGenerated
 @Slf4j
 @Service
 @RequiredArgsConstructor
