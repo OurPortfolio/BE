@@ -89,26 +89,29 @@ class PortfolioInquiryServiceTest {
         User testUser = createUser("test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1", "intro",
-                "techStack", "residence", "location", "010********",
-                "test@email.com", "coze", "Develop", "Frontend", "Backend",
-                projectIdList
-        );
-        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2", "intro",
-                "techStack", "residence", "location", "010********",
-                "test@email.com", "coze", "Design", "Graphic", "Graphic",
-                projectIdList
-        );
-        String imageUrl = "";
-
-        Portfolio portfolio1 = createPortfolio(portfolioRequestDto1, imageUrl, testUser);
-        Portfolio portfolio2 = createPortfolio(portfolioRequestDto2, imageUrl, testUser);
-        portfolioRepository.save(portfolio1);
-        Long portfolioId = portfolioRepository.save(portfolio2).getId();
+        for (int i = 0; i < 12; i++) {
+            PortfolioRequestDto portfolioRequestDto = PortfolioRequestDto.builder()
+                    .portfolioTitle("title")
+                    .intro("intro")
+                    .techStack("techStack")
+                    .projectIdList(projectIdList)
+                    .build();
+            Portfolio portfolio = createPortfolio(portfolioRequestDto, "", testUser);
+            portfolioRepository.save(portfolio);
+        }
+        PortfolioRequestDto portfolioRequestDto = PortfolioRequestDto.builder()
+                .portfolioTitle("title")
+                .intro("intro")
+                .techStack("techStack")
+                .projectIdList(projectIdList)
+                .build();
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, "", testUser);
+        portfolioRepository.save(portfolio);
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                portfolioId+1, 10, "", "");
+                portfolioId+1, 9, "", "");
 
         //then
         assertThat(result)
@@ -117,7 +120,7 @@ class PortfolioInquiryServiceTest {
 
         Slice<PortfolioResponseDto> responseData = result.getData();
         List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(portfolioResults).hasSize(2);
+        assertThat(portfolioResults).hasSize(9);
     }
 
     @DisplayName("카테고리와 필터를 지정하면 해당하는 포트폴리오를 조회한다.")
