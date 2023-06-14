@@ -201,6 +201,31 @@ class UserServiceTest {
 
     }
 
+    @DisplayName("image 파일이 없는 상태로 회원정보 수정")
+    @Test
+    void updateUserWithoutImage() throws IOException {
+        // given
+        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        userRepository.save(user);
+        UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test1234");
+
+        String imageUrl;
+        MockMultipartFile image = null;
+        imageUrl = user.getProfileImage();
+
+        user.updateUser(updateUserRequestDto1, imageUrl);
+        userRepository.save(user);
+
+        // when
+        ResponseDto<UserDto> userResponse = userService.updateUser(user.getId(), updateUserRequestDto1, image, user);
+
+        // then
+        assertThat(userResponse)
+                .extracting("statusCode", "message")
+                .contains(HttpStatus.OK, "회원 정보 수정 성공!");
+
+    }
+
     @DisplayName("로그인한 유저의 id 값과 수정하려는 id 값이 다를 시 예외를 반환한다")
     @Test
     void updateUserUnauthorized() {
