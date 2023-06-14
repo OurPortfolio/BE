@@ -26,6 +26,8 @@ public class QPortfolio extends EntityPathBase<Portfolio> {
 
     public final StringPath category = createString("category");
 
+    public final StringPath email = createString("email");
+
     public final StringPath filter = createString("filter");
 
     public final StringPath githubId = createString("githubId");

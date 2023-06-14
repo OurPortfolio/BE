@@ -308,6 +308,26 @@ class UserControllerTest {
         ;
     }
 
+    @DisplayName("유저 조회")
+    @Test
+    void checkEmail() throws Exception {
+        // given
+        User user2 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        userRepository.save(user2);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+
+
+        ResponseDto<Boolean> response = userService.checkEmail(signupRequestDto.getEmail());
+        // when // then
+        mockMvc.perform(
+                        get("/api/users/email-check")
+                                .param("email", signupRequestDto.getEmail())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
     private SignupRequestDto createSignupRequestDto(String email, String password, String nickname, String profileImage) {
         return SignupRequestDto.builder()
                 .email(email)

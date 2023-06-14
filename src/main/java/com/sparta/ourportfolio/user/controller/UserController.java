@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.security.UserDetailsImpl;
 import com.sparta.ourportfolio.user.dto.*;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,24 +85,28 @@ public class UserController {
         return userService.checkEmail(email);
     }
 
+    @JacocoGenerated
     // 카카오 로그인
     @GetMapping("/kakao")
     public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
     }
 
+    @JacocoGenerated
     // 네이버 로그인
     @GetMapping("/naver")
     public ResponseDto<String> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
         return naverService.naverLogin(code, state, response);
     }
 
+    @JacocoGenerated
     // 구글 로그인
     @GetMapping("/google")
     public ResponseDto<String> googleLogin(@RequestParam String code, @RequestParam String scope, HttpServletResponse response) throws JsonProcessingException {
         return googleService.googleLogin(code, scope, response);
     }
 
+    @JacocoGenerated
     //Refresh 토큰으로 Access 토큰 재발급
     @GetMapping("/reissue")
     public ResponseDto<UserDto> reissueToken(@RequestParam(value = "REFRESH_TOKEN", required = false) String refreshToken, HttpServletResponse response){

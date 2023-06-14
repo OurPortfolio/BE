@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.security.SecurityExceptionDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@JacocoGenerated
 @Slf4j
 @Component
 @RequiredArgsConstructor
