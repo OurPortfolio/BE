@@ -1,6 +1,5 @@
 package com.sparta.ourportfolio.common.jwt.refreshToken;
 
-import com.sparta.ourportfolio.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

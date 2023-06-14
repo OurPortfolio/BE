@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class GlobalExceptionEntity {
-    private String errorCode;
-    private String errorMessage;
+    private final String errorCode;
+    private final String errorMessage;
 
     @Builder
     public GlobalExceptionEntity(HttpStatus status, String errorCode, String errorMessage) {

@@ -2,9 +2,7 @@ package com.sparta.ourportfolio.user.service;
 
 import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
-import com.sparta.ourportfolio.common.jwt.JwtTokenDto;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
-import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.user.dto.*;
 import com.sparta.ourportfolio.user.entity.User;
@@ -33,7 +31,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final S3Service s3Service;
 
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -155,11 +152,6 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제", null);
     }
 
-    private void setHeader(HttpServletResponse response, JwtTokenDto tokenDto) {
-        response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
-        response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
-    }
-
     //이메일 중복 검사
     public ResponseDto<Boolean> checkEmail(String email) {
         validateEmail(email);
@@ -208,50 +200,4 @@ public class UserService {
         return ResponseDto.setSuccess(HttpStatus.OK,"토큰 재발급 성공!");
     }
 
-//    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
-//        String refreshTokenValue = request.getHeader("refreshToken");
-//        jwtUtil.validateToken(refreshTokenValue);
-//        RefreshToken refreshToken = refreshTokenRepository.findByValue(refreshTokenValue).orElse(null);
-//        // 해당유저의 리프레시 토큰이 DB에 없는 경우 예외처리
-//        if (refreshToken == null) {
-//            throw new GlobalException(EXPIRED_JWT_TOKEN);
-//        }
-//
-//        // 리프레시 토큰값에 대한 유저가 있는지 체크하고 없으면 예외처리
-//        Optional<User> user = userRepository.findById(refreshToken.getId());
-//        if(!user.isPresent()){
-//            throw new GlobalException(NOT_FOUND_USER);
-//        }
-//        User requestingUser = user.get();
-//
-//        // 리프레시 토큰값이 유효한지 체크하고 아니면 예외처리
-//        if (!Objects.equals(refreshToken.getValue(), refreshTokenValue)) {
-//            jwtUtil.deleteRefreshToken(requestingUser);
-//            throw new GlobalException(INVALID_JWT_TOKEN);
-//        }
-//
-//        // 헤더에 저장된 엑세스토큰 만료기간을 가져오고 없으면 예외처리
-//        String expireTime = request.getHeader("Access-Token-Expire-Time");
-//        if (expireTime == null) throw new GlobalException(EXPIRED_JWT_TOKEN);
-//
-//        long accessTokenExpire = Long.parseLong(expireTime);
-//        long now = new Date().getTime();
-//
-//        // 엑세스토큰만료 시간이 현재시간을 초과하는지 체크
-//        if (now >= accessTokenExpire) {
-//            // 엑세스토큰이 만료되고 리프레시 토큰도 만료됬을 시 DB에서 리프레시 토큰 삭제 후 예외처리
-//            if (now >= refreshToken.getExpirationDate().getTime()) {
-//                jwtUtil.deleteRefreshToken(requestingUser);
-//                throw new GlobalException(INVALID_JWT_TOKEN);
-//            } else {
-//                // 엑세스토큰이 만료되고 리프레시토큰이 만료되지 않았을시 엑세스토큰 재발급
-//                TokenDto tokenDto = tokenProvider.generateAccessTokenDto(requestingUser, requestingUser.getRole());
-//                validation.accessTokenToHeaders(tokenDto, response);
-//            }
-//            // 엑세스 토큰이 만료되지 않았을 시 엑세스 토큰 재발급
-//        } else {
-//            TokenDto tokenDto = tokenProvider.generateAccessTokenDto(requestingUser, requestingUser.getRole());
-//            validation.accessTokenToHeaders(tokenDto, response);
-//        }
-//    }
 }
