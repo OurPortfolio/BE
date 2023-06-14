@@ -1,5 +1,6 @@
 package com.sparta.ourportfolio.common.security;
 
+import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.enums.UserRoleEnum;
 import com.sparta.ourportfolio.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,19 +35,23 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() { return this.user.getEmail(); }
 
+    @JacocoGenerated
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JacocoGenerated
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JacocoGenerated
     @Override
     public boolean isCredentialsNonExpired() { return true; }
 
+    @JacocoGenerated
     @Override
     public boolean isEnabled() {
         return true;

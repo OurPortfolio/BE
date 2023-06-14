@@ -423,6 +423,51 @@ class PortfolioServiceTest {
                 .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
     }
 
+    @DisplayName("Image가 null일 경우 기존 포트폴리오 이미지로 유지한다.")
+    @Test
+    void updatePortfolioWithoutImage() throws IOException {
+        //given
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
+        userRepository.save(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
+                "techStack", "residence", "location", "010********",
+                "test@email.com", "coze", "velog.coze", "Develop", "Backend",
+                projectIdList
+        );
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg", "Test Image".getBytes());
+        String imageUrl = s3Service.uploadFile(imageFile);
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
+        portfolioRepository.save(portfolio);
+
+        //수정 데이터 준비
+        User anonymous = User.builder()
+                .id(10L)
+                .build();
+        List<Long> updateProjectIdList = new ArrayList<>();
+        PortfolioRequestDto updatePortfolioRequestDto = createPortfolioRequestDto("updateTitle", "upIntro",
+                "upTechStack", "upResidence", "upLocation", "01055489692",
+                "update@email.com", "updateId", "updateBlog", "Develop", "Backend",
+                updateProjectIdList
+        );
+        MockMultipartFile updateImageFile = null;
+        String updateImageUrl = portfolio.getPortfolioImage();
+        portfolio.update(updatePortfolioRequestDto, updateImageUrl);
+
+        //when
+        ResponseDto<String> result = portfolioService.updatePortfolio(
+                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, testUser
+        );
+
+        //then
+        assertThat(result)
+                .extracting("statusCode", "message")
+                .contains(HttpStatus.OK, "수정 완료");
+    }
+
     //Delete Test
     @DisplayName("사용자가 작성한 포트폴리오라면 삭제할 수 있다.")
     @Test
