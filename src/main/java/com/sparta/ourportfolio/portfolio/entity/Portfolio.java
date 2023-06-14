@@ -28,6 +28,8 @@ public class Portfolio {
     @Column(nullable = false)
     private String intro;
 
+    private String email;
+
     @Column(nullable = false)
     private String techStack;
 
@@ -60,11 +62,12 @@ public class Portfolio {
     private User user;
 
     @Builder
-    public Portfolio(Long id, String portfolioTitle, String intro, String techStack, String residence, String location,
+    public Portfolio(Long id, String portfolioTitle, String email, String intro, String techStack, String residence, String location,
                      String telephone, String githubId, String blogUrl, String category, String filter,
                      String youtubeUrl, String portfolioImage, List<Project> projectList, User user) {
         this.id = id;
         this.portfolioTitle = portfolioTitle;
+        this.email = email;
         this.intro = intro;
         this.techStack = techStack;
         this.residence = residence;
@@ -82,6 +85,7 @@ public class Portfolio {
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
+        this.email = portfolioRequestDto.getEmail();
         this.intro = portfolioRequestDto.getIntro();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
@@ -97,6 +101,7 @@ public class Portfolio {
 
     public void update(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
         this.portfolioTitle = portfolioRequestDto.getPortfolioTitle();
+        this.email = portfolioRequestDto.getEmail();
         this.intro = portfolioRequestDto.getIntro();
         this.techStack = portfolioRequestDto.getTechStack();
         this.residence = portfolioRequestDto.getResidence();
