@@ -89,7 +89,7 @@ class PortfolioInquiryServiceTest {
         User testUser = createUser("test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 20; i++) {
             PortfolioRequestDto portfolioRequestDto = PortfolioRequestDto.builder()
                     .portfolioTitle("title")
                     .intro("intro")
