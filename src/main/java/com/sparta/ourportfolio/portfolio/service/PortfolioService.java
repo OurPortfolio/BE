@@ -5,6 +5,7 @@ import com.sparta.ourportfolio.common.dto.ResponseDto;
 import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.utils.S3Service;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
+import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
@@ -15,6 +16,10 @@ import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.Trie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
@@ -36,6 +40,7 @@ public class PortfolioService {
     private final ProjectRepository projectRepository;
     private final S3Service s3Service;
     private final Trie<String, List<Long>> trie;
+    private final Map<String, Integer> searchCountMap = new HashMap<>();
 
     @PostConstruct
     public void initializeTrieFromRedis() {
@@ -86,8 +91,33 @@ public class PortfolioService {
     @JacocoGenerated
     @Transactional(readOnly = true)
     public ResponseDto<List<String>> autoComplete(String keyword) {
-        List<String> result = new ArrayList<>(this.trie.prefixMap(keyword).keySet());
+        PriorityQueue<Map.Entry<String, Integer>> priorityQueue = new PriorityQueue<>(
+                (entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue())
+        );
+
+        Map<String, Integer> prefixMap = this.trie.prefixMap(keyword)
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> searchCountMap.getOrDefault(e.getKey(), 0)));
+
+        priorityQueue.addAll(prefixMap.entrySet());
+
+        List<String> result = new ArrayList<>(10);
+        for (int i = 0; i < 10 && !priorityQueue.isEmpty(); i++) {
+            result.add(priorityQueue.poll().getKey());
+        }
+
         return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(String keyword, int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "portfolio_id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<PortfolioResponseDto> searchResponseDtoPage =
+                portfolioRepository.searchPortfolios(pageable, keyword);
+        searchCountMap.put(keyword, searchCountMap.getOrDefault(keyword, 0) + 1);
+        return ResponseDto.setSuccess(HttpStatus.OK, "검색 완료", searchResponseDtoPage);
     }
 
     @Transactional
