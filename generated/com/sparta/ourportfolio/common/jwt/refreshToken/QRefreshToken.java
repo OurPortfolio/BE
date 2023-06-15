@@ -1,4 +1,4 @@
-package com.sparta.ourportfolio.common.jwt.refreshToken;
+package com.sparta.ourportfolio.common.jwt.refreshtoken;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

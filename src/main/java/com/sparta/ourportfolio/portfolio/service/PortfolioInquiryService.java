@@ -58,4 +58,5 @@ public class PortfolioInquiryService {
         Long lastPortfolioId = portfolioRepository.getLastPortfolioIdByCategoryAndFilter(category, filter) + 1;
         return ResponseDto.setSuccess(HttpStatus.OK, "Last Id 조회 완료", lastPortfolioId);
     }
+
 }

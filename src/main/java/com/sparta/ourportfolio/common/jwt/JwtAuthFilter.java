@@ -36,18 +36,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         // JWT 토큰을 해석하여 추출
-        String access_token = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
-        String refresh_token = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
+        String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
+        String refreshToken = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
 
         // 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리
-        if (access_token == null) {
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
         } else {
-            if (jwtUtil.validateToken(access_token)) {
-                setAuthentication(jwtUtil.getUserInfoFromToken(access_token));
-            } else if (refresh_token != null && jwtUtil.refreshTokenValid(refresh_token)) {
+            if (jwtUtil.validateToken(accessToken)) {
+                setAuthentication(jwtUtil.getUserInfoFromToken(accessToken));
+            } else if (refreshToken != null && jwtUtil.refreshTokenValid(refreshToken)) {
                 //Refresh 토큰으로 유저명 가져오기
-                String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
+                String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
                 //유저명으로 유저 정보 가져오기
                 User user = userRepository.findByEmail(userEmail).orElseThrow(
                         () -> new GlobalException(NOT_FOUND_USER));
@@ -59,10 +59,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 setAuthentication(userEmail);
                 // Refresh Token 재발급 로직
                 log.info("===== Create New Refresh Token");
-                long refreshTime = jwtUtil.getExpirationTime(refresh_token);
+                long refreshTime = jwtUtil.getExpirationTime(refreshToken);
                 String newRefreshToken = jwtUtil.createNewRefreshToken(user.getEmail(), refreshTime, user.getId());
                 jwtUtil.setHeaderRefreshToken(response, newRefreshToken);
-            } else if (refresh_token == null) {
+            } else if (refreshToken == null) {
                 jwtExceptionHandler(response, "AccessToken 이 만료되었습니다.", HttpStatus.BAD_REQUEST.value());
                 return;
             } else {

@@ -6,7 +6,6 @@ import com.sparta.ourportfolio.project.entity.Project;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class PortfolioDetailResponseDto {
@@ -41,12 +40,12 @@ public class PortfolioDetailResponseDto {
         this.telephone = portfolio.getTelephone();
         this.email = portfolio.getEmail();
         this.githubId = portfolio.getGithubId();
-        this.experience = portfolio.getProjectList().stream().map(Project::getTitle).collect(Collectors.toList());
+        this.experience = portfolio.getProjectList().stream().map(Project::getTitle).toList();
         this.blogUrl = portfolio.getBlogUrl();
         this.category = portfolio.getCategory();
         this.filter = portfolio.getFilter();
         this.portfolioImage = portfolio.getPortfolioImage();
         this.youtubeUrl = portfolio.getYoutubeUrl();
-        this.projectList = portfolio.getProjectList().stream().map(ProjectResponseDto::new).collect(Collectors.toList());
+        this.projectList = portfolio.getProjectList().stream().map(ProjectResponseDto::new).toList();
     }
 }
