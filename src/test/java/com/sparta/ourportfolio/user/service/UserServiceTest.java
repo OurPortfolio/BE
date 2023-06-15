@@ -365,6 +365,22 @@ class UserServiceTest {
                 .hasMessage("회원이 존재하지 않습니다.");
     }
 
+    @DisplayName("회원탈퇴 soft 할 때 현재 로그인한 유저와 탈퇴하려는 유저 id가 다를 시 예외를 반환한다")
+    @Test
+    void softDeleteWithDifferentId() {
+        // given
+        User user4 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user5 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        userRepository.save(user4);
+        userRepository.save(user5);
+
+        // when // then
+        assertThatThrownBy(() -> userService.deleteUser(user4.getId(), user5))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("권한이 없습니다.");
+    }
+
+
     @DisplayName("중복된 이메일로 회원가입 시 예외를 반환한다")
     @Test
     void checkEmail() {
