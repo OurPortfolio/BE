@@ -8,7 +8,6 @@ import com.sparta.ourportfolio.portfolio.dto.PortfolioRequestDto;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.repository.PortfolioRepository;
-import com.sparta.ourportfolio.portfolio.service.PortfolioInquiryService;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,7 +46,7 @@ class PortfolioInquiryServiceTest {
     //Get One Portfolio Test
     @DisplayName("포트폴리오 Id로 포트폴리오를 조회할 수 있다.")
     @Test
-    void getPortfolio() throws IOException {
+    void getPortfolio() {
         //given
         User testUser = createUser("test@gmail.com", "test-password", "test", false);
         userRepository.save(testUser);
@@ -215,54 +213,6 @@ class PortfolioInquiryServiceTest {
 
         List<PortfolioResponseDto> portfolioResults = result.getData();
         assertThat(portfolioResults).hasSize(2);
-    }
-
-    //Search Portfolio Test
-    @DisplayName("포트폴리오의 제목과 기술 스택에 키워드가 해당하는 포트폴리오들을 조회할 수 있다.")
-    @Test
-    void searchPortfolios() {
-        //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
-        userRepository.save(testUser);
-        List<Long> projectIdList = new ArrayList<>();
-        PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("success", "intro",
-                "", "residence", "location", "010********",
-                "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
-        );
-        PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("fail", "intro",
-                "techStack", "residence", "location", "010********",
-                "test@email.com", "coze", "Design", "Graphic", "Graphic",
-                projectIdList
-        );
-        PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("stack search success", "intro",
-                "success", "residence", "location", "010********",
-                "test@email.com", "coze", "Photographer", "None", "Graphic",
-                projectIdList
-        );
-        String imageUrl = "";
-
-        Portfolio portfolio1 = createPortfolio(portfolioRequestDto1, "title search success", testUser);
-        Portfolio portfolio2 = createPortfolio(portfolioRequestDto2, imageUrl, testUser);
-        Portfolio portfolio3 = createPortfolio(portfolioRequestDto3, imageUrl, testUser);
-        portfolioRepository.save(portfolio1);
-        portfolioRepository.save(portfolio2);
-        portfolioRepository.save(portfolio3);
-
-        //when
-        ResponseDto<Page<PortfolioResponseDto>> result = portfolioInquiryService.searchPortfolios("success", 0, 100);
-
-        //then
-        assertThat(result)
-                .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "검색 완료");
-
-        Page<PortfolioResponseDto> responseData = result.getData();
-        List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(responseData).hasSize(2);
-
-        assertThat(portfolioResults.get(0).getPortfolioTitle()).isEqualTo("stack search success");
-        assertThat(portfolioResults.get(1).getPortfolioImage()).isEqualTo("title search success");
     }
 
     //Get Portfolio Id Test

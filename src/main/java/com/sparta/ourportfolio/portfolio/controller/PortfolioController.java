@@ -60,7 +60,7 @@ public class PortfolioController {
     public ResponseDto<Page<PortfolioResponseDto>> searchPortfolios(@RequestParam(name = "keyword") String keyword,
                                                                     @RequestParam(name = "page") int page,
                                                                     @RequestParam(name = "size") int size) {
-        return portfolioInquiryService.searchPortfolios(keyword, page - 1, size);
+        return portfolioService.searchPortfolios(keyword, page - 1, size);
     }
 
     @GetMapping("/myportfolios")
