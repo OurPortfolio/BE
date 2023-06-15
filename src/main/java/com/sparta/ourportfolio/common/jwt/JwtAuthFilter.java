@@ -2,6 +2,7 @@ package com.sparta.ourportfolio.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.ourportfolio.JacocoGenerated;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.security.SecurityExceptionDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_USER;
 
 @JacocoGenerated
 @Slf4j
@@ -46,7 +49,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 //Refresh 토큰으로 유저명 가져오기
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 //유저명으로 유저 정보 가져오기
-                User user = userRepository.findByEmail(userEmail).get();
+                User user = userRepository.findByEmail(userEmail).orElseThrow(
+                        () -> new GlobalException(NOT_FOUND_USER));
                 //새로운 ACCESS TOKEN 발급
                 log.info("===== 새로운 Access Token");
                 String newAccessToken = jwtUtil.createToken(user.getEmail(), "Access", user.getId());

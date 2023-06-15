@@ -130,11 +130,11 @@ public class JwtUtil {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(getUserInfoFromToken(token));
 
         //해당유저의 리프레시 토큰이 DB에 없는 경우 예외처리
-        if (refreshToken == null) {
+        if (refreshToken.isEmpty()) {
             throw new GlobalException(EXPIRED_JWT_TOKEN);
         }
 
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
+        return token.equals(refreshToken.get().getRefreshToken().substring(7));
     }
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
