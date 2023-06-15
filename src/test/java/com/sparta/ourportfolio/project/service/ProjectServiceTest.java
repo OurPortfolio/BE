@@ -70,7 +70,6 @@ class ProjectServiceTest {
 
         Project project = new Project(projectRequestDto1, user1);
         project.setImageFile(s3Service.fileFactory(images, project));
-        project = projectRepository.save(project);
 
         // when
         ResponseDto<ProjectResponseDto> projectResponse = projectService.creatProject(projectRequestDto1, images, user1);
@@ -201,7 +200,6 @@ class ProjectServiceTest {
         project.updateProject(newProjectRequestDto);
 
         // when // then
-        Project finalProject = project;
         assertThatThrownBy(() -> projectService.updateProject(100L, newProjectRequestDto, newImages, user1))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("프로젝트가 존재하지 않습니다.");
@@ -279,7 +277,7 @@ class ProjectServiceTest {
 
     @DisplayName("프로젝트를 삭제할 때 잘못된 프로젝트 id를 입력 시 예외를 반환한다")
     @Test
-    void deleteProjectWithWrongId() throws IOException {
+    void deleteProjectWithWrongId() {
         // given
         User user2 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
         userRepository.save(user2);
@@ -330,7 +328,8 @@ class ProjectServiceTest {
 
         // when // then
         Project finalProject = project;
-        assertThatThrownBy(() -> projectService.deleteProject(finalProject.getId(), user4))
+        Long projectId = finalProject.getId();
+        assertThatThrownBy(() -> projectService.deleteProject(projectId, user4))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("권한이 없습니다.");
     }

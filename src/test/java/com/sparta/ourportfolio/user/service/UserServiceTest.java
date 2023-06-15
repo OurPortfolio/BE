@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
@@ -35,9 +34,6 @@ class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Mock
     private HttpServletResponse response;
@@ -71,7 +67,7 @@ class UserServiceTest {
 
     }
 
-    @DisplayName("중복된 Nickname으로 회원가입")
+    @DisplayName("중복된 Nickname 으로 회원가입")
     @Test
     void signupWitheDuplicateNickname() {
         // given
@@ -105,7 +101,7 @@ class UserServiceTest {
                 .contains(HttpStatus.OK, "로그인 성공!");
     }
 
-    @DisplayName("해당 email로 가입한 회원이 존재하지 않을 시 예외를 반환한다.")
+    @DisplayName("해당 email 로 가입한 회원이 존재하지 않을 시 예외를 반환한다.")
     @Test
     void loginNotFoundUser() {
         // given
@@ -248,14 +244,14 @@ class UserServiceTest {
         // given
         User user1 = createUser("test7890@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test7890", false);
         User user2 = createUser("test0000@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test0000", false);
-        userRepository.save(user1);
+        Long userId1 = userRepository.save(user1).getId();
         userRepository.save(user2);
         UpdateUserRequestDto updateUserRequestDto3 = new UpdateUserRequestDto("test0000");
 
         MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", "Test Image".getBytes());
 
         // when // then
-        assertThatThrownBy(() -> userService.updateUser(user1.getId(), updateUserRequestDto3, image, user1))
+        assertThatThrownBy(() -> userService.updateUser(userId1 , updateUserRequestDto3, image, user1))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("중복된 닉네임이 이미 존재합니다.");
     }
@@ -283,12 +279,12 @@ class UserServiceTest {
         // given
         User user1 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
         User user2 = createUser("test5@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5", false);
-        userRepository.save(user1);
+        Long userId1 = userRepository.save(user1).getId();
         userRepository.save(user2);
         UpdatePasswordRequestDto updatePasswordRequestDto2 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password1234");
 
         // when // then
-        assertThatThrownBy(() -> userService.updatePassword(user1.getId(), updatePasswordRequestDto2, user2))
+        assertThatThrownBy(() -> userService.updatePassword(userId1, updatePasswordRequestDto2, user2))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("권한이 없습니다.");
     }
@@ -298,11 +294,11 @@ class UserServiceTest {
     void updatePasswordWithPresentPassword() {
         // given
         User user3 = createUser("test5678@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5678", false);
-        userRepository.save(user3);
+        Long userId3 = userRepository.save(user3).getId();
         UpdatePasswordRequestDto updatePasswordRequestDto3 = new UpdatePasswordRequestDto("Password12", "Password1234", "Password1234");
 
         // when // then
-        assertThatThrownBy(() -> userService.updatePassword(user3.getId(), updatePasswordRequestDto3, user3))
+        assertThatThrownBy(() -> userService.updatePassword(userId3, updatePasswordRequestDto3, user3))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("입력한 비밀번호와 기존 비밀번호가 일치하지 않습니다.");
     }
@@ -312,11 +308,11 @@ class UserServiceTest {
     void updatePasswordWithCoincidePassword() {
         // given
         User user4 = createUser("test2345@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test2345", false);
-        userRepository.save(user4);
+        Long userId4 = userRepository.save(user4).getId();
         UpdatePasswordRequestDto updatePasswordRequestDto4 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password123");
 
         // when // then
-        assertThatThrownBy(() -> userService.updatePassword(user4.getId(), updatePasswordRequestDto4, user4))
+        assertThatThrownBy(() -> userService.updatePassword(userId4, updatePasswordRequestDto4, user4))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("새로운 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
     }
@@ -353,7 +349,7 @@ class UserServiceTest {
                 .contains(HttpStatus.OK, "영구 삭제");
     }
 
-    @DisplayName("회원탈퇴 soft를 할 때 잘못된 id를 입력시 예외를 반환한다")
+    @DisplayName("soft 회원탈퇴를 할 때 잘못된 id를 입력시 예외를 반환한다")
     @Test
     void softDeleteWithWrongId() {
         // given
@@ -364,6 +360,22 @@ class UserServiceTest {
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("회원이 존재하지 않습니다.");
     }
+
+    @DisplayName("회원탈퇴 soft 할 때 현재 로그인한 유저와 탈퇴하려는 유저 id가 다를 시 예외를 반환한다")
+    @Test
+    void softDeleteWithDifferentId() {
+        // given
+        User user4 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user5 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        Long userId4 = userRepository.save(user4).getId();
+        userRepository.save(user5);
+
+        // when // then
+        assertThatThrownBy(() -> userService.deleteUser(userId4, user5))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("권한이 없습니다.");
+    }
+
 
     @DisplayName("중복된 이메일로 회원가입 시 예외를 반환한다")
     @Test
@@ -379,7 +391,7 @@ class UserServiceTest {
         // then
         assertThat(responseDto)
                 .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "이메일이 중복되지 않습니다.");;
+                .contains(HttpStatus.OK, "이메일이 중복되지 않습니다.");
     }
 
     @DisplayName("중복된 이메일로 회원가입 시 예외를 반환한다")

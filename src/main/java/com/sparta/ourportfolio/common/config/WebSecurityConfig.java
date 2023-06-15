@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests().requestMatchers(PERMIT_URL_ARRAY).permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/users/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/users/email-check").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/projects/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/projects/{project-id}").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/portfolios").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/portfolios/{portfolio-id}").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/portfolios/id").permitAll()
