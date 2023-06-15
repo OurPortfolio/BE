@@ -138,8 +138,12 @@ public class UserService {
 
     // 회원 탈퇴(soft, default)
     public ResponseDto<UserDto> deleteUser(Long id, User user) {
-        userRepository.findById(id).orElseThrow(
+        User userNow = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
+
+        if (!StringUtils.equals(user.getId(), userNow.getId())) {
+            throw new GlobalException(UNAUTHORIZED);
+        }
 
         user.deleteUser(); // Soft delete 수행
         userRepository.save(user);
@@ -149,6 +153,13 @@ public class UserService {
 
     // 회원 탈퇴(hard delete)
     public ResponseDto<UserDto> deleteUserHard(Long id, User user) {
+        User userNow = userRepository.findById(id).orElseThrow(
+                () -> new GlobalException(NOT_FOUND_USER));
+
+        if (!StringUtils.equals(user.getId(), userNow.getId())) {
+            throw new GlobalException(UNAUTHORIZED);
+        }
+
         userRepository.deleteById(user.getId());
         return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제", null);
     }
@@ -196,7 +207,8 @@ public class UserService {
     public ResponseDto<UserDto> reissueToken(String refreshToken, HttpServletResponse response) {
         jwtUtil.refreshTokenValid(refreshToken);
         String email = jwtUtil.getUserInfoFromToken(refreshToken);
-        User user = userRepository.findByEmail(email).get();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new GlobalException(NOT_FOUND_USER));
         String newAccessToken = jwtUtil.createToken(email, "Access", user.getId());
         response.setHeader("ACCESSTOKEN", newAccessToken);
         return ResponseDto.setSuccess(HttpStatus.OK,"토큰 재발급 성공!");

@@ -47,7 +47,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .from(portfolio)
                 .where(whereBuilder)
                 .orderBy(portfolio.id.desc())
-                .limit(pageRequest.getPageSize() + 1)
+                .limit((long)pageRequest.getPageSize() + 1)
                 .fetch();
 
         List<PortfolioResponseDto> content = resultSlice.stream()
