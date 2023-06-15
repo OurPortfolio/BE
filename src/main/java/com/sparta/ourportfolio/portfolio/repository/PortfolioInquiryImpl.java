@@ -96,12 +96,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
-        long totalElements = queryFactory
-                .selectFrom(portfolio)
-                .where(whereBuilder)
-                .fetchCount();
-
-        return new PageImpl<>(content, pageable, totalElements);
+        return new PageImpl<>(content, pageable, result.size());
     }
 
     private BooleanExpression findByKeywordInTechStack(String keyword) {
