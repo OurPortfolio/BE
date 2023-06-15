@@ -246,7 +246,7 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
+
         portfolioRepository.save(portfolio);
 
         //수정 데이터 준비
@@ -300,8 +300,8 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
-        portfolioRepository.save(portfolio);
+
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //수정 데이터 준비
         User anonymous = createUser("anonymous@gmail.com", "test password", "anonymous", false);
@@ -324,7 +324,7 @@ class PortfolioServiceTest {
 
         //when //then
         assertThatThrownBy(() -> portfolioService.updatePortfolio(
-                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, anonymous))
+                portfolioId, updatePortfolioRequestDto, updateImageFile, anonymous))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
@@ -351,8 +351,8 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
-        portfolioRepository.save(portfolio);
+
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //수정 데이터 준비
         List<Long> updateProjectIdList = new ArrayList<>();
@@ -373,7 +373,7 @@ class PortfolioServiceTest {
 
         //when //then
         assertThatThrownBy(() -> portfolioService.updatePortfolio(
-                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, testUser))
+                portfolioId, updatePortfolioRequestDto, updateImageFile, testUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.NOT_FOUND_PROJECT.getMessage());
     }
@@ -400,8 +400,8 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
-        portfolioRepository.save(portfolio);
+
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //수정 데이터 준비
         User anonymous = createUser("anonymous@gmail.com", "test password", "anonymous", false);
@@ -424,7 +424,7 @@ class PortfolioServiceTest {
 
         //when //then
         assertThatThrownBy(() -> portfolioService.updatePortfolio(
-                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, testUser))
+                portfolioId, updatePortfolioRequestDto, updateImageFile, testUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.PROJECT_FORBIDDEN.getMessage());
     }
@@ -447,7 +447,7 @@ class PortfolioServiceTest {
                 "image/jpeg", "Test Image".getBytes());
         String imageUrl = s3Service.uploadFile(imageFile);
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        portfolioRepository.save(portfolio);
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //수정 데이터 준비
         User anonymous = User.builder()
@@ -467,7 +467,7 @@ class PortfolioServiceTest {
 
         //when //then
         assertThatThrownBy(() -> portfolioService.updatePortfolio(
-                portfolio.getId(), updatePortfolioRequestDto, updateImageFile, anonymous))
+                portfolioId, updatePortfolioRequestDto, updateImageFile, anonymous))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
     }
@@ -539,7 +539,7 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
+
         portfolioRepository.save(portfolio);
 
         //when
@@ -575,11 +575,11 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, writeUser);
-        ;
-        portfolioRepository.save(portfolio);
+
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolio.getId(), notWriterUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolioId, notWriterUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
@@ -606,7 +606,7 @@ class PortfolioServiceTest {
         String imageUrl = s3Service.uploadFile(imageFile);
 
         Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
+
         portfolioRepository.save(portfolio);
 
         //when //then

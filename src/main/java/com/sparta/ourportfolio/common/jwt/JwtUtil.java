@@ -2,8 +2,8 @@ package com.sparta.ourportfolio.common.jwt;
 
 import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.exception.GlobalException;
-import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshToken;
-import com.sparta.ourportfolio.common.jwt.refreshToken.RefreshTokenRepository;
+import com.sparta.ourportfolio.common.jwt.refreshtoken.RefreshToken;
+import com.sparta.ourportfolio.common.jwt.refreshtoken.RefreshTokenRepository;
 import com.sparta.ourportfolio.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -43,7 +43,7 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -55,7 +55,6 @@ public class JwtUtil {
 
     // header 토큰을 가져오기
     public String resolveToken(HttpServletRequest request, String token) {
-//        String tokenName = token.equals("ACCESS_TOKEN") ? ACCESS_TOKEN : REFRESH_TOKEN;
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
@@ -169,7 +168,6 @@ public class JwtUtil {
         // 현재 시간과 만료 시간의 차이를 계산하여 반환
         Date expirationDate = claims.getExpiration();
         Date now = new Date();
-        long diff = (expirationDate.getTime() - now.getTime()) / 1000;
-        return diff;
+        return (expirationDate.getTime() - now.getTime()) / 1000;
     }
 }

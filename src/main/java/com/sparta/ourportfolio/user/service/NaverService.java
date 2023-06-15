@@ -114,12 +114,12 @@ public class NaverService {
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper2 = new ObjectMapper();
-        JsonNode jsonNode2 = objectMapper2.readTree(responseBody);
+        JsonNode jsonNode2 = objectMapper2.readTree(responseBody).get("response");
 
-        Long id = jsonNode2.get("response").get("id").asLong();
-        String nickname = jsonNode2.get("response").get("nickname").asText();
-        String email = jsonNode2.get("response").get("email").asText();
-        String profileImage = jsonNode2.get("response").get("profile_image").asText();
+        Long id = jsonNode2.get("id").asLong();
+        String nickname = jsonNode2.get("nickname").asText();
+        String email = jsonNode2.get("email").asText();
+        String profileImage = jsonNode2.get("profile_image").asText();
 
         log.info("네이버 사용자 정보: " + id + ", " + nickname + ", " + email + ", " + profileImage);
         return new NaverUserInfoDto(id, nickname, email, profileImage);
