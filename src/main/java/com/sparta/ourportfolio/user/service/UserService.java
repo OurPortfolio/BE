@@ -153,13 +153,6 @@ public class UserService {
 
     // 회원 탈퇴(hard delete)
     public ResponseDto<UserDto> deleteUserHard(Long id, User user) {
-        User userNow = userRepository.findById(id).orElseThrow(
-                () -> new GlobalException(NOT_FOUND_USER));
-
-        if (!StringUtils.equals(user.getId(), userNow.getId())) {
-            throw new GlobalException(UNAUTHORIZED);
-        }
-
         userRepository.deleteById(user.getId());
         return ResponseDto.setSuccess(HttpStatus.OK, "영구 삭제", null);
     }
