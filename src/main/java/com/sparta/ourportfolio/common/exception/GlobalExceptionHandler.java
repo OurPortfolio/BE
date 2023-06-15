@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestPartException.class)
-    public ResponseEntity<GlobalExceptionEntity> MissingServletRequestPartExceptionHandler(MissingServletRequestPartException e) {
+    public ResponseEntity<GlobalExceptionEntity> missingServletRequestPartExceptionHandler(MissingServletRequestPartException e) {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(GlobalExceptionEntity.builder()
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<GlobalExceptionEntity> MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
+    public ResponseEntity<GlobalExceptionEntity> missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(GlobalExceptionEntity.builder()

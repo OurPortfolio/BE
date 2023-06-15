@@ -1,4 +1,4 @@
-package com.sparta.ourportfolio.common.jwt.refreshToken;
+package com.sparta.ourportfolio.common.jwt.refreshtoken;
 
 import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.utils.TimeStamped;
