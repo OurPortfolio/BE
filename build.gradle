@@ -80,12 +80,39 @@ jacocoTestReport {
     reports {
         html.enabled true // html 설정
         csv.enabled true // csv 설정
-        xml.enabled false // xml 미설정
+        xml.enabled true // xml 설정
     }
+
+    sonarqube {
+        properties {
+            property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
+        }
+    }
+
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            "**/*Application*"
+                    ] + Qdomains)
+                })
+        )
+    }
+
     finalizedBy jacocoTestCoverageVerification
 }
 
 jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -98,7 +125,7 @@ jacocoTestCoverageVerification {
                 minimum = 0.60
             }
 
-            excludes = []
+            excludes = ["**/*Application*"] + Qdomains
         }
     }
 }
