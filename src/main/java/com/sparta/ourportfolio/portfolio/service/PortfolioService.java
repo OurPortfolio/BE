@@ -143,10 +143,11 @@ public class PortfolioService {
 
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = isExistProject(projectId);
-            if (!portfolio.getProjectList().contains(projectId) &&
-                    StringUtils.equals(project.getUser().getId(), userNow.getId())) {
-                portfolio.addProject(project);
-                project.setPortfolio(portfolio);
+            if (StringUtils.equals(project.getUser().getId(), userNow.getId())) {
+                if (!portfolio.getProjectList().contains(project)) {
+                    portfolio.addProject(project);
+                    project.setPortfolio(portfolio);
+                }
             } else {
                 throw new GlobalException(PROJECT_FORBIDDEN);
             }

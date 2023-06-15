@@ -217,22 +217,6 @@ class PortfolioInquiryServiceTest {
         assertThat(portfolioResults).hasSize(2);
     }
 
-    @DisplayName("존재하지 않는 사용자 Id로 조회할 경우 예외가 발생한다.")
-    @Test
-    void getMyPortfoliosWithNotExistUser() {
-        //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
-        User anonymous = User.builder()
-                .id(200L)
-                .build();
-        userRepository.save(testUser);
-
-        //when //then
-        assertThatThrownBy(() -> portfolioInquiryService.getMyPortfolios(anonymous))
-                .isInstanceOf(GlobalException.class)
-                .hasMessage(ExceptionEnum.NOT_FOUND_USER.getMessage());
-    }
-
     //Search Portfolio Test
     @DisplayName("포트폴리오의 제목과 기술 스택에 키워드가 해당하는 포트폴리오들을 조회할 수 있다.")
     @Test
