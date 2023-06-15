@@ -58,10 +58,7 @@ public class PortfolioInquiryService {
 
     @Transactional(readOnly = true)
     public ResponseDto<List<PortfolioResponseDto>> getMyPortfolios(User user) {
-        User userNow = userRepository.findById(user.getId()).orElseThrow(
-                () -> new GlobalException(NOT_FOUND_USER)
-        );
-        List<PortfolioResponseDto> myPortfolioList = portfolioRepository.findAllByUser_IdOrderByIdDesc(user.getId())
+        List<PortfolioResponseDto> myPortfolioList = portfolioRepository.findAllByUserIdOrderByIdDesc(user.getId())
                 .stream()
                 .map(portfolio -> new PortfolioResponseDto(portfolio, user))
                 .toList();

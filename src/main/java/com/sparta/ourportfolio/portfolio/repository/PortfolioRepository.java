@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long>, PortfolioInquiry {
-    List<Portfolio> findAllByUser_IdOrderByIdDesc(Long userId);
+    List<Portfolio> findAllByUserIdOrderByIdDesc(Long userId);
 }
