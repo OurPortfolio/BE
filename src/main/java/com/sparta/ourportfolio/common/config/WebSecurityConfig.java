@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -50,7 +51,14 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests().requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/api/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/users/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/users/email-check").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/projects/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/portfolios").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/portfolios/{portfolio-id}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/portfolios/id").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/portfolios/search").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/portfolios/autocomplete").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

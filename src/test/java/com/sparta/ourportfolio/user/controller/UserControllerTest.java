@@ -308,7 +308,7 @@ class UserControllerTest {
         ;
     }
 
-    @DisplayName("유저 조회")
+    @DisplayName("이메일 중복체크")
     @Test
     void checkEmail() throws Exception {
         // given
