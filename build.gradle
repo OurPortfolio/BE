@@ -79,7 +79,7 @@ jacocoTestReport {
     dependsOn test // 테스트 실행이 끝난 후 보고서 생성
     reports {
         html.enabled true // html 설정
-        csv.enabled true // csv 설정
+        csv.enabled false // csv 설정
         xml.enabled true // xml 설정
     }
 
