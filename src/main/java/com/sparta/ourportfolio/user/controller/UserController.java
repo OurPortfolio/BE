@@ -54,7 +54,7 @@ public class UserController {
                                            @RequestPart(name = "nickname") UpdateUserRequestDto updateUserRequestDto,
                                            @RequestPart(name = "profileImage", required = false) MultipartFile image,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return userService.updateUser(id, updateUserRequestDto, image, userDetails.getUser());
+        return userService.updateUser(id, updateUserRequestDto, image, userDetails.user());
     }
 
     // 비밀번호 변경
@@ -62,21 +62,21 @@ public class UserController {
     public ResponseDto<UserDto> updatePassword(@PathVariable Long id,
                                                @Valid @RequestBody UpdatePasswordRequestDto updatePasswordRequestDto,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updatePassword(id, updatePasswordRequestDto, userDetails.getUser());
+        return userService.updatePassword(id, updatePasswordRequestDto, userDetails.user());
     }
 
     // 회원 탈퇴(soft)
     @DeleteMapping("/{id}")
     public ResponseDto<UserDto> deleteUser(@PathVariable Long id,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.deleteUser(id, userDetails.getUser());
+        return userService.deleteUser(id, userDetails.user());
     }
 
     // 회원 탈퇴(hard)
     @DeleteMapping("/hard/{id}")
     public ResponseDto<UserDto> deleteUserHard(@PathVariable Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.deleteUserHard(id, userDetails.getUser());
+        return userService.deleteUserHard(id, userDetails.user());
     }
 
     //이메일 중복 검사
