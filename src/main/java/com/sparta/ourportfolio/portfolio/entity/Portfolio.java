@@ -25,7 +25,7 @@ public class Portfolio {
     @Column(nullable = false)
     private String portfolioTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String intro;
 
     private String email;
