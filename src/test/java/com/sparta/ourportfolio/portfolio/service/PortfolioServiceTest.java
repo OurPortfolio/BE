@@ -561,7 +561,7 @@ class PortfolioServiceTest {
         portfolioRepository.save(portfolio);
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolioId, notWriterUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolio.getId(), notWriterUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
