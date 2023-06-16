@@ -401,9 +401,10 @@ class UserServiceTest {
         User user4 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
         userRepository.save(user4);
         SignupRequestDto signupRequestDto = createSignupRequestDto("test3456@example.com", "test1234", "test1234", null);
+        String userEmail5 = "test3456@example.com";
 
         // when // then
-        assertThatThrownBy(() -> userService.checkEmail(signupRequestDto.getEmail()))
+        assertThatThrownBy(() -> userService.checkEmail(userEmail5))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("중복된 이메일이 이미 존재합니다.");
     }

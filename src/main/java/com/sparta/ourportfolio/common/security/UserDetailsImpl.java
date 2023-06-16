@@ -10,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class UserDetailsImpl implements UserDetails {
-    private final User user;
-
-    public UserDetailsImpl(User user) { this.user = user; }
+public record UserDetailsImpl(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -28,12 +25,13 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        System.out.println("user.getPassword() = " + user.getPassword());
         return user.getPassword();
     }
 
     @Override
-    public String getUsername() { return this.user.getEmail(); }
+    public String getUsername() {
+        return this.user.getEmail();
+    }
 
     @JacocoGenerated
     @Override
@@ -49,15 +47,13 @@ public class UserDetailsImpl implements UserDetails {
 
     @JacocoGenerated
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @JacocoGenerated
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return this.user;
     }
 }

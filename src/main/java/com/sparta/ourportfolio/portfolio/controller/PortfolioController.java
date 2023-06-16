@@ -34,7 +34,7 @@ public class PortfolioController {
                                                PortfolioRequestDto portfolioRequestDto,
                                                @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.getUser());
+        return portfolioService.createPortfolio(portfolioRequestDto, image, userDetails.user());
     }
 
     @GetMapping("/{portfolio-id}")
@@ -65,7 +65,7 @@ public class PortfolioController {
 
     @GetMapping("/myportfolios")
     public ResponseDto<List<PortfolioResponseDto>> getMyPortfolios(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return portfolioInquiryService.getMyPortfolios(userDetails.getUser());
+        return portfolioInquiryService.getMyPortfolios(userDetails.user());
     }
 
     @PatchMapping(value = "/{portfolio-id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -79,13 +79,13 @@ public class PortfolioController {
         List<String> techStackList = Arrays.asList(techStackData.split(","));
         portfolioService.addAutocompleteKeyword(techStackList, id);
 
-        return portfolioService.updatePortfolio(id, portfolioRequestDto, image, userDetails.getUser());
+        return portfolioService.updatePortfolio(id, portfolioRequestDto, image, userDetails.user());
     }
 
     @DeleteMapping("/{portfolio-id}")
     public ResponseDto<String> deletePortfolio(@PathVariable(name = "portfolio-id") Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return portfolioService.deletePortfolio(id, userDetails.getUser());
+        return portfolioService.deletePortfolio(id, userDetails.user());
     }
 
     @JacocoGenerated

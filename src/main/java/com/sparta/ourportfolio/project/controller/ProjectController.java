@@ -27,7 +27,7 @@ public class ProjectController {
     public ResponseDto<ProjectResponseDto> creatProject(@RequestPart ProjectRequestDto projectRequestDto,
                                                         @RequestPart(name = "images", required = false) List<MultipartFile> images,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return projectService.creatProject(projectRequestDto, images, userDetails.getUser());
+        return projectService.creatProject(projectRequestDto, images, userDetails.user());
     }
 
     // 프로젝트 상세 조회
@@ -42,14 +42,14 @@ public class ProjectController {
                                                          @RequestPart(name = "projectRequestDto") ProjectRequestDto projectRequestDto,
                                                          @RequestPart(name = "images", required = false) List<MultipartFile> images,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return projectService.updateProject(id, projectRequestDto, images, userDetails.getUser());
+        return projectService.updateProject(id, projectRequestDto, images, userDetails.user());
     }
 
     // 프로젝트 삭제
     @DeleteMapping("/{project-id}")
     public ResponseDto<ProjectResponseDto> deleteProject(@PathVariable(name = "project-id") Long id,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return projectService.deleteProject(id, userDetails.getUser());
+        return projectService.deleteProject(id, userDetails.user());
     }
 
 }
