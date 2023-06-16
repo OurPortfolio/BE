@@ -10,9 +10,9 @@ import com.sparta.ourportfolio.user.dto.KakaoUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @JacocoGenerated
@@ -55,10 +53,11 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+        jwtUtil.createAndSetToken(response, kakaoUser.getEmail(), kakaoUser.getId());
+//        String createToken = jwtUtil.createToken(kakaoUser.getEmail(), "Access", kakaoUser.getId());
+//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "카카오 로그인 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "카카오 로그인 성공!", kakaoUserInfo.getNickname());
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청

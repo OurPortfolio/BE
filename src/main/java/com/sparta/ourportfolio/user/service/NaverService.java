@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
+import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
+import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.NaverUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
@@ -23,6 +25,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_USER;
 
 @JacocoGenerated
 @Slf4j
@@ -56,10 +60,11 @@ public class NaverService {
         User naverUser = registerNaverUser(naverUserInfoDto);
 
         // 토큰 헤더에 담기
-        String createToken = jwtUtil.createToken(naverUser.getEmail(), "Access", naverUser.getId());
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+        jwtUtil.createAndSetToken(response, naverUser.getEmail(), naverUser.getId());
+//        jwtUtil.createAndSetToken(response, user.getEmail(), user.getId());
+//        response.addHeader(JwtUtil.ACCESS_TOKEN, createToken);
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "네이버 로그인 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "네이버 로그인 성공!", naverUserInfoDto.getNickname());
     }
 
     private String getToken(String code, String state) throws JsonProcessingException {
@@ -122,8 +127,8 @@ public class NaverService {
     private User registerNaverUser(NaverUserInfoDto naverUserInfoDto){
         Long naverId = naverUserInfoDto.getId();
         String profileImage = naverUserInfoDto.getProfileImage();
-        User naverUser = userRepository.findByNaverId(naverId)
-                .orElse(null);
+        User naverUser = userRepository.findByNaverId(naverId).orElseThrow(
+                        () -> new GlobalException(NOT_FOUND_USER));
 
         if (naverUser == null) {
             String naverEmail = naverUserInfoDto.getEmail();
