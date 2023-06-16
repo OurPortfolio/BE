@@ -1,4 +1,4 @@
-package com.sparta.ourportfolio.common.jwt.refreshToken;
+package com.sparta.ourportfolio.common.jwt.refreshtoken;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

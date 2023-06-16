@@ -26,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -138,7 +137,7 @@ public class PortfolioService {
 
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = isExistProject(projectId);
-            if (StringUtils.equals(project.getUser().getId(), userNow.getId())) {
+            if (Objects.equals(project.getUser().getId(), userNow.getId())) {
                 portfolio.addProject(project);
                 project.setPortfolio(portfolio);
             } else {
@@ -166,13 +165,13 @@ public class PortfolioService {
         User userNow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER)
         );
-        if (!StringUtils.equals(portfolio.getUser().getId(), userNow.getId())) {
+        if (!Objects.equals(portfolio.getUser().getId(), userNow.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
 
         for (Long projectId : portfolioRequestDto.getProjectIdList()) {
             Project project = isExistProject(projectId);
-            if (StringUtils.equals(project.getUser().getId(), userNow.getId())) {
+            if (Objects.equals(project.getUser().getId(), userNow.getId())) {
                 if (!portfolio.getProjectList().contains(project)) {
                     portfolio.addProject(project);
                     project.setPortfolio(portfolio);
@@ -199,7 +198,7 @@ public class PortfolioService {
         User userNow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER)
         );
-        if (!StringUtils.equals(portfolio.getUser().getId(), userNow.getId())) {
+        if (!Objects.equals(portfolio.getUser().getId(), userNow.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
         portfolioRepository.delete(portfolio);

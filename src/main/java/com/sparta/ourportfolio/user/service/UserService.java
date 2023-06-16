@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,7 +92,7 @@ public class UserService {
     // 회원 정보 수정
     public ResponseDto<UserDto> updateUser(Long id, UpdateUserRequestDto updateUserRequestDto,
                                            MultipartFile image, User user) throws IOException {
-        if (!StringUtils.equals(id, user.getId())) {
+        if (!Objects.equals(id, user.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
 
@@ -117,7 +118,7 @@ public class UserService {
 
     // 비밀번호 변경
     public ResponseDto<UserDto> updatePassword(Long id, UpdatePasswordRequestDto updatePasswordRequestDto, User user) {
-        if (!StringUtils.equals(id, user.getId())) {
+        if (!Objects.equals(id, user.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
 
@@ -141,7 +142,7 @@ public class UserService {
         User userNow = userRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
 
-        if (!StringUtils.equals(user.getId(), userNow.getId())) {
+        if (!Objects.equals(user.getId(), userNow.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
 
@@ -204,7 +205,7 @@ public class UserService {
                 () -> new GlobalException(NOT_FOUND_USER));
         String newAccessToken = jwtUtil.createToken(email, "Access", user.getId());
         response.setHeader("ACCESSTOKEN", newAccessToken);
-        return ResponseDto.setSuccess(HttpStatus.OK,"토큰 재발급 성공!");
+        return ResponseDto.setSuccess(HttpStatus.OK, "토큰 재발급 성공!");
     }
 
 }

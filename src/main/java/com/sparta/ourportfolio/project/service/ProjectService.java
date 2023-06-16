@@ -65,8 +65,9 @@ public class ProjectService {
         if (!StringUtils.equals(project.getUser().getId(), user.getId())) {
             throw new GlobalException(UNAUTHORIZED);
         }
-
-        fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
+        if (images != null) {
+            fileRepository.deleteByProjectId(id); // 해당되는 전체 이미지 삭제
+        }
         project.setImageFile(s3Service.fileFactory(images, project));
         project.updateProject(projectRequestDto);
         return ResponseDto.setSuccess(HttpStatus.OK, "프로젝트 수정 완료", null);

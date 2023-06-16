@@ -84,17 +84,11 @@ public class NaverService {
                 String.class
         );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 & 리프레시 토큰 파싱
+        // HTTP 응답 (JSON) -> 액세스 토큰
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        String accessToken = jsonNode.get("access_token").asText();
-        String refreshToken = jsonNode.get("refresh_token").asText();
-
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", accessToken);
-        tokens.put("refresh_token", refreshToken);
-        return tokens.toString();
+        return jsonNode.get("access_token").asText();
     }
 
     private NaverUserInfoDto getNaverUserinfo(String accessToken) throws JsonProcessingException {
@@ -114,12 +108,12 @@ public class NaverService {
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper2 = new ObjectMapper();
-        JsonNode jsonNode2 = objectMapper2.readTree(responseBody);
+        JsonNode jsonNode2 = objectMapper2.readTree(responseBody).get("response");
 
-        Long id = jsonNode2.get("response").get("id").asLong();
-        String nickname = jsonNode2.get("response").get("nickname").asText();
-        String email = jsonNode2.get("response").get("email").asText();
-        String profileImage = jsonNode2.get("response").get("profile_image").asText();
+        Long id = jsonNode2.get("id").asLong();
+        String nickname = jsonNode2.get("nickname").asText();
+        String email = jsonNode2.get("email").asText();
+        String profileImage = jsonNode2.get("profile_image").asText();
 
         log.info("네이버 사용자 정보: " + id + ", " + nickname + ", " + email + ", " + profileImage);
         return new NaverUserInfoDto(id, nickname, email, profileImage);
