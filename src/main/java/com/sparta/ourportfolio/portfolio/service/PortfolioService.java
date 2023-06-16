@@ -15,7 +15,9 @@ import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.Trie;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,7 @@ import static com.sparta.ourportfolio.common.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
@@ -51,15 +54,10 @@ public class PortfolioService {
 
         for (TechStackDto data : allTechStackData) {
             Long id = data.getPortfolioId();
-            if (data.getTechStack() != null) {
-                for (String techStack : Arrays.stream(data.getTechStack().split(",")).toList()) {
-                    List<Long> idList = trie.get(techStack);
-                    if (idList == null) {
-                        idList = new ArrayList<>();
-                    }
-                    idList.add(id);
-                    trie.put(techStack, idList);
-                }
+            String techStacks = data.getTechStack();
+            if (techStacks != null) {
+                Arrays.stream(techStacks.split(","))
+                        .forEach(techStack -> trie.computeIfAbsent(techStack.trim(), k -> new ArrayList<>()).add(id));
             }
         }
     }
@@ -78,21 +76,22 @@ public class PortfolioService {
     public void deleteAutocompleteKeyword(List<String> techStackList, Long id) {
         for (String techStack : techStackList) {
             List<Long> idList = trie.get(techStack);
-            if (idList != null && idList.contains(id)) {
-                idList.remove(id);
-                if (idList.isEmpty()) {
+            if (idList != null) {
+                boolean removed = idList.remove(id);
+                if (removed && idList.isEmpty()) {
                     trie.remove(techStack);
                 }
             }
         }
-
     }
 
     @JacocoGenerated
     @Transactional(readOnly = true)
+    @Cacheable(value = "autocomplete", key = "#keyword")
     public ResponseDto<List<String>> autoComplete(String keyword) {
         PriorityQueue<Map.Entry<String, Integer>> priorityQueue = new PriorityQueue<>(
                 (entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue())
+
         );
 
         Map<String, Integer> prefixMap = this.trie.prefixMap(keyword)

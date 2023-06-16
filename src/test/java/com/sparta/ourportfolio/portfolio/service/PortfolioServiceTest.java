@@ -109,7 +109,7 @@ class PortfolioServiceTest {
     @Test
     void createPortfolio() throws IOException {
         //given
-        User testUser = createUser( "test@gmail.com", "test password", "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
 
         Project project1 = createProject(testUser);
@@ -144,7 +144,7 @@ class PortfolioServiceTest {
     @Test
     void createPortfolioWithNotExistProject() throws IOException {
         //given
-        User testUser = createUser( "test@gmail.com", "test password", "test", false);
+        User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
 
         List<Long> projectIdList = new ArrayList<>();
@@ -153,7 +153,7 @@ class PortfolioServiceTest {
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
-                 projectIdList
+                projectIdList
         );
 
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -185,7 +185,7 @@ class PortfolioServiceTest {
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
-                 projectIdList
+                projectIdList
         );
 
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -524,22 +524,13 @@ class PortfolioServiceTest {
         //given
         User testUser = createUser("test@gmail.com", "test password", "test", false);
         userRepository.save(testUser);
-        Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
-                "techStack", "residence", "location", "010********",
+                "techStack Spring React", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
-        MockMultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "test.jpg",
-                "image/jpeg", "Test Image".getBytes());
-        String imageUrl = s3Service.uploadFile(imageFile);
-
-        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, "imageUrl", testUser);
         portfolioRepository.save(portfolio);
 
         //when
@@ -560,22 +551,13 @@ class PortfolioServiceTest {
         userRepository.save(writeUser);
         User notWriterUser = createUser("not@gmail.com", "test password", "not", false);
         userRepository.save(notWriterUser);
-        Project project1 = createProject(writeUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
-        MockMultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "test.jpg",
-                "image/jpeg", "Test Image".getBytes());
-        String imageUrl = s3Service.uploadFile(imageFile);
-
-        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, writeUser);
-        ;
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, "imageUrl", writeUser);
         portfolioRepository.save(portfolio);
 
         //when //then
@@ -589,28 +571,19 @@ class PortfolioServiceTest {
     void deleteNotExistPortfolio() throws IOException {
         //given
         //포트폴리오 생성
-        User testUser = createUser( "yes@gmail.com", "test password", "yes", false);
+        User testUser = createUser("yes@gmail.com", "test password", "yes", false);
         userRepository.save(testUser);
-        Project project1 = createProject(testUser);
         List<Long> projectIdList = new ArrayList<>();
-        projectIdList.add(project1.getId());
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
-                "techStack", "residence", "location", "010********",
+                "techStack,Spring,React", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
-        MockMultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "test.jpg",
-                "image/jpeg", "Test Image".getBytes());
-        String imageUrl = s3Service.uploadFile(imageFile);
-
-        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
-        ;
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, "imageUrl", testUser);
         portfolioRepository.save(portfolio);
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(2L, testUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(-1L, testUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.NOT_FOUND_PORTFOLIO.getMessage());
     }
@@ -619,7 +592,7 @@ class PortfolioServiceTest {
     @Test
     void deletePortfolioWithAnonymousUser() throws IOException {
         //given
-        User testUser = createUser( "yes@gmail.com", "test password", "yes", false);
+        User testUser = createUser("yes@gmail.com", "test password", "yes", false);
         userRepository.save(testUser);
         User anonymous = User.builder()
                 .id(10L)
@@ -630,13 +603,8 @@ class PortfolioServiceTest {
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
                 projectIdList
         );
-        MockMultipartFile imageFile = new MockMultipartFile(
-                "image",
-                "test.jpg",
-                "image/jpeg", "Test Image".getBytes());
-        String imageUrl = s3Service.uploadFile(imageFile);
 
-        Portfolio portfolio = createPortfolio(portfolioRequestDto, imageUrl, testUser);
+        Portfolio portfolio = createPortfolio(portfolioRequestDto, "imageUrl", testUser);
         Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //when //then
