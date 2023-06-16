@@ -558,10 +558,10 @@ class PortfolioServiceTest {
                 projectIdList
         );
         Portfolio portfolio = createPortfolio(portfolioRequestDto, "imageUrl", writeUser);
-        portfolioRepository.save(portfolio);
+        Long portfolioId = portfolioRepository.save(portfolio).getId();
 
         //when //then
-        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolio.getId(), notWriterUser))
+        assertThatThrownBy(() -> portfolioService.deletePortfolio(portfolioId, notWriterUser))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ExceptionEnum.UNAUTHORIZED.getMessage());
     }
