@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedHeaders("*")
                 .exposedHeaders("*")
-                .allowedOriginPatterns("*")
+                .allowedOrigins("https://ppol.pro/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 허용할 HTTP method
                 .allowCredentials(true);
     }
