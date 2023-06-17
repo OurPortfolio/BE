@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sparta.ourportfolio.project.entity.Project;
 import com.sparta.ourportfolio.project.entity.ProjectImage;
+import com.sparta.ourportfolio.project.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
     private final AmazonS3 amazonS3;
+    private final FileRepository fileRepository;
     private static final String S3_BUCKET_PREFIX = "S3";
 
     @Value("${cloud.aws.s3.bucket}")
@@ -38,7 +40,7 @@ public class S3Service {
                 projectImageList = project.getProjectImageList();
                 break;
             }
-
+            fileRepository.deleteByProjectId(project.getId());
             String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             String imageUrl = null;
 
