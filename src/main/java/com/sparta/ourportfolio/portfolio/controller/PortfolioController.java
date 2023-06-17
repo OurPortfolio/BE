@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://ppol.pro", exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 @RequestMapping("/api/portfolios")
 public class PortfolioController {
