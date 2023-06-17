@@ -10,10 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedHeaders("*")
-                .exposedHeaders("*")
+                .exposedHeaders("ACCESSTOKEN","REFRESHTOKEN","Authorization")
                 .allowedOrigins("https://ppol.pro")
                 .allowedOrigins("http://localhost:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 허용할 HTTP method
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
