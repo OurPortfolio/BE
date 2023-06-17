@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
+
 @Getter
 @AllArgsConstructor(staticName = "set")
-public class ResponseDto<T> {
+public class ResponseDto<T> implements Serializable {
     private HttpStatus statusCode;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
