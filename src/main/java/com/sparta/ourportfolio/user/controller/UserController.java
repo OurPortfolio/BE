@@ -21,7 +21,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "https://ppol.pro", exposedHeaders = "Authorization")
 @RequestMapping("/api/users")
 public class UserController {
 
