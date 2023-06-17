@@ -126,8 +126,9 @@ public class NaverService {
 
     private User registerNaverUser(NaverUserInfoDto naverUserInfoDto){
         Long naverId = naverUserInfoDto.getId();
+        String naverNickname = naverUserInfoDto.getNickname();
         String profileImage = naverUserInfoDto.getProfileImage();
-        User naverUser = userRepository.findByNaverId(naverId).orElseThrow(
+        User naverUser = userRepository.findByNaverNickname(naverNickname).orElseThrow(
                         () -> new GlobalException(NOT_FOUND_USER));
 
         if (naverUser == null) {
@@ -135,7 +136,7 @@ public class NaverService {
             User sameEmailUser = userRepository.findByEmail(naverEmail).orElse(null);
             if (sameEmailUser != null) {
                 naverUser = sameEmailUser;
-                naverUser = naverUser.naverUpdate(naverId, profileImage);
+                naverUser = naverUser.naverUpdate(naverId, profileImage, naverNickname);
             } else {
                 String password = UUID.randomUUID().toString();
                 String encodePassword = passwordEncoder.encode(password);
