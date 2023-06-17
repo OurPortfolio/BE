@@ -87,10 +87,9 @@ public class User extends TimeStamped {
     }
 
     @JacocoGenerated
-    public User naverUpdate(Long naverId, String profileImage, String nickname) {
+    public User naverUpdate(Long naverId, String profileImage) {
         this.naverId = naverId;
         this.profileImage = profileImage;
-        this.nickname = nickname;
         return this;
     }
 
