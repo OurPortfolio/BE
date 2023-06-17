@@ -127,21 +127,21 @@ public class NaverService {
     private User registerNaverUser(NaverUserInfoDto naverUserInfoDto){
         Long naverId = naverUserInfoDto.getId();
         String profileImage = naverUserInfoDto.getProfileImage();
-        User naverUser = userRepository.findByNaverId(naverId).orElseThrow(
-                        () -> new GlobalException(NOT_FOUND_USER));
+        User naverUser = userRepository.findByNaverId(naverId).orElse(null);
 
         if (naverUser == null) {
+            Long navernewId = Long.valueOf(UUID.randomUUID().toString());
             String naverEmail = naverUserInfoDto.getEmail();
             User sameEmailUser = userRepository.findByEmail(naverEmail).orElse(null);
             if (sameEmailUser != null) {
                 naverUser = sameEmailUser;
-                naverUser = naverUser.naverUpdate(naverId, profileImage);
+                naverUser = naverUser.naverUpdate(navernewId, profileImage);
             } else {
                 String password = UUID.randomUUID().toString();
                 String encodePassword = passwordEncoder.encode(password);
                 String email = naverUserInfoDto.getEmail();
 
-                naverUser = new User(null, naverId, null, email, naverUserInfoDto.getNickname(), encodePassword, profileImage);
+                naverUser = new User(null, navernewId, null, email, naverUserInfoDto.getNickname(), encodePassword, profileImage);
             }
             userRepository.save(naverUser);
         }
