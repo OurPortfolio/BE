@@ -52,8 +52,9 @@ public class GoogleService {
         User googleUser = registerGoogleUserIfNeeded(googleUserInfoDto);
 
         // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(googleUser.getEmail(), "Access", googleUser.getId());
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+        jwtUtil.createAndSetToken(response, googleUser.getEmail(), googleUser.getId());
+//        String createToken = jwtUtil.createToken(googleUser.getEmail(), "Access", googleUser.getId());
+//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "구글 로그인 성공!");
     }
