@@ -9,7 +9,7 @@ public enum ExceptionEnum {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "400", "아이디 또는 비밀번호가 일치하지 않습니다."),
     BAD_PASSWORD(HttpStatus.BAD_REQUEST, "400", "비밀번호가 일치하지 않습니다."),
     PRESENT_PASSWORD(HttpStatus.BAD_REQUEST, "400", "입력한 비밀번호와 기존 비밀번호가 일치하지 않습니다."),
-    PASSWORD_REGEX(HttpStatus.BAD_REQUEST, "400", "비밀번호는 8~15자리, 영어, 숫자 조합으로 구성되어야 합니다."),
+    PASSWORD_REGEX(HttpStatus.BAD_REQUEST, "400", "비밀번호는 8~15자리, 영어, 숫자, 특수문자 조합으로 구성되어야 합니다."),
     NICKNAME_REGEX(HttpStatus.BAD_REQUEST, "400", "닉네임은 10자리이내로 문자, 숫자 조합으로 구성되어야합니다."),
     EMAIL_REGEX(HttpStatus.BAD_REQUEST, "400", "이메일 형식이 올바르지 않습니다."),
     USER_INFORMATION(HttpStatus.BAD_REQUEST, "400", "변경할 회원정보를 작성하지 않았습니다."),

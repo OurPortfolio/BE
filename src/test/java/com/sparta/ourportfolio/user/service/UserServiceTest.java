@@ -47,7 +47,7 @@ class UserServiceTest {
     @Test
     void signup() {
         // given
-        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234@", "test1234", null);
 
         // when (회원가입 메서드 호출)
         ResponseDto<UserDto> response = userService.signup(signupRequestDto);
@@ -71,10 +71,10 @@ class UserServiceTest {
     @Test
     void signupWitheDuplicateNickname() {
         // given
-        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user);
 
-        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234@", "test1234", null);
 
         // when // then
         assertThatThrownBy(() -> userService.signup(signupRequestDto))
@@ -87,10 +87,10 @@ class UserServiceTest {
     @Test
     void login() {
         // given
-        User user = createUser("test4@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4", false);
+        User user = createUser("test4@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4", false);
         userRepository.save(user);
 
-        LoginRequestDto loginRequestDto = createLoginRequestDto("test4@example.com", "Password123");
+        LoginRequestDto loginRequestDto = createLoginRequestDto("test4@example.com", "test1234@");
 
         // 로그인 요청 수행
         ResponseDto<UserDto> loginResponse = userService.login(loginRequestDto, response);
@@ -105,10 +105,10 @@ class UserServiceTest {
     @Test
     void loginNotFoundUser() {
         // given
-        User user = createUser("test5@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5", false);
+        User user = createUser("test5@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test5", false);
         userRepository.save(user);
 
-        LoginRequestDto loginRequestDto = createLoginRequestDto("test45678@example.com", "Password123");
+        LoginRequestDto loginRequestDto = createLoginRequestDto("test45678@example.com", "test1234@");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto, response))
@@ -120,10 +120,10 @@ class UserServiceTest {
     @Test
     void loginAlreadyDeleteUser() {
         // given
-        User user = createUser("test6@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test6", true);
+        User user = createUser("test6@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test6", true);
         userRepository.save(user);
 
-        LoginRequestDto loginRequestDto = createLoginRequestDto("test6@example.com", "Password123");
+        LoginRequestDto loginRequestDto = createLoginRequestDto("test6@example.com", "test1234@");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto, response))
@@ -135,10 +135,10 @@ class UserServiceTest {
     @Test
     void loginWithWrongPassword() {
         // given
-        User user = createUser("test7@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test7", false);
+        User user = createUser("test7@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test7", false);
         userRepository.save(user);
 
-        LoginRequestDto loginRequestDto = createLoginRequestDto("test7@example.com", "Password7891");
+        LoginRequestDto loginRequestDto = createLoginRequestDto("test7@example.com", "test7890@");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginRequestDto, response))
@@ -150,7 +150,7 @@ class UserServiceTest {
     @Test
     void getUser() {
         // given
-        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user);
 
         // when
@@ -176,7 +176,7 @@ class UserServiceTest {
     @Test
     void updateUser() throws IOException {
         // given
-        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user);
         UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test1234");
 
@@ -201,7 +201,7 @@ class UserServiceTest {
     @Test
     void updateUserWithoutImage() throws IOException {
         // given
-        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user);
         UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test1234");
 
@@ -226,7 +226,7 @@ class UserServiceTest {
     @Test
     void updateUserUnauthorized() {
         // given
-        User user = createUser("test5@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5", false);
+        User user = createUser("test5@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test5", false);
         userRepository.save(user);
         UpdateUserRequestDto updateUserRequestDto2 = new UpdateUserRequestDto("test1234");
 
@@ -242,8 +242,8 @@ class UserServiceTest {
     @Test
     void updateUserWithDuplicatedNickname() {
         // given
-        User user1 = createUser("test7890@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test7890", false);
-        User user2 = createUser("test0000@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test0000", false);
+        User user1 = createUser("test7890@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test7890", false);
+        User user2 = createUser("test0000@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test0000", false);
         Long userId1 = userRepository.save(user1).getId();
         userRepository.save(user2);
         UpdateUserRequestDto updateUserRequestDto3 = new UpdateUserRequestDto("test0000");
@@ -260,9 +260,9 @@ class UserServiceTest {
     @Test
     void updatePassword() {
         // given
-        User user = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user);
-        UpdatePasswordRequestDto updatePasswordRequestDto1 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password1234");
+        UpdatePasswordRequestDto updatePasswordRequestDto1 = new UpdatePasswordRequestDto("test1234@", "test123@", "test123@");
 
         // when
         ResponseDto<UserDto> userResponse = userService.updatePassword(user.getId(), updatePasswordRequestDto1, user);
@@ -277,11 +277,11 @@ class UserServiceTest {
     @Test
     void updatePasswordUnauthorized() {
         // given
-        User user1 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
-        User user2 = createUser("test5@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5", false);
+        User user1 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
+        User user2 = createUser("test5@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test5", false);
         Long userId1 = userRepository.save(user1).getId();
         userRepository.save(user2);
-        UpdatePasswordRequestDto updatePasswordRequestDto2 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password1234");
+        UpdatePasswordRequestDto updatePasswordRequestDto2 = new UpdatePasswordRequestDto("test1234@", "test123@", "test123@");
 
         // when // then
         assertThatThrownBy(() -> userService.updatePassword(userId1, updatePasswordRequestDto2, user2))
@@ -293,9 +293,9 @@ class UserServiceTest {
     @Test
     void updatePasswordWithPresentPassword() {
         // given
-        User user3 = createUser("test5678@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test5678", false);
+        User user3 = createUser("test5678@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test5678", false);
         Long userId3 = userRepository.save(user3).getId();
-        UpdatePasswordRequestDto updatePasswordRequestDto3 = new UpdatePasswordRequestDto("Password12", "Password1234", "Password1234");
+        UpdatePasswordRequestDto updatePasswordRequestDto3 = new UpdatePasswordRequestDto("Password12", "test123@", "test123@");
 
         // when // then
         assertThatThrownBy(() -> userService.updatePassword(userId3, updatePasswordRequestDto3, user3))
@@ -307,9 +307,9 @@ class UserServiceTest {
     @Test
     void updatePasswordWithCoincidePassword() {
         // given
-        User user4 = createUser("test2345@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test2345", false);
+        User user4 = createUser("test2345@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test2345", false);
         Long userId4 = userRepository.save(user4).getId();
-        UpdatePasswordRequestDto updatePasswordRequestDto4 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password123");
+        UpdatePasswordRequestDto updatePasswordRequestDto4 = new UpdatePasswordRequestDto("test1234@", "test123@", "test456@");
 
         // when // then
         assertThatThrownBy(() -> userService.updatePassword(userId4, updatePasswordRequestDto4, user4))
@@ -321,7 +321,7 @@ class UserServiceTest {
     @Test
     void softDelete() {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         // when
@@ -337,7 +337,7 @@ class UserServiceTest {
     @Test
     void hardDelete() {
         // given
-        User user2 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user2 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user2);
 
         // when
@@ -353,7 +353,7 @@ class UserServiceTest {
     @Test
     void softDeleteWithWrongId() {
         // given
-        User user3 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
+        User user3 = createUser("test3456@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test3456", false);
         userRepository.save(user3);
         // when // then
         assertThatThrownBy(() -> userService.deleteUser(100L, user3))
@@ -365,8 +365,8 @@ class UserServiceTest {
     @Test
     void softDeleteWithDifferentId() {
         // given
-        User user4 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
-        User user5 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user4 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
+        User user5 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         Long userId4 = userRepository.save(user4).getId();
         userRepository.save(user5);
 
@@ -381,9 +381,9 @@ class UserServiceTest {
     @Test
     void checkEmail() {
         // given
-        User user4 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
+        User user4 = createUser("test3456@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test3456", false);
         userRepository.save(user4);
-        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234@", "test1234", null);
 
         // when
         ResponseDto<Boolean> responseDto = userService.checkEmail(signupRequestDto.getEmail());
@@ -398,9 +398,9 @@ class UserServiceTest {
     @Test
     void checkEmailWithDuplicatedEmail() {
         // given
-        User user4 = createUser("test3456@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test3456", false);
+        User user4 = createUser("test3456@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test3456", false);
         userRepository.save(user4);
-        SignupRequestDto signupRequestDto = createSignupRequestDto("test3456@example.com", "test1234", "test1234", null);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test3456@example.com", "test1234@", "test1234", null);
         String userEmail5 = "test3456@example.com";
 
         // when // then

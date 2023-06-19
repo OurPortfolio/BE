@@ -60,6 +60,14 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return new SliceImpl<>(content, pageRequest, hasNext);
     }
 
+    private BooleanExpression findByCategory(String category) {
+        return category == null || category.isEmpty() ? null : portfolio.category.eq(category);
+    }
+
+    private BooleanExpression findByFilter(String filter) {
+        return filter == null || filter.isEmpty() ? null : portfolio.filter.eq(filter);
+    }
+
     private BooleanExpression ltPortfolioId(Long id) {
         return id == null ? null : portfolio.id.lt(id);
     }
@@ -70,7 +78,12 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        BooleanBuilder whereBuilder = buildKeywordCondition(keyword);
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            whereBuilder.or(findByKeywordInTechStack(keyword));
+            whereBuilder.or(findByKeywordInPortfolioTitle(keyword));
+        }
 
         List<Portfolio> result = queryFactory
                 .select(portfolio)
@@ -81,25 +94,11 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(portfolio.count())
-                .from(portfolio)
-                .where(whereBuilder);
-
         List<PortfolioResponseDto> content = result.stream()
                 .map(p -> new PortfolioResponseDto(p, p.getUser()))
                 .toList();
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-    }
-
-    private BooleanBuilder buildKeywordCondition(String keyword) {
-        BooleanBuilder whereBuilder = new BooleanBuilder();
-        if (keyword != null && !keyword.isEmpty()) {
-            whereBuilder.or(findByKeywordInTechStack(keyword));
-            whereBuilder.or(findByKeywordInPortfolioTitle(keyword));
-        }
-        return whereBuilder;
+        return new PageImpl<>(content, pageable, result.size());
     }
 
     private BooleanExpression findByKeywordInTechStack(String keyword) {
@@ -128,14 +127,6 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .orderBy(portfolio.id.desc())
                 .fetchFirst();
         return lastPortfolioId != null ? lastPortfolioId : -1L;
-    }
-
-    private BooleanExpression findByCategory(String category) {
-        return category == null || category.isEmpty() ? null : portfolio.category.eq(category);
-    }
-
-    private BooleanExpression findByFilter(String filter) {
-        return filter == null || filter.isEmpty() ? null : portfolio.filter.eq(filter);
     }
 }
 
