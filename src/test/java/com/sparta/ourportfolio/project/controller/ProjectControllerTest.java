@@ -71,7 +71,7 @@ class ProjectControllerTest {
     @Test
     void createProject() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user1.getId()).get());
@@ -108,7 +108,7 @@ class ProjectControllerTest {
     @Test
     void getProject() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user1.getId()).get());
@@ -148,7 +148,7 @@ class ProjectControllerTest {
     @Test
     void updateProject() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user1.getId()).get());
@@ -194,7 +194,7 @@ class ProjectControllerTest {
     @Test
     void deleteProject() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user1.getId()).get());
