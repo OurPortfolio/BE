@@ -62,9 +62,8 @@ public class UserService {
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
-        //이메일, 비밀번호 패턴 검사
+        //이메일 패턴 검사
         validateEmail(email);
-        validatePassword(password);
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_USER));
