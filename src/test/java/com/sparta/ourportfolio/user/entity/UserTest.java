@@ -14,7 +14,7 @@ class UserTest {
         Long googleId = 54321L;
         String email = "test@example.com";
         String nickname = "testuser";
-        String password = "password123";
+        String password = "test1234@";
         String profileImage = "profile.jpg";
 
         // when

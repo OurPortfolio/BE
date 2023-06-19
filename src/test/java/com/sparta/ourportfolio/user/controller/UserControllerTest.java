@@ -57,7 +57,7 @@ class UserControllerTest {
     @Test
     void signup() throws Exception {
         // given
-        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test1@example.com", "Password123", "test1", null);
+        SignupRequestDto signupRequestDto1 = createSignupRequestDto("test1@example.com", "test1234@", "test1", null);
 
         // when // then
         mockMvc.perform(
@@ -74,7 +74,7 @@ class UserControllerTest {
     @Test
     void signupWithWrongEmail() throws Exception {
         // given
-        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test2@examplecom", "Password123", "2", null);
+        SignupRequestDto signupRequestDto2 = createSignupRequestDto("test2@examplecom", "test1234@", "2", null);
 
         // when // then
         mockMvc.perform(
@@ -91,7 +91,7 @@ class UserControllerTest {
     @Test
     void signupWithEmailIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null, "Password123", "test3", null);
+        SignupRequestDto signupRequestDto3 = createSignupRequestDto(null, "test1234@", "test3", null);
 
         // when // then
         mockMvc.perform(
@@ -108,7 +108,7 @@ class UserControllerTest {
     @Test
     void signupWithWrongPassword() throws Exception {
         // given
-        SignupRequestDto signupRequestDto4 = createSignupRequestDto("test4@example.com", "password", "test4", null);
+        SignupRequestDto signupRequestDto4 = createSignupRequestDto("test4@example.com", "test1234", "test4", null);
 
         // when // then
         mockMvc.perform(
@@ -142,7 +142,7 @@ class UserControllerTest {
     @Test
     void signupWithWrongNickname() throws Exception {
         // given
-        SignupRequestDto signupRequestDto6 = createSignupRequestDto("test6@example.com", "password123", "test67890123", null);
+        SignupRequestDto signupRequestDto6 = createSignupRequestDto("test6@example.com", "test1234@", "test67890123", null);
 
         // when // then
         mockMvc.perform(
@@ -159,7 +159,7 @@ class UserControllerTest {
     @Test
     void signupWithNicknameIsEmpty() throws Exception {
         // given
-        SignupRequestDto signupRequestDto7 = createSignupRequestDto("test7@example.com", "password123", null, null);
+        SignupRequestDto signupRequestDto7 = createSignupRequestDto("test7@example.com", "test1234@", null, null);
 
         // when // then
         mockMvc.perform(
@@ -176,10 +176,10 @@ class UserControllerTest {
     @Test
     void login() throws Exception {
         // given
-        User user1 = createUser("test8@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test8", false);
+        User user1 = createUser("test8@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test8", false);
         userRepository.save(user1);
 
-        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test8@example.com", "Password123");
+        LoginRequestDto loginRequestDto1 = createLoginRequestDto("test8@example.com", "test1234@");
 
         // when // then
         mockMvc.perform(
@@ -196,7 +196,7 @@ class UserControllerTest {
     @Test
     void getUser() throws Exception {
         // given
-        User user2 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user2 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         Long userId = userRepository.save(user2).getId();
 
 
@@ -216,7 +216,7 @@ class UserControllerTest {
     @Test
     void updateUser() throws Exception {
         // given
-        User user3 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user3 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         Long userId = userRepository.save(user3).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user3.getId()).get());
@@ -244,12 +244,12 @@ class UserControllerTest {
     @Test
     void updatePassword() throws Exception {
         // given
-        User user4 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user4 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         Long userId = userRepository.save(user4).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user4.getId()).get());
 
-        UpdatePasswordRequestDto updatePasswordRequestDto1 = new UpdatePasswordRequestDto("Password123", "Password1234", "Password1234");
+        UpdatePasswordRequestDto updatePasswordRequestDto1 = new UpdatePasswordRequestDto("test1234@", "test123@", "test123@");
 
         // when // then
         mockMvc.perform(
@@ -267,7 +267,7 @@ class UserControllerTest {
     @Test
     void softDelete() throws Exception {
         // given
-        User user5 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user5 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         Long userId = userRepository.save(user5).getId();
 
         UserDetailsImpl userDetails1 = new UserDetailsImpl(userRepository.findById(user5.getId()).get());
@@ -289,8 +289,8 @@ class UserControllerTest {
     @Test
     void hardDelete() throws Exception {
         // given
-        User user6 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        User user7 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user6 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
+        User user7 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         Long userId1 = userRepository.save(user6).getId();
         Long userId2 = userRepository.save(user7).getId();
 
@@ -312,9 +312,9 @@ class UserControllerTest {
     @Test
     void checkEmail() throws Exception {
         // given
-        User user2 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user2 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user2);
-        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234", "test1234", null);
+        SignupRequestDto signupRequestDto = createSignupRequestDto("test1234@example.com", "test1234@", "test1234", null);
 
 
         ResponseDto<Boolean> response = userService.checkEmail(signupRequestDto.getEmail());

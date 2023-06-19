@@ -58,7 +58,7 @@ class ProjectServiceTest {
     @Test
     void creatProject() throws IOException {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
@@ -84,7 +84,7 @@ class ProjectServiceTest {
     @Test
     void getProject() throws IOException {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
@@ -123,7 +123,7 @@ class ProjectServiceTest {
     @Transactional
     void updateProject() throws IOException {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
@@ -168,7 +168,7 @@ class ProjectServiceTest {
     @Transactional
     void updateProjectWithWrongId() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
@@ -210,8 +210,8 @@ class ProjectServiceTest {
     @Transactional
     void updateProjectWithUnauthorized() throws Exception {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        User user2 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
+        User user2 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user1);
         userRepository.save(user2);
 
@@ -252,7 +252,7 @@ class ProjectServiceTest {
     @Test
     void deleteProject() throws IOException {
         // given
-        User user1 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
+        User user1 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user1);
 
         ProjectRequestDto projectRequestDto1 = createProjectRequestDto("1", "2", "3", "4", "5");
@@ -279,7 +279,7 @@ class ProjectServiceTest {
     @Test
     void deleteProjectWithWrongId() {
         // given
-        User user2 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user2 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user2);
 
         // when // then
@@ -293,8 +293,8 @@ class ProjectServiceTest {
     @Transactional
     void deleteProjectWithUnauthorized() throws Exception {
         // given
-        User user3 = createUser("test4567@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test4567", false);
-        User user4 = createUser("test1234@example.com", "$2a$10$pJA9gZGQrnVlMFZJtEn0ge9qzECZ5E6vsoprz0RDBdrI6WxIicWXK", "test1234", false);
+        User user3 = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
+        User user4 = createUser("test1234@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test1234", false);
         userRepository.save(user3);
         userRepository.save(user4);
 
