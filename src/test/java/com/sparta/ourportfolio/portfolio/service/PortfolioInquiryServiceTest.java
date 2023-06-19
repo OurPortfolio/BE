@@ -110,15 +110,17 @@ class PortfolioInquiryServiceTest {
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
                 portfolioId+1, 9, "", "");
+        List<PortfolioResponseDto> content = result.getData().getContent();
+        Long lastPortfolioId = content.get(content.size() - 1).getId();
 
         //then
         assertThat(result)
                 .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "조회 완료");
+                .contains(HttpStatus.OK, String.valueOf(lastPortfolioId));
 
         Slice<PortfolioResponseDto> responseData = result.getData();
         List<PortfolioResponseDto> portfolioResults = responseData.getContent();
-        assertThat(portfolioResults).hasSize(9);
+        assertThat(portfolioResults).hasSize(10);
     }
 
     @DisplayName("카테고리와 필터를 지정하면 해당하는 포트폴리오를 조회한다.")
@@ -155,11 +157,13 @@ class PortfolioInquiryServiceTest {
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
                 portfolioId+1, 9, "Develop", "Backend");
+        List<PortfolioResponseDto> content = result.getData().getContent();
+        Long lastPortfolioId = content.get(content.size() - 1).getId();
 
         //then
         assertThat(result)
                 .extracting("statusCode", "message")
-                .contains(HttpStatus.OK, "조회 완료");
+                .contains(HttpStatus.OK, String.valueOf(lastPortfolioId));
 
         Slice<PortfolioResponseDto> responseData = result.getData();
         List<PortfolioResponseDto> portfolioResults = responseData.getContent();

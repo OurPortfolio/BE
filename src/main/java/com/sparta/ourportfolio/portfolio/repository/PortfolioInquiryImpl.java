@@ -61,7 +61,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
     }
 
     private BooleanExpression ltPortfolioId(Long id) {
-        return id == null ? null : portfolio.id.between(id - 9, id);
+        return id == null ? null : portfolio.id.lt(id);
     }
 
     @Override
