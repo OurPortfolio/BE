@@ -41,7 +41,15 @@ public class PortfolioInquiryService {
 
         Slice<PortfolioResponseDto> portfolioResponseDtoSlice =
                 portfolioRepository.getPortfolios(id, pageRequest, category, filter);
-        return ResponseDto.setSuccess(HttpStatus.OK, "조회 완료", portfolioResponseDtoSlice);
+
+        List<PortfolioResponseDto> content = portfolioResponseDtoSlice.getContent(); // 조회 결과 List 가져오기
+        Long lastPortfolioId = null;
+        if(!content.isEmpty()) { // 조회 결과가 존재하는 경우
+            PortfolioResponseDto lastPortfolioResponse = content.get(content.size() - 1); // 마지막 요소 가져오기
+            lastPortfolioId = lastPortfolioResponse.getId();
+        }
+
+        return ResponseDto.setSuccess(HttpStatus.OK, String.valueOf(lastPortfolioId), portfolioResponseDtoSlice);
     }
 
     @Transactional(readOnly = true)
