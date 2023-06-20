@@ -72,7 +72,7 @@ public class PortfolioController {
     public ResponseDto<String> updatePortfolio(@PathVariable(name = "portfolio-id") Long id,
                                                @RequestPart(name = "portfolioRequestDto")
                                                PortfolioRequestDto portfolioRequestDto,
-                                               @RequestPart(name = "portfolioImage") MultipartFile image,
+                                               @Nullable @RequestPart(name = "portfolioImage") MultipartFile image,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         String techStackData = portfolioRequestDto.getTechStack();
         List<String> techStackList = Arrays.asList(techStackData.split(","));
