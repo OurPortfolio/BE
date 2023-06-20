@@ -13,7 +13,7 @@ public class ResponseDto<T> implements Serializable {
     private HttpStatus statusCode;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T data;
+    private transient T data;
 
     public static <T> ResponseDto<T> setSuccess(HttpStatus statusCode, String message, T data) {
         return ResponseDto.set(statusCode, message, data);

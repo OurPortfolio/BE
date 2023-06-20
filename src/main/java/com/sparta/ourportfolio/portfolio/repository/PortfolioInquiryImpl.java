@@ -1,6 +1,7 @@
 package com.sparta.ourportfolio.portfolio.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.sparta.ourportfolio.portfolio.entity.QPortfolio.portfolio;
 
@@ -107,6 +110,53 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .orderBy(portfolio.id.desc())
                 .fetchFirst();
         return lastPortfolioId != null ? lastPortfolioId : -1L;
+    }
+
+    public Map<String, Long> getPortfoliosAmount() {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        JPAQuery<Tuple> countQuery = queryFactory
+                .select(
+                        portfolio.category,
+                        portfolio.count()
+                )
+                .from(portfolio)
+                .groupBy(portfolio.category);
+
+        List<Tuple> result = countQuery.fetch();
+
+        Map<String, Long> resultMap = new HashMap<>();
+        for (Tuple tuple : result) {
+            resultMap.put(tuple.get(portfolio.category), tuple.get(portfolio.count()));
+        }
+
+        return resultMap;
+    }
+
+    public Map<String, Long> getPortfoliosPerFilter(String category) {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        whereBuilder.and(findByCategory(category));
+
+        JPAQuery<Tuple> countQuery = queryFactory
+                .select(
+                        portfolio.filter,
+                        portfolio.count()
+                )
+                .from(portfolio)
+                .where(whereBuilder)
+                .groupBy(portfolio.filter);
+        List<Tuple> result = countQuery.fetch();
+
+        Map<String, Long> resultMap = new HashMap<>();
+        for (Tuple tuple : result) {
+            resultMap.put(tuple.get(portfolio.filter), tuple.get(portfolio.count()));
+        }
+
+        return resultMap;
     }
 
     private BooleanExpression ltPortfolioId(Long id) {
