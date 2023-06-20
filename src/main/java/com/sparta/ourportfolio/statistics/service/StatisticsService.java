@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 
 import java.util.Map;
 
@@ -27,13 +26,13 @@ public class StatisticsService {
         AllStatisticsDto allStatisticsDto = new AllStatisticsDto();
 
         for (Map.Entry<String, Long> entry : amountMap.entrySet()) {
-            if (StringUtils.equals(entry.getKey(), "Develop")) {
+            if (entry.getKey().equals("Develop")) {
                 allStatisticsDto.setDevelop(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Design")) {
+            if (entry.getKey().equals("Design")) {
                 allStatisticsDto.setDesign(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Photographer")) {
+            if (entry.getKey().equals("Photographer")) {
                 allStatisticsDto.setPhotographer(entry.getValue());
             }
         }
@@ -48,25 +47,25 @@ public class StatisticsService {
         DevelopStatisticsDto developStatisticsDto = new DevelopStatisticsDto();
 
         for (Map.Entry<String, Long> entry : amountPerFilter.entrySet()) {
-            if (StringUtils.equals(entry.getKey(), "Backend")) {
+            if (entry.getKey().equals("Backend")) {
                 developStatisticsDto.setBackend(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Frontend")) {
+            if (entry.getKey().equals("Frontend")) {
                 developStatisticsDto.setFrontend(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "AI")) {
+            if (entry.getKey().equals("AI")) {
                 developStatisticsDto.setAi(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Big Data")) {
+            if (entry.getKey().equals("Big Data")) {
                 developStatisticsDto.setBigdata(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "App")) {
+            if (entry.getKey().equals("App")) {
                 developStatisticsDto.setApp(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "System")) {
+            if (entry.getKey().equals("System")) {
                 developStatisticsDto.setSystem(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Security")) {
+            if (entry.getKey().equals("Security")) {
                 developStatisticsDto.setSecurities(entry.getValue());
             }
         }
@@ -80,25 +79,25 @@ public class StatisticsService {
         DesignStatisticsDto designStatisticsDto = new DesignStatisticsDto();
 
         for (Map.Entry<String, Long> entry : amountPerFilter.entrySet()) {
-            if (StringUtils.equals(entry.getKey(), "Graphic")) {
+            if (entry.getKey().equals("Graphic")) {
                 designStatisticsDto.setGraphic(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "UI/UX")) {
+            if (entry.getKey().equals("UI/UX")) {
                 designStatisticsDto.setUiUx(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Web")) {
+            if (entry.getKey().equals("Web")) {
                 designStatisticsDto.setWebs(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Visual")) {
+            if (entry.getKey().equals("Visual")) {
                 designStatisticsDto.setVisual(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Interaction")) {
+            if (entry.getKey().equals("Interaction")) {
                 designStatisticsDto.setInteraction(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Product")) {
+            if (entry.getKey().equals("Product")) {
                 designStatisticsDto.setProduct(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Brand")) {
+            if (entry.getKey().equals("Brand")) {
                 designStatisticsDto.setBrand(entry.getValue());
             }
         }
@@ -112,22 +111,22 @@ public class StatisticsService {
         PhotographerStatisticsDto photographerStatisticsDto = new PhotographerStatisticsDto();
 
         for (Map.Entry<String, Long> entry : amountPerFilter.entrySet()) {
-            if (StringUtils.equals(entry.getKey(), "Commercial")) {
+            if (entry.getKey().equals("Commercial")) {
                 photographerStatisticsDto.setCommercial(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Portrait")) {
+            if (entry.getKey().equals("Portrait")) {
                 photographerStatisticsDto.setPortrait(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Wedding")) {
+            if (entry.getKey().equals("Wedding")) {
                 photographerStatisticsDto.setWedding(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Fashion")) {
+            if (entry.getKey().equals("Fashion")) {
                 photographerStatisticsDto.setFashion(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Wildlife")) {
+            if (entry.getKey().equals("Wildlife")) {
                 photographerStatisticsDto.setWildlife(entry.getValue());
             }
-            if (StringUtils.equals(entry.getKey(), "Sports")) {
+            if (entry.getKey().equals("Sports")) {
                 photographerStatisticsDto.setSports(entry.getValue());
             }
         }
