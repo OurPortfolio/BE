@@ -92,18 +92,17 @@ jacocoTestReport {
         }
     }
 
-//    def Qdomains = []
-//    for (qPattern in '*/*/QA'..'*/*/QZ') {
-//        Qdomains.add(qPattern + '*')
-//    }
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
+        Qdomains.add(qPattern + '*')
+    }
 
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
                     fileTree(dir: it, excludes: [
-                            "**/*Application*",
-                            "**/Q*.*"
-                    ])
+                            "**/*Application.java"
+                    ] + Qdomains)
                 })
         )
     }
@@ -112,11 +111,10 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
-//    def Qdomains = []
-//    for (qPattern in '*/*/QA'..'*/*/QZ') {
-//        Qdomains.add(qPattern + '*')
-//    }
-//    + Qdomains.collect { "-$it" }
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
+        Qdomains.add(qPattern + '*')
+    }
     violationRules {
         rule {
             enabled = true
@@ -130,13 +128,8 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-                    "**/*Application*",
-                    "**/Q*.*"
-            ]
+                    "**/*Application.java"
+            ] + Qdomains
         }
     }
-}
-
-clean {
-    delete file('src/main/generated')
 }
