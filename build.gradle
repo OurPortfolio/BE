@@ -102,7 +102,7 @@ jacocoTestReport {
                 files(classDirectories.files.collect {
                     fileTree(dir: it, excludes: [
                             "**/*Application*"
-                    ] + Qdomains)
+                    ] + Qdomains.collect { "!$it" })
                 })
         )
     }
@@ -128,7 +128,7 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
 
-            excludes = ["**/*Application*"] + Qdomains
+            excludes = ["**/*Application*"] + Qdomains.collect { "!$it" }
         }
     }
 }
