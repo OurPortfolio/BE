@@ -89,8 +89,8 @@ jacocoTestReport {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
                     fileTree(dir: it, excludes: [
-                            "**/*Application.java",
-                            *Qdomains.collect { "**/$it" }
+                            '**/*Application.java',
+                            '*.Q*'
                     ])
                 })
         )
@@ -121,8 +121,8 @@ jacocoTestCoverageVerification {
             enabled = true
             element = 'CLASS'
             excludes = [
-                    "**/*Application.java",
-                    *Qdomains.collect { "**/$it" }
+                    '**/*Application.java',
+                    '*.Q*'
             ]
 
             limit {
