@@ -119,13 +119,13 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             enabled = true
-            element = 'BUNDLE'
+            element = 'CLASS'
             // includes = []
 
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.60
+                minimum = 0.80
             }
 
             excludes = ["**/*Application*"] + Qdomains
