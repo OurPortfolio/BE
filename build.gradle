@@ -80,21 +80,9 @@ jacoco {
 
 jacocoTestReport {
     dependsOn test // 테스트 실행이 끝난 후 보고서 생성
-    reports {
-        html.enabled true // html 설정
-        csv.enabled false // csv 설정
-        xml.enabled true // xml 설정
-    }
-
-    sonarqube {
-        properties {
-            property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
-        }
-    }
-
     def Qdomains = []
     for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
-        Qdomains.add(qPattern + '*')
+        Qdomains.add(qPattern + '.*')
     }
 
     afterEvaluate {
@@ -107,19 +95,33 @@ jacocoTestReport {
         )
     }
 
+    reports {
+        html.enabled true // html 설정
+        csv.enabled false // csv 설정
+        xml.enabled true // xml 설정
+    }
+
+    sonarqube {
+        properties {
+            property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
+        }
+    }
+
     finalizedBy jacocoTestCoverageVerification
 }
 
 jacocoTestCoverageVerification {
     def Qdomains = []
     for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
-        Qdomains.add(qPattern + '*')
+        Qdomains.add(qPattern + '.*')
     }
     violationRules {
         rule {
             enabled = true
             element = 'CLASS'
-            // includes = []
+            excludes = [
+                    "**/*Application.java"
+            ] + Qdomains
 
             limit {
                 counter = 'LINE'
@@ -127,9 +129,6 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
 
-            excludes = [
-                    "**/*Application.java"
-            ] + Qdomains
         }
     }
 }
