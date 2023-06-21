@@ -203,7 +203,7 @@ class UserServiceTest {
         // given
         User user = createUser("test4567@example.com", "$2a$10$bNzdSYiE93xquo8JzDEexuobQPahVu1RYSaGjVP5/nqy5BMJSO3ZO", "test4567", false);
         userRepository.save(user);
-        UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test1234");
+        UpdateUserRequestDto updateUserRequestDto1 = new UpdateUserRequestDto("test7890");
 
         String imageUrl;
         MockMultipartFile image = null;
