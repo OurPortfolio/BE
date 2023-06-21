@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_USER;
@@ -61,8 +62,6 @@ public class NaverService {
 
         // 토큰 헤더에 담기
         jwtUtil.createAndSetToken(response, naverUser.getEmail(), naverUser.getId());
-//        jwtUtil.createAndSetToken(response, user.getEmail(), user.getId());
-//        response.addHeader(JwtUtil.ACCESS_TOKEN, createToken);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "네이버 로그인 성공!", naverUserInfoDto.getNickname());
     }
@@ -113,12 +112,12 @@ public class NaverService {
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper2 = new ObjectMapper();
-        JsonNode jsonNode2 = objectMapper2.readTree(responseBody).get("response");
+        JsonNode jsonNode2 = objectMapper2.readTree(responseBody);
 
-        Long id = jsonNode2.get("id").asLong();
-        String nickname = jsonNode2.get("nickname").asText();
-        String email = jsonNode2.get("email").asText();
-        String profileImage = jsonNode2.get("profile_image").asText();
+        Long id = jsonNode2.get("response").get("id").asLong();
+        String nickname = jsonNode2.get("response").get("nickname").asText();
+        String email = jsonNode2.get("response").get("email").asText();
+        String profileImage = jsonNode2.get("response").get("profile_image").asText();
 
         log.info("네이버 사용자 정보: " + id + ", " + nickname + ", " + email + ", " + profileImage);
         return new NaverUserInfoDto(id, nickname, email, profileImage);
@@ -128,9 +127,10 @@ public class NaverService {
         Long naverId = naverUserInfoDto.getId();
         String profileImage = naverUserInfoDto.getProfileImage();
         User naverUser = userRepository.findByNaverId(naverId).orElse(null);
+        Random random = new Random();
 
         if (naverUser == null) {
-            Long navernewId = Long.valueOf(UUID.randomUUID().toString());
+            Long navernewId =  random.nextLong();
             String naverEmail = naverUserInfoDto.getEmail();
             User sameEmailUser = userRepository.findByEmail(naverEmail).orElse(null);
             if (sameEmailUser != null) {

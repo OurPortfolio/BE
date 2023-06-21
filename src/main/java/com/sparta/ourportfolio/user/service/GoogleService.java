@@ -39,7 +39,7 @@ public class GoogleService {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String googleClientSecret;
 
-// https://accounts.google.com/o/oauth2/auth?client_id=694048623782-hd9kdh349dqu8ja6aol2ie9ng6ls9o3f.apps.googleusercontent.com&redirect_uri=https://ppol.pro/api/users/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email
+// https://accounts.google.com/o/oauth2/auth?client_id=694048623782-hd9kdhx349dqu8ja6aol2ie9ng6ls9o3f.apps.googleusercontent.com&redirect_uri=https://ppol.pro/api/users/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=consent
 
     public ResponseDto<String> googleLogin(String code, String scope, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -53,8 +53,6 @@ public class GoogleService {
 
         // 4. JWT 토큰 반환
         jwtUtil.createAndSetToken(response, googleUser.getEmail(), googleUser.getId());
-//        String createToken = jwtUtil.createToken(googleUser.getEmail(), "Access", googleUser.getId());
-//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "구글 로그인 성공!");
     }
