@@ -80,16 +80,11 @@ jacoco {
 
 jacocoTestReport {
     dependsOn test // 테스트 실행이 끝난 후 보고서 생성
-    def Qdomains = []
-    for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
-        Qdomains.add(qPattern + '*')
-    }
-
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
                     fileTree(dir: it, excludes: [
-                            '**/*Application.java',
+                            '*.*Application*',
                             '*.Q*'
                     ])
                 })
@@ -112,16 +107,12 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
-    def Qdomains = []
-    for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
-        Qdomains.add(qPattern + '*')
-    }
     violationRules {
         rule {
             enabled = true
             element = 'CLASS'
             excludes = [
-                    '**/*Application.java',
+                    '*.*Application*',
                     '*.Q*'
             ]
 
