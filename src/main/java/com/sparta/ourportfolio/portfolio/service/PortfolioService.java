@@ -46,9 +46,7 @@ public class PortfolioService {
 
     @PostConstruct
     public void initializeTrieFromRedis() {
-        List<TechStackDto> allTechStackData = portfolioRepository.findAll().stream()
-                .map(TechStackDto::new)
-                .toList();
+        List<TechStackDto> allTechStackData = portfolioRepository.findAllTechStacks();
         trie.clear(); // 기존 Trie 데이터 초기화
 
         for (TechStackDto data : allTechStackData) {

@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
+import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
 import jakarta.annotation.Nullable;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sparta.ourportfolio.portfolio.entity.QPortfolio.portfolio;
+import static com.sparta.ourportfolio.user.entity.QUser.user;
 
 public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements PortfolioInquiry {
     @PersistenceContext
@@ -27,6 +29,21 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
 
     public PortfolioInquiryImpl() {
         super(Portfolio.class);
+    }
+
+    @Override
+    public List<TechStackDto> findAllTechStacks() {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Portfolio> findResult = queryFactory
+                .select(portfolio)
+                .from(portfolio)
+                .join(portfolio.user, user)
+                .fetchJoin()
+                .fetch();
+
+        return findResult.stream().map(TechStackDto::new).toList();
     }
 
     @Override
@@ -50,9 +67,11 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         List<Portfolio> resultSlice = queryFactory
                 .select(portfolio)
                 .from(portfolio)
+                .join(portfolio.user, user)
+                .fetchJoin()
                 .where(whereBuilder)
                 .orderBy(portfolio.id.desc())
-                .limit((long)pageRequest.getPageSize() + 1)
+                .limit((long) pageRequest.getPageSize() + 1)
                 .fetch();
 
         List<PortfolioResponseDto> content = resultSlice.stream()
@@ -74,6 +93,8 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         List<Portfolio> result = queryFactory
                 .select(portfolio)
                 .from(portfolio)
+                .join(portfolio.user, user)
+                .fetchJoin()
                 .where(whereBuilder)
                 .orderBy(portfolio.id.desc())
                 .offset(pageable.getOffset())

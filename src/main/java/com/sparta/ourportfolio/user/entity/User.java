@@ -44,7 +44,7 @@ public class User extends TimeStamped {
 
     private Long googleId;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Portfolio> portfolioList = new ArrayList<>();
 
     @Builder
