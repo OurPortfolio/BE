@@ -9,6 +9,9 @@ import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
+import com.sparta.ourportfolio.project.entity.QProject;
+import com.sparta.ourportfolio.project.entity.QProjectImage;
+import com.sparta.ourportfolio.user.entity.QUser;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -178,6 +181,16 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         }
 
         return resultMap;
+    }
+
+    public void increaseViews(Long portfolioId){
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        queryFactory.update(portfolio)
+                .set(portfolio.views, portfolio.views.add(1))
+                .where(portfolio.id.eq(portfolioId))
+                .execute();
     }
 
     private BooleanExpression ltPortfolioId(Long id) {

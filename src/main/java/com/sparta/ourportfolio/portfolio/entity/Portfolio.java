@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,9 @@ public class Portfolio {
     @JoinColumn(name = "user_id")
     @ManyToOne
     private User user;
+
+    @ColumnDefault("0L")
+    private long views;
 
     @Builder
     public Portfolio(Long id, String portfolioTitle, String email, String intro, String techStack, String residence, String location,
@@ -122,4 +126,5 @@ public class Portfolio {
     public void setUser(User user) {
         this.user = user;
     }
+
 }
