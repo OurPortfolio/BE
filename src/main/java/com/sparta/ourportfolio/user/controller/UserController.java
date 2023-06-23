@@ -108,7 +108,7 @@ public class UserController {
     @JacocoGenerated
     //Refresh 토큰으로 Access 토큰 재발급
     @GetMapping("/reissue")
-    public ResponseDto<UserDto> reissueToken(@RequestParam(value = "REFRESH_TOKEN", required = false) String refreshToken, HttpServletResponse response){
+    public ResponseDto<UserDto> reissueToken(@RequestParam(value = "REFRESH_TOKEN", required = false) String refreshToken, HttpServletResponse response) {
         return userService.reissueToken(refreshToken, response);
     }
 }

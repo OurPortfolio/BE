@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.ourportfolio.JacocoGenerated;
 import com.sparta.ourportfolio.common.dto.ResponseDto;
-import com.sparta.ourportfolio.common.exception.GlobalException;
 import com.sparta.ourportfolio.common.jwt.JwtUtil;
-import com.sparta.ourportfolio.user.dto.LoginRequestDto;
 import com.sparta.ourportfolio.user.dto.NaverUserInfoDto;
 import com.sparta.ourportfolio.user.entity.User;
 import com.sparta.ourportfolio.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -22,12 +21,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
-
-import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_USER;
 
 @JacocoGenerated
 @Slf4j
@@ -48,7 +44,7 @@ public class NaverService {
     @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String naverRedirectUri;
 
-//    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=https://ppol.pro/api/users/naver&state=state
+    //    https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=bA_xFHysO1Zxe8CywEoE&redirect_uri=https://ppol.pro/api/users/naver&state=state
 
     public ResponseDto<String> naverLogin(String code, String state, HttpServletResponse response) throws JsonProcessingException {
         // 인가코드, state 로 네이버한테 access_token 요청
@@ -112,25 +108,26 @@ public class NaverService {
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper2 = new ObjectMapper();
-        JsonNode jsonNode2 = objectMapper2.readTree(responseBody);
+        JsonNode jsonNode2 = objectMapper2.readTree(responseBody).get("response");
 
-        Long id = jsonNode2.get("response").get("id").asLong();
-        String nickname = jsonNode2.get("response").get("nickname").asText();
-        String email = jsonNode2.get("response").get("email").asText();
-        String profileImage = jsonNode2.get("response").get("profile_image").asText();
+        Long id = jsonNode2.get("id").asLong();
+        String nickname = jsonNode2.get("nickname").asText();
+        String email = jsonNode2.get("email").asText();
+        String profileImage = jsonNode2.get("profile_image").asText();
 
         log.info("네이버 사용자 정보: " + id + ", " + nickname + ", " + email + ", " + profileImage);
         return new NaverUserInfoDto(id, nickname, email, profileImage);
     }
 
-    private User registerNaverUser(NaverUserInfoDto naverUserInfoDto){
+    @SneakyThrows
+    private User registerNaverUser(NaverUserInfoDto naverUserInfoDto) {
         Long naverId = naverUserInfoDto.getId();
         String profileImage = naverUserInfoDto.getProfileImage();
         User naverUser = userRepository.findByNaverId(naverId).orElse(null);
-        Random random = new Random();
+        Random random = SecureRandom.getInstanceStrong();
 
         if (naverUser == null) {
-            Long navernewId =  random.nextLong();
+            Long navernewId = random.nextLong();
             String naverEmail = naverUserInfoDto.getEmail();
             User sameEmailUser = userRepository.findByEmail(naverEmail).orElse(null);
             if (sameEmailUser != null) {

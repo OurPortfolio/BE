@@ -123,6 +123,7 @@ public class JwtUtil {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
     //RefreshToken 검증
     public boolean refreshTokenValid(String token) {
         if (!validateToken(token)) return false;
