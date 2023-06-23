@@ -251,7 +251,7 @@ class UserServiceTest {
         MockMultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", "Test Image".getBytes());
 
         // when // then
-        assertThatThrownBy(() -> userService.updateUser(userId1 , updateUserRequestDto3, image, user1))
+        assertThatThrownBy(() -> userService.updateUser(userId1, updateUserRequestDto3, image, user1))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage("중복된 닉네임이 이미 존재합니다.");
     }
