@@ -109,7 +109,7 @@ class PortfolioInquiryServiceTest {
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                portfolioId+1, 9, "", "");
+                portfolioId + 1, 9, "", "");
         List<PortfolioResponseDto> content = result.getData().getContent();
         Long lastPortfolioId = content.get(content.size() - 1).getId();
 
@@ -156,7 +156,7 @@ class PortfolioInquiryServiceTest {
 
         //when
         ResponseDto<Slice<PortfolioResponseDto>> result = portfolioInquiryService.getAllPortfolios(
-                portfolioId+1, 9, "Develop", "Backend");
+                portfolioId + 1, 9, "Develop", "Backend");
         List<PortfolioResponseDto> content = result.getData().getContent();
         Long lastPortfolioId = content.get(content.size() - 1).getId();
 
@@ -260,7 +260,7 @@ class PortfolioInquiryServiceTest {
                 .contains(HttpStatus.OK, "Last Id 조회 완료");
 
         Long resultId = result.getData();
-        assertThat(resultId).isEqualTo(portfolioId+1);
+        assertThat(resultId).isEqualTo(portfolioId + 1);
     }
 
     private User createUser(String email, String password, String nickname, boolean isDeleted) {

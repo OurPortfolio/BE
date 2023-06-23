@@ -25,7 +25,7 @@ public class RefreshToken extends TimeStamped {
     @NotBlank
     private String email;
 
-    public RefreshToken(String refreshToken,  String email) {
+    public RefreshToken(String refreshToken, String email) {
         this.refreshToken = refreshToken;
         this.email = email;
     }

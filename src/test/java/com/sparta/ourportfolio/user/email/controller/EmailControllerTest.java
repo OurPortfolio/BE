@@ -38,7 +38,7 @@ class EmailControllerTest {
         // when // then
         mockMvc.perform(
                         get("/api/users/email")
-                                .param("receiverEmail" , receiverEmail)
+                                .param("receiverEmail", receiverEmail)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())

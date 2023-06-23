@@ -14,25 +14,31 @@ public class DesignStatisticsDto {
     private Long product;
     private Long brand;
 
-    public void setGraphic(Long graphic){
+    public void setGraphic(Long graphic) {
         this.graphic = graphic;
     }
-    public void setUiUx(Long uiUx){
+
+    public void setUiUx(Long uiUx) {
         this.uiUx = uiUx;
     }
-    public void setWebs(Long web){
+
+    public void setWebs(Long web) {
         this.web = web;
     }
-    public void setVisual(Long visual){
+
+    public void setVisual(Long visual) {
         this.visual = visual;
     }
-    public void setInteraction(Long interaction){
+
+    public void setInteraction(Long interaction) {
         this.interaction = interaction;
     }
-    public void setProduct(Long product){
+
+    public void setProduct(Long product) {
         this.product = product;
     }
-    public void setBrand(Long brand){
+
+    public void setBrand(Long brand) {
         this.brand = brand;
     }
 }

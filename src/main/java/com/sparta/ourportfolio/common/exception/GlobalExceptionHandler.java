@@ -12,7 +12,6 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 public class GlobalExceptionHandler {
     @ExceptionHandler(GlobalException.class)
     public ResponseEntity<GlobalExceptionEntity> exceptionHandler(GlobalException e) {
-        e.printStackTrace();
         return ResponseEntity
                 .status(e.getError().getStatus())
                 .body(GlobalExceptionEntity.builder()
