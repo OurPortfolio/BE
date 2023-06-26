@@ -2,12 +2,10 @@ package com.sparta.ourportfolio.portfolio.repository;
 
 import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
-import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +25,6 @@ public interface PortfolioInquiry {
     List<TechStackDto> findAllTechStacks();
 
     void increaseViews(Long portfolioId);
+
+    List<PortfolioResponseDto> getPortfolioByViews();
 }

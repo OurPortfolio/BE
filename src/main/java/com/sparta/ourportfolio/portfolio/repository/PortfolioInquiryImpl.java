@@ -9,9 +9,6 @@ import com.sparta.ourportfolio.portfolio.dto.PortfolioResponseDto;
 import com.sparta.ourportfolio.portfolio.dto.TechStackDto;
 import com.sparta.ourportfolio.portfolio.entity.Portfolio;
 import com.sparta.ourportfolio.portfolio.entity.QPortfolio;
-import com.sparta.ourportfolio.project.entity.QProject;
-import com.sparta.ourportfolio.project.entity.QProjectImage;
-import com.sparta.ourportfolio.user.entity.QUser;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -116,6 +113,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    @Override
     public Long getLastPortfolioIdByCategoryAndFilter(String category, String filter) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -136,6 +134,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return lastPortfolioId != null ? lastPortfolioId : -1L;
     }
 
+    @Override
     public Map<String, Long> getPortfoliosAmount() {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -158,6 +157,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return resultMap;
     }
 
+    @Override
     public Map<String, Long> getPortfoliosPerFilter(String category) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -183,7 +183,8 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return resultMap;
     }
 
-    public void increaseViews(Long portfolioId){
+    @Override
+    public void increaseViews(Long portfolioId) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -191,6 +192,24 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
                 .set(portfolio.views, portfolio.views.add(1))
                 .where(portfolio.id.eq(portfolioId))
                 .execute();
+    }
+
+    @Override
+    public List<PortfolioResponseDto> getPortfolioByViews() {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Portfolio> content = queryFactory
+                .selectFrom(portfolio)
+                .join(portfolio.user, user)
+                .fetchJoin()
+                .orderBy(portfolio.views.desc())
+                .limit(12)
+                .fetch();
+
+        return content.stream()
+                .map(p -> new PortfolioResponseDto(p, p.getUser()))
+                .toList();
     }
 
     private BooleanExpression ltPortfolioId(Long id) {

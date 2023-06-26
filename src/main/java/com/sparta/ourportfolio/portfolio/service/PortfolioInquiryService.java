@@ -45,7 +45,7 @@ public class PortfolioInquiryService {
 
         List<PortfolioResponseDto> content = portfolioResponseDtoSlice.getContent(); // 조회 결과 List 가져오기
         Long lastPortfolioId = null;
-        if(!content.isEmpty()) { // 조회 결과가 존재하는 경우
+        if (!content.isEmpty()) { // 조회 결과가 존재하는 경우
             PortfolioResponseDto lastPortfolioResponse = content.get(content.size() - 1); // 마지막 요소 가져오기
             lastPortfolioId = lastPortfolioResponse.getId();
         }
@@ -68,4 +68,9 @@ public class PortfolioInquiryService {
         return ResponseDto.setSuccess(HttpStatus.OK, "Last Id 조회 완료", lastPortfolioId);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseDto<List<PortfolioResponseDto>> getPortfoliosByViews() {
+        List<PortfolioResponseDto> popularityPortfolioList = portfolioRepository.getPortfolioByViews();
+        return ResponseDto.setSuccess(HttpStatus.OK, "지금 뜨는 포트폴리오", popularityPortfolioList);
+    }
 }

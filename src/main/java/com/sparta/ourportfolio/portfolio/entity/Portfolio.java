@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +61,12 @@ public class Portfolio {
     @ManyToOne
     private User user;
 
-    @ColumnDefault("0L")
     private long views;
 
     @Builder
     public Portfolio(Long id, String portfolioTitle, String email, String intro, String techStack, String residence, String location,
                      String telephone, String githubId, String blogUrl, String category, String filter,
-                     String youtubeUrl, String portfolioImage, List<Project> projectList, User user) {
+                     String youtubeUrl, String portfolioImage, List<Project> projectList, User user, long views) {
         this.id = id;
         this.portfolioTitle = portfolioTitle;
         this.email = email;
@@ -85,6 +83,7 @@ public class Portfolio {
         this.portfolioImage = portfolioImage;
         this.projectList = projectList;
         this.user = user;
+        this.views = views;
     }
 
     public Portfolio(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
@@ -101,6 +100,7 @@ public class Portfolio {
         this.filter = portfolioRequestDto.getFilter();
         this.youtubeUrl = portfolioRequestDto.getYoutubeUrl();
         this.portfolioImage = imageUrl;
+        this.views = 0;
     }
 
     public void update(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
