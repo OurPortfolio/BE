@@ -23,11 +23,12 @@ import static com.sparta.ourportfolio.common.exception.ExceptionEnum.NOT_FOUND_P
 public class PortfolioInquiryService {
     private final PortfolioRepository portfolioRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<PortfolioDetailResponseDto> getPortfolio(Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(
                 () -> new GlobalException(NOT_FOUND_PORTFOLIO)
         );
+        portfolioRepository.increaseViews(id);
         PortfolioDetailResponseDto portfolioDetailResponseDto = new PortfolioDetailResponseDto(portfolio);
         return ResponseDto.setSuccess(HttpStatus.OK, "조회 완료", portfolioDetailResponseDto);
     }
@@ -67,4 +68,9 @@ public class PortfolioInquiryService {
         return ResponseDto.setSuccess(HttpStatus.OK, "Last Id 조회 완료", lastPortfolioId);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseDto<List<PortfolioResponseDto>> getPortfoliosByViews() {
+        List<PortfolioResponseDto> popularityPortfolioList = portfolioRepository.getPortfolioByViews();
+        return ResponseDto.setSuccess(HttpStatus.OK, "지금 뜨는 포트폴리오", popularityPortfolioList);
+    }
 }

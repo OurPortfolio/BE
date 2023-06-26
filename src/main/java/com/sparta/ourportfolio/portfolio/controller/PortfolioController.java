@@ -92,4 +92,10 @@ public class PortfolioController {
     public ResponseDto<List<String>> autocomplete(@RequestParam String keyword) {
         return portfolioService.autoComplete(keyword);
     }
+
+    @GetMapping("/popularity")
+    public ResponseDto<List<PortfolioResponseDto>> getPortfoliosByViews(){
+        return portfolioInquiryService.getPortfoliosByViews();
+    }
+
 }

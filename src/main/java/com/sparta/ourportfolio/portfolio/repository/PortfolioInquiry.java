@@ -23,4 +23,8 @@ public interface PortfolioInquiry {
     Map<String, Long> getPortfoliosPerFilter(String category);
 
     List<TechStackDto> findAllTechStacks();
+
+    void increaseViews(Long portfolioId);
+
+    List<PortfolioResponseDto> getPortfolioByViews();
 }

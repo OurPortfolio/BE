@@ -27,6 +27,7 @@ public class PortfolioDetailResponseDto {
     private String portfolioImage;
     private String youtubeUrl;
     private List<ProjectResponseDto> projectList;
+    private long views;
 
     public PortfolioDetailResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();
@@ -47,5 +48,6 @@ public class PortfolioDetailResponseDto {
         this.portfolioImage = portfolio.getPortfolioImage();
         this.youtubeUrl = portfolio.getYoutubeUrl();
         this.projectList = portfolio.getProjectList().stream().map(ProjectResponseDto::new).toList();
+        this.views = portfolio.getViews();
     }
 }
