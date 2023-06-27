@@ -287,7 +287,7 @@ class PortfolioInquiryServiceTest {
         assertThat(result)
                 .extracting("statusCode", "message")
                 .contains(HttpStatus.OK, "지금 뜨는 포트폴리오");
-        assertThat(result.getData().size()).isEqualTo(12);
+        assertThat(result.getData()).hasSize(12);
     }
 
     private User createUser(String email, String nickname) {
