@@ -27,7 +27,7 @@ public class PortfolioDetailResponseDto {
     private String portfolioImage;
     private String youtubeUrl;
     private List<ProjectResponseDto> projectList;
-    private long views;
+    private Long views;
 
     public PortfolioDetailResponseDto(Portfolio portfolio) {
         this.id = portfolio.getId();

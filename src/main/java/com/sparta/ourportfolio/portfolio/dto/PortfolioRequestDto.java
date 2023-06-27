@@ -20,12 +20,12 @@ public class PortfolioRequestDto {
     private String filter;
     private String youtubeUrl;
     private List<Long> projectIdList;
-    private long views;
+    private Long views;
 
     @Builder
     public PortfolioRequestDto(String portfolioTitle, String email, String intro, String techStack, String residence,
                                String location, String telephone, String githubId, String blogUrl,
-                               String category, String filter, String youtubeUrl, List<Long> projectIdList, long views) {
+                               String category, String filter, String youtubeUrl, List<Long> projectIdList, Long views) {
         this.portfolioTitle = portfolioTitle;
         this.email = email;
         this.intro = intro;

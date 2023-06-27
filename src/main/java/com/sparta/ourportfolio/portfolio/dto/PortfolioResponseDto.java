@@ -11,7 +11,7 @@ public class PortfolioResponseDto {
     private String portfolioImage;
     private String userProfileImage;
     private String userName;
-    private long views;
+    private Long views;
 
     public PortfolioResponseDto(Portfolio portfolio, User user) {
         this.id = portfolio.getId();

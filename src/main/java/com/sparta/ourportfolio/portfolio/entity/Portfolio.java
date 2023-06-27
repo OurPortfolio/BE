@@ -61,12 +61,12 @@ public class Portfolio {
     @ManyToOne
     private User user;
 
-    private long views;
+    private Long views;
 
     @Builder
     public Portfolio(Long id, String portfolioTitle, String email, String intro, String techStack, String residence, String location,
                      String telephone, String githubId, String blogUrl, String category, String filter,
-                     String youtubeUrl, String portfolioImage, List<Project> projectList, User user, long views) {
+                     String youtubeUrl, String portfolioImage, List<Project> projectList, User user, Long views) {
         this.id = id;
         this.portfolioTitle = portfolioTitle;
         this.email = email;
@@ -100,7 +100,7 @@ public class Portfolio {
         this.filter = portfolioRequestDto.getFilter();
         this.youtubeUrl = portfolioRequestDto.getYoutubeUrl();
         this.portfolioImage = imageUrl;
-        this.views = 0;
+        this.views = 0L;
     }
 
     public void update(PortfolioRequestDto portfolioRequestDto, @Nullable String imageUrl) {
