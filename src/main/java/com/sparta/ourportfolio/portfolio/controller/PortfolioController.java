@@ -94,7 +94,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/popularity")
-    public ResponseDto<List<PortfolioResponseDto>> getPortfoliosByViews(){
+    public ResponseDto<List<PortfolioResponseDto>> getPortfoliosByViews() {
         return portfolioInquiryService.getPortfoliosByViews();
     }
 
