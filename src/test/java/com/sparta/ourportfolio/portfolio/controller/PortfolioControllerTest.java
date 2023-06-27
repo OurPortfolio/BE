@@ -21,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         String createJson = objectMapper.writeValueAsString(requestDto);
 
@@ -100,7 +101,7 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
@@ -129,12 +130,12 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
                 "techStack1", "residence1", "location1", "010********",
                 "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto requestDto2 = createPortfolioRequestDto("title2", "intro2",
                 "techStack2", "residence2", "location2", "010********",
                 "test2@email.com", "coze2", "Develop2", "Backend2", "Backend2",
-                projectIdList
+                projectIdList, 0
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
@@ -166,12 +167,12 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
                 "techStack1", "residence1", "location1", "010********",
                 "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto requestDto2 = createPortfolioRequestDto("title2", "intro2",
                 "techStack2", "residence2", "location2", "010********",
                 "test2@email.com", "coze2", "Develop2", "Backend2", "Backend2",
-                projectIdList
+                projectIdList, 0
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
@@ -180,7 +181,6 @@ class PortfolioControllerTest {
         // 포트폴리오 생성 및 저장
         portfolioService.createPortfolio(requestDto1, imageFile, testUser);
         portfolioService.createPortfolio(requestDto2, imageFile, testUser);
-        ;
 
         //when //then
         mockMvc.perform(
@@ -203,12 +203,12 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
                 "techStack1", "residence1", "location1", "010********",
                 "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto requestDto2 = createPortfolioRequestDto("title2", "intro2",
                 "techStack2", "residence2", "location2", "010********",
                 "test2@email.com", "coze2", "Develop2", "Backend2", "Backend2",
-                projectIdList
+                projectIdList, 0
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
@@ -242,12 +242,12 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
                 "techStack1", "residence1", "location1", "010********",
                 "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto requestDto2 = createPortfolioRequestDto("title2", "intro2",
                 "techStack2", "residence2", "location2", "010********",
                 "test2@email.com", "coze2", "Develop2", "Backend2", "Backend2",
-                projectIdList
+                projectIdList, 0
         );
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
@@ -279,7 +279,7 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         Portfolio portfolio = createPortfolio(requestDto, "", testUser);
         Long portfolioId = portfolioRepository.save(portfolio).getId();
@@ -287,7 +287,7 @@ class PortfolioControllerTest {
         PortfolioRequestDto updateDto = createPortfolioRequestDto("modified title", "intro",
                 "techStack2", "residence2", "location2", "010********",
                 "test@email.com", "coze", "Develop2", "Backend2", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         String createJson = objectMapper.writeValueAsString(updateDto);
         MockMultipartFile updateRequestDto = new MockMultipartFile(
@@ -322,7 +322,7 @@ class PortfolioControllerTest {
         PortfolioRequestDto requestDto = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         Portfolio portfolio = createPortfolio(requestDto, "", testUser);
         Long portfolioId = portfolioRepository.save(portfolio).getId();
@@ -331,6 +331,34 @@ class PortfolioControllerTest {
         mockMvc.perform(
                         delete("/api/portfolios/" + portfolioId)
                                 .with(user(userDetails))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("포트폴리오를 조회수가 높은 순서대로 12개 조회한다.")
+    @Test
+    void getPortfoliosByViews() throws Exception {
+        //given
+        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        userRepository.save(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image1", "test1.jpg", "image/jpeg", "Test Image".getBytes()
+        );
+        for (int i = 0; i < 20; i++) {
+            PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
+                    "techStack1", "residence1", "location1", "010********",
+                    "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
+                    projectIdList, i
+            );
+            portfolioService.createPortfolio(requestDto1, imageFile, testUser);
+        }
+
+        //when //then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/portfolios/popularity") // get 요청에 따른 엔드포인트 수정
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andDo(print())
@@ -360,7 +388,8 @@ class PortfolioControllerTest {
     private PortfolioRequestDto createPortfolioRequestDto(String portfolioTitle, String intro, String techStack,
                                                           String residence, String location, String telephone,
                                                           String githubId, String blogUrl, String category,
-                                                          String filter, String youtubeUrl, List<Long> projectIdList) {
+                                                          String filter, String youtubeUrl, List<Long> projectIdList,
+                                                          long views) {
         return PortfolioRequestDto.builder()
                 .portfolioTitle(portfolioTitle)
                 .intro(intro)
@@ -374,6 +403,7 @@ class PortfolioControllerTest {
                 .filter(filter)
                 .youtubeUrl(youtubeUrl)
                 .projectIdList(projectIdList)
+                .views(views)
                 .build();
     }
 
@@ -392,6 +422,7 @@ class PortfolioControllerTest {
                 .youtubeUrl(portfolioRequestDto.getYoutubeUrl())
                 .portfolioImage(image)
                 .user(user)
+                .views(portfolioRequestDto.getViews())
                 .build();
     }
 

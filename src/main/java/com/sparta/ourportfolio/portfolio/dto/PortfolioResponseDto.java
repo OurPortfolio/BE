@@ -11,6 +11,7 @@ public class PortfolioResponseDto {
     private String portfolioImage;
     private String userProfileImage;
     private String userName;
+    private long views;
 
     public PortfolioResponseDto(Portfolio portfolio, User user) {
         this.id = portfolio.getId();
@@ -18,5 +19,6 @@ public class PortfolioResponseDto {
         this.portfolioImage = portfolio.getPortfolioImage();
         this.userProfileImage = user.getProfileImage();
         this.userName = user.getNickname();
+        this.views = portfolio.getViews();
     }
 }
