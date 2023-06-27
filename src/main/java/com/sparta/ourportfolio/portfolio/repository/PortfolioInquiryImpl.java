@@ -113,6 +113,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    @Override
     public Long getLastPortfolioIdByCategoryAndFilter(String category, String filter) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -133,6 +134,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return lastPortfolioId != null ? lastPortfolioId : -1L;
     }
 
+    @Override
     public Map<String, Long> getPortfoliosAmount() {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -155,6 +157,7 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         return resultMap;
     }
 
+    @Override
     public Map<String, Long> getPortfoliosPerFilter(String category) {
         QPortfolio portfolio = QPortfolio.portfolio;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -178,6 +181,35 @@ public class PortfolioInquiryImpl extends QuerydslRepositorySupport implements P
         }
 
         return resultMap;
+    }
+
+    @Override
+    public void increaseViews(Long portfolioId) {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        queryFactory.update(portfolio)
+                .set(portfolio.views, portfolio.views.add(1))
+                .where(portfolio.id.eq(portfolioId))
+                .execute();
+    }
+
+    @Override
+    public List<PortfolioResponseDto> getPortfolioByViews() {
+        QPortfolio portfolio = QPortfolio.portfolio;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Portfolio> content = queryFactory
+                .selectFrom(portfolio)
+                .join(portfolio.user, user)
+                .fetchJoin()
+                .orderBy(portfolio.views.desc())
+                .limit(12)
+                .fetch();
+
+        return content.stream()
+                .map(p -> new PortfolioResponseDto(p, p.getUser()))
+                .toList();
     }
 
     private BooleanExpression ltPortfolioId(Long id) {

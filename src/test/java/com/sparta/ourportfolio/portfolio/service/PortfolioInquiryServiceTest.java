@@ -48,13 +48,13 @@ class PortfolioInquiryServiceTest {
     @Test
     void getPortfolio() {
         //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test");
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
         PortfolioRequestDto portfolioRequestDto = createPortfolioRequestDto("title", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "velog.coze", "Develop", "Backend",
-                projectIdList
+                projectIdList, 0
         );
 
         String imageUrl = "";
@@ -84,7 +84,7 @@ class PortfolioInquiryServiceTest {
     @Test
     void getAllPortfolioWithoutCategoryAndFilter() {
         //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test");
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
@@ -127,23 +127,23 @@ class PortfolioInquiryServiceTest {
     @Test
     void getAllPortfolioWithCategoryAndFilter() {
         //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test");
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
         PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("success", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("fail", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Design", "Graphic", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("fail", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Photographer", "None", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         String imageUrl = "";
 
@@ -178,25 +178,25 @@ class PortfolioInquiryServiceTest {
     @Test
     void getMyPortfolios() {
         //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
-        User anonymous = createUser("anonymous@gmail.com", "test-password", "anonymous", false);
+        User testUser = createUser("test@gmail.com", "test");
+        User anonymous = createUser("anonymous@gmail.com", "anonymous");
         userRepository.save(testUser);
         userRepository.save(anonymous);
         List<Long> projectIdList = new ArrayList<>();
         PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("success", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("fail", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Design", "Graphic", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("title2", "intro",
                 "success", "residence", "location", "010********",
                 "test@email.com", "coze", "Photographer", "None", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         String imageUrl = "";
 
@@ -224,23 +224,23 @@ class PortfolioInquiryServiceTest {
     @Test
     void getLastPortfolioIdWithCategoryAndFilter() {
         //given
-        User testUser = createUser("test@gmail.com", "test-password", "test", false);
+        User testUser = createUser("test@gmail.com", "test");
         userRepository.save(testUser);
         List<Long> projectIdList = new ArrayList<>();
         PortfolioRequestDto portfolioRequestDto1 = createPortfolioRequestDto("title1", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Develop", "Backend", "Backend",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto2 = createPortfolioRequestDto("title2", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Design", "Graphic", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         PortfolioRequestDto portfolioRequestDto3 = createPortfolioRequestDto("title2", "intro",
                 "techStack", "residence", "location", "010********",
                 "test@email.com", "coze", "Photographer", "Wedding", "Graphic",
-                projectIdList
+                projectIdList, 0
         );
         String imageUrl = "";
 
@@ -263,19 +263,47 @@ class PortfolioInquiryServiceTest {
         assertThat(resultId).isEqualTo(portfolioId + 1);
     }
 
-    private User createUser(String email, String password, String nickname, boolean isDeleted) {
+    @DisplayName("포트폴리오를 조회수가 높은 순서대로 12개 조회한다.")
+    @Test
+    void getPortfoliosByViews() {
+        //given
+        User testUser = createUser("test@gmail.com", "test");
+        userRepository.save(testUser);
+        List<Long> projectIdList = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            PortfolioRequestDto requestDto1 = createPortfolioRequestDto("title1", "intro1",
+                    "techStack1", "residence1", "location1", "010********",
+                    "test1@email.com", "coze1", "Develop1", "Backend1", "Backend1",
+                    projectIdList, i
+            );
+            Portfolio portfolio = createPortfolio(requestDto1, "", testUser);
+            portfolioRepository.save(portfolio);
+        }
+
+        //when
+        ResponseDto<List<PortfolioResponseDto>> result = portfolioInquiryService.getPortfoliosByViews();
+
+        //then
+        assertThat(result)
+                .extracting("statusCode", "message")
+                .contains(HttpStatus.OK, "지금 뜨는 포트폴리오");
+        assertThat(result.getData().size()).isEqualTo(12);
+    }
+
+    private User createUser(String email, String nickname) {
         return User.builder()
                 .email(email)
-                .password(password)
+                .password("test-password")
                 .nickname(nickname)
-                .isDeleted(isDeleted)
+                .isDeleted(false)
                 .build();
     }
 
     private PortfolioRequestDto createPortfolioRequestDto(String portfolioTitle, String intro, String techStack,
                                                           String residence, String location, String telephone,
                                                           String githubId, String blogUrl, String category,
-                                                          String filter, String youtubeUrl, List<Long> projectIdList) {
+                                                          String filter, String youtubeUrl, List<Long> projectIdList,
+                                                          long views) {
         return PortfolioRequestDto.builder()
                 .portfolioTitle(portfolioTitle)
                 .intro(intro)
@@ -289,6 +317,7 @@ class PortfolioInquiryServiceTest {
                 .filter(filter)
                 .youtubeUrl(youtubeUrl)
                 .projectIdList(projectIdList)
+                .views(views)
                 .build();
     }
 
@@ -307,6 +336,7 @@ class PortfolioInquiryServiceTest {
                 .youtubeUrl(portfolioRequestDto.getYoutubeUrl())
                 .portfolioImage(image)
                 .user(user)
+                .views(portfolioRequestDto.getViews())
                 .build();
     }
 
