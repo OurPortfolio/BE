@@ -16,7 +16,7 @@
 ### 👩‍👩‍👧‍👧 Backend 멤버 소개
 |  멤버 GitHub   |  역할   |
 |:---------------|:--------|
-|[🚩박지훈](https://github.com/bbakzi)| Leader😈<br/>CI/CD구현,  AWS 인프라 구축,  Https서버 배포/클라이언트 연결<br/> |
+|[🚩박지훈](https://github.com/bbakzi)| Leader😈<br/>CI/CD구현,  AWS 인프라 구축,  Https서버 배포/클라이언트 연결<br/>|
 |[김민규](https://github.com/kmg0485)| Spring Security 설정,  회원가입/로그인,  이메일 인증,  소셜로그인,  RefreshToken발급 |
 |[이재호](https://github.com/spainclub)| 프로젝트 CRUD, 테스트 코드 작성, Jacoco 커버리지 테스트, SonarQube 코드 분석 |
 |[최원제](https://github.com/co-ze)| 포트폴리오 CRUD, 검색어 자동 완성, 테스트 코드 작성, Query 최적화, Jmeter 성능 테스트 |
