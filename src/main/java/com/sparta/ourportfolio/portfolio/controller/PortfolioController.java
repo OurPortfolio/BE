@@ -89,7 +89,7 @@ public class PortfolioController {
 
     @JacocoGenerated
     @GetMapping("/autocomplete")
-    public ResponseDto<List<String>> autocomplete(@RequestParam String keyword) {
+    public List<String> autocomplete(@RequestParam String keyword) {
         return portfolioService.autoComplete(keyword);
     }
 
