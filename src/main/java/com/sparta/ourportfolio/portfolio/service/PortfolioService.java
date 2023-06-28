@@ -85,7 +85,7 @@ public class PortfolioService {
     @JacocoGenerated
     @Transactional(readOnly = true)
     @Cacheable(value = "autocomplete", key = "#keyword")
-    public ResponseDto<List<String>> autoComplete(String keyword) {
+    public List<String> autoComplete(String keyword) {
         PriorityQueue<Map.Entry<String, Integer>> priorityQueue = new PriorityQueue<>(
                 (entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue())
 
@@ -102,7 +102,7 @@ public class PortfolioService {
             result.add(priorityQueue.poll().getKey());
         }
 
-        return ResponseDto.setSuccess(HttpStatus.OK, "검색어 자동완성 완료", result);
+        return result;
     }
 
     @Transactional(readOnly = true)
