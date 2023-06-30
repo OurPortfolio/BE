@@ -73,4 +73,5 @@ public class PortfolioInquiryService {
         List<PortfolioResponseDto> popularityPortfolioList = portfolioRepository.getPortfolioByViews();
         return ResponseDto.setSuccess(HttpStatus.OK, "지금 뜨는 포트폴리오", popularityPortfolioList);
     }
+
 }
