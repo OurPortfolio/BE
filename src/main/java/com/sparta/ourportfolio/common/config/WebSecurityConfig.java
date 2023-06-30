@@ -67,6 +67,7 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/statistics/develop").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/statistics/design").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/statistics/photographer").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/portfolios/popularity").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
